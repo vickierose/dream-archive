@@ -6,10 +6,44 @@
 }
 
 @theme inline {
+  /* Base */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Typography */
+  --font-base: var(--font-nunito);
+  --font-handwritten: var(--font-caveat);
+
+  /* Paper */
+  --color-paper: #f7f0e7;
+  --color-paper-light: #fcf8f2;
+  --color-paper-dark: #ebe0d2;
+
+  /* Ink */
+  --color-ink: #443653;
+  --color-ink-soft: #665b70;
+  --color-ink-muted: #8b8092;
+
+  /* Lavender */
+  --color-lavender: #b9a6d0;
+  --color-lavender-light: #e7def0;
+  --color-lavender-pale: #f1ebf5;
+  --color-lavender-dark: #80669a;
+
+  /* Purple */
+  --color-purple: #604b7a;
+  --color-purple-dark: #4d3a65;
+
+  /* Borders & decoration */
+  --color-line: #d9ccdc;
+  --color-tape: #d8c6df;
+
+  /* Night */
+  --color-night: #29233d;
+  --color-night-soft: #51466c;
+
+  /* Feedback */
+  --color-danger: #b87582;
 }
 
 @media (prefers-color-scheme: dark) {
