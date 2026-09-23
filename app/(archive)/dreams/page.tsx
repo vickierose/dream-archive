@@ -1,23 +1,8 @@
 import { Plus } from "lucide-react";
 import Link from "next/link";
+import { mockDreams } from "@/data/mock-dreams";
+import { mockSymbols } from "@/data/mock-symbols";
 import { DreamCard } from "@/components/dream-card";
-
-const dreams = [
-  {
-    id: "house-by-the-sea",
-    title: "The House by the Sea",
-    date: "September 14, 2026",
-    mood: "Unsettling",
-    symbols: ["forest", "moon", "clouds"],
-  },
-  {
-    id: "snowy-mountain",
-    title: "The Snowy Mountain",
-    date: "August 21, 2026",
-    mood: "Peaceful",
-    symbols: ["snow", "moon"],
-  },
-];
 
 export default function DreamsPage() {
   return (
@@ -46,8 +31,12 @@ export default function DreamsPage() {
         </header>
 
         <div className="mt-5 grid max-w-2xl gap-6 sm:grid-cols-2">
-          {dreams.map((dream) => (
-            <DreamCard key={dream.id} {...dream} />
+          {mockDreams.map((dream) => (
+            <DreamCard
+              availableSymbols={mockSymbols}
+              dream={dream}
+              key={dream.id}
+            />
           ))}
         </div>
       </div>

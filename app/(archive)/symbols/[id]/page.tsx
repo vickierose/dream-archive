@@ -1,7 +1,5 @@
-export default async function SymbolPage({
-  params,
-}: PageProps<"/symbols/[id]">) {
-  const { id } = await params;
+import { ComingSoon } from "@/components/coming-soon";
 
-  return <h1>Symbol {id}</h1>;
+export default function SymbolPage() {
+  return <ComingSoon />;
 }

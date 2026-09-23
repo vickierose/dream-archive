@@ -1,19 +1,11 @@
-import { CalendarDays, CloudMoon, Moon, Sparkles, Trees } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import Link from "next/link";
+import type { Dream } from "@/types/dream";
+import type { Symbol } from "@/types/symbol";
 
 type DreamCardProps = {
-  id: string;
-  title: string;
-  date: string;
-  mood: string;
-  symbols: string[];
-};
-
-const symbolIcons = {
-  forest: Trees,
-  moon: Moon,
-  snow: Sparkles,
-  clouds: CloudMoon,
+  dream: Dream;
+  availableSymbols: Symbol[];
 };
 
 const cardPalettes = [
@@ -32,22 +24,27 @@ function pickRandom<T>(options: readonly T[]): T {
   return options[Math.floor(Math.random() * options.length)];
 }
 
-export function DreamCard({ id, title, date, mood, symbols }: DreamCardProps) {
+export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
   const cardPalette = pickRandom(cardPalettes);
   const tapeColor = pickRandom(tapeColors);
   const tapePosition = pickRandom(tapePositions);
   const tapeRotation = pickRandom(tapeRotations);
+  const dreamSymbols = dream.symbols.flatMap((symbolId) => {
+    const symbol = availableSymbols.find(({ id }) => id === symbolId);
+
+    return symbol ? [symbol] : [];
+  });
 
   return (
     <Link
-      aria-label={`Read dream: ${title}`}
+      aria-label={`Read dream: ${dream.title}`}
       className={`group relative block min-h-64 rounded-sm border p-6 pt-8 
 									shadow-[0_5px_12px_rgba(68,54,83,0.08)] transition
 									duration-200 hover:-translate-y-1 
 									hover:shadow-[0_10px_20px_rgba(68,54,83,0.14)] 
 									${cardPalette}
 			`}
-      href={`/dreams/${id}`}
+      href={`/dreams/${dream.id}`}
     >
       <span
         aria-hidden="true"
@@ -56,33 +53,32 @@ export function DreamCard({ id, title, date, mood, symbols }: DreamCardProps) {
 
       <section>
         <h2 className="pr-3 font-handwritten text-2xl leading-none text-ink">
-          {title}
+          {dream.title}
         </h2>
         <p className="mt-3 flex items-center gap-1.5 font-base text-xs font-semibold text-ink-soft">
           <CalendarDays aria-hidden="true" size={14} />
-          {date}
+          {dream.date}
         </p>
 
         <div
-          aria-label={`Symbols: ${symbols.join(", ")}`}
+          aria-label={`Symbols: ${dreamSymbols.map(({ name }) => name).join(", ")}`}
           className="mt-6 flex gap-3"
         >
-          {symbols.map((symbol) => {
-            const SymbolIcon = symbolIcons[symbol as keyof typeof symbolIcons];
-            return SymbolIcon ? (
-              <span
-                className="grid size-9 place-items-center rounded-full bg-white/45 text-purple"
-                key={symbol}
-                title={symbol}
-              >
-                <SymbolIcon aria-hidden="true" size={20} strokeWidth={2} />
+          {dreamSymbols.map((symbol) => (
+            <span
+              className="grid size-9 place-items-center rounded-full bg-white/45"
+              key={symbol.id}
+              title={symbol.name}
+            >
+              <span aria-hidden="true" className="text-xl leading-none">
+                {symbol.emoji}
               </span>
-            ) : null;
-          })}
+            </span>
+          ))}
         </div>
 
         <span className="mt-6 inline-flex rounded-full bg-[#ead9df] px-3 py-1 font-base text-xs font-bold text-ink-soft">
-          {mood}
+          {dream.mood}
         </span>
       </section>
     </Link>

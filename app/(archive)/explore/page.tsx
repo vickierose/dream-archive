@@ -1,3 +1,5 @@
+import { ComingSoon } from "@/components/coming-soon";
+
 export default function ExplorePage() {
-  return <h1>Explore</h1>;
+  return <ComingSoon />;
 }

@@ -1,7 +1,5 @@
-export default async function EditDreamPage({
-  params,
-}: PageProps<"/dreams/[id]/edit">) {
-  const { id } = await params;
+import { ComingSoon } from "@/components/coming-soon";
 
-  return <h1>Edit dream {id}</h1>;
+export default function EditDreamPage() {
+  return <ComingSoon />;
 }
