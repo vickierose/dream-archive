@@ -14,7 +14,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex w-56 shrink-0 flex-col border-r border-line bg-lavender-pale px-4 py-6">
+    <aside className="flex h-full w-56 shrink-0 flex-col overflow-hidden border-r border-line bg-lavender-pale px-4 py-6">
       <Link
         className="flex items-center gap-2 px-3 font-handwritten font-medium text-xl text-ink "
         href="/dreams"

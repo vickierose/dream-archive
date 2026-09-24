@@ -1,5 +1,6 @@
 import { CalendarDays } from "lucide-react";
 import Link from "next/link";
+import { Chip } from "@/components/chip";
 import type { Dream } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
 
@@ -77,9 +78,9 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
           ))}
         </div>
 
-        <span className="mt-6 inline-flex rounded-full bg-[#ead9df] px-3 py-1 font-base text-xs font-bold text-ink-soft">
+        <Chip className="mt-6">
           {dream.mood}
-        </span>
+        </Chip>
       </section>
     </Link>
   );
