@@ -51,7 +51,7 @@ export default async function DreamPage({ params }: PageProps<"/dreams/[id]">) {
   return (
     <>
       <div className="mx-auto max-w-3xl">
-        <BackButton label="Back to dreams" />
+        <BackButton />
 
         <header className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -62,9 +62,7 @@ export default async function DreamPage({ params }: PageProps<"/dreams/[id]">) {
               {dream.date}
             </p>
           </div>
-          <Chip className="w-fit">
-            {dream.mood}
-          </Chip>
+          <Chip className="w-fit">{dream.mood}</Chip>
         </header>
 
         <article className="relative mt-6 border border-paper-dark bg-paper p-6 shadow-[0_5px_12px_rgba(68,54,83,0.08)] sm:p-8">
