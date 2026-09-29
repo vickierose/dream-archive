@@ -1,6 +1,6 @@
 import { Mood, type Dream } from "@/types/dream";
 
-export const mockDreams: Dream[] = [
+const initialDreams: Dream[] = [
   {
     id: "house-by-the-sea",
     title: "The House by the Sea",
@@ -18,3 +18,7 @@ export const mockDreams: Dream[] = [
     symbols: ["mountain", "snow", "moon"],
   },
 ];
+
+// Share mock edits across server modules during this process's lifetime.
+const mockStore = globalThis as typeof globalThis & { dreamArchiveDreams?: Dream[] };
+export const mockDreams = (mockStore.dreamArchiveDreams ??= initialDreams);
