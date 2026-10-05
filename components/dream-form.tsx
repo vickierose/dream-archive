@@ -1,11 +1,11 @@
 "use client";
 
-import { CalendarDays, Plus } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useController, useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/button";
 import { SelectableButton } from "@/components/selectable-button";
-import { mockSymbols } from "@/data/mock-symbols";
+import { DreamSymbols } from "@/components/dream-symbols";
 import { Mood } from "@/types/dream";
 import { FormError } from "@/components/form-error";
 import { dreamSchema, type DreamFormValues } from "@/lib/validation/dream";
@@ -24,16 +24,6 @@ export function DreamForm({ defaultValues, onSubmit, onCancel, submitLabel = "Re
   const { field: moodField } = useController({ name: "mood", control });
   const { field: symbolsField } = useController({ name: "symbols", control });
   const plot = useWatch({ control, name: "plot" });
-  const selectedSymbols = symbolsField.value;
-
-  function toggleSymbol(symbolId: string) {
-    symbolsField.onChange(
-      selectedSymbols.includes(symbolId)
-        ? selectedSymbols.filter((id) => id !== symbolId)
-        : [...selectedSymbols, symbolId],
-    );
-  }
-
   return (
       <form className="mt-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
         <div>
@@ -129,33 +119,12 @@ export function DreamForm({ defaultValues, onSubmit, onCancel, submitLabel = "Re
           <legend className="font-base text-sm font-bold text-ink">
             Symbols
           </legend>
-          <div className="mt-2 flex flex-wrap gap-3">
-            {mockSymbols.map((symbol, index) => {
-              const isSelected = selectedSymbols.includes(symbol.id);
-
-              return (
-                  <SelectableButton
-                    key={symbol.id}
-                    ref={index === 0 ? symbolsField.ref : undefined}
-                    onBlur={symbolsField.onBlur}
-                    onClick={() => toggleSymbol(symbol.id)}
-                    isSelected={isSelected}
-                  >
-                  <span aria-hidden="true" className="text-base leading-none">
-                    {symbol.emoji}
-                  </span>
-                  {symbol.name}
-                  </SelectableButton>
-              );
-            })}
-            <button
-              className="inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft transition hover:border-lavender-dark hover:text-purple focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple"
-              type="button"
-            >
-              <Plus aria-hidden="true" size={16} />
-              Add symbol
-            </button>
-          </div>
+          <DreamSymbols
+            value={symbolsField.value}
+            onChange={symbolsField.onChange}
+            onBlur={symbolsField.onBlur}
+            buttonRef={symbolsField.ref}
+          />
           <FormError id="symbols-error" message={errors.symbols?.message} />
         </fieldset>
 

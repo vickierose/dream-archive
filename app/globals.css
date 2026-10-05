@@ -58,3 +58,19 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.dream-emoji-picker em-emoji-picker {
+  width: 100%;
+  height: min(300px, 35dvh);
+  min-height: 200px;
+  --font-family: var(--font-nunito), sans-serif;
+  --font-size: 14px;
+  --category-icon-size: 20px;
+  --border-radius: 12px;
+  --rgb-color: 68, 54, 83;
+  --rgb-accent: 96, 75, 122;
+  --rgb-background: 252, 248, 242;
+  --rgb-input: 247, 240, 231;
+  --color-border: var(--color-line);
+  --shadow: none;
+}

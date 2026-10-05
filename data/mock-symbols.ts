@@ -1,6 +1,6 @@
 import type { Symbol } from "@/types/symbol";
 
-export const mockSymbols: Symbol[] = [
+const initialSymbols: Symbol[] = [
   { id: "forest", name: "Forest", emoji: "🌲" },
   { id: "sea", name: "Sea", emoji: "🌊" },
   { id: "mountain", name: "Mountain", emoji: "⛰️" },
@@ -8,3 +8,6 @@ export const mockSymbols: Symbol[] = [
   { id: "moon", name: "Moon", emoji: "🌙" },
   { id: "clouds", name: "Clouds", emoji: "☁️" },
 ];
+
+const mockStore = globalThis as typeof globalThis & { dreamArchiveSymbols?: Symbol[] };
+export const mockSymbols = (mockStore.dreamArchiveSymbols ??= initialSymbols);
