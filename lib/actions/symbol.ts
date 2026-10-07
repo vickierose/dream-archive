@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { mockSymbols } from "@/data/mock-symbols";
+import { requireUser } from "@/lib/auth/session";
 
 const symbolSchema = z.object({
   name: z.string().trim().min(1).max(80),
@@ -10,10 +11,12 @@ const symbolSchema = z.object({
 });
 
 export async function getSymbols() {
+  await requireUser();
   return mockSymbols;
 }
 
 export async function createSymbol(values: { name: string; emoji: string }) {
+  await requireUser();
   const parsed = symbolSchema.safeParse(values);
   if (!parsed.success) return { error: "Enter a name and choose an emoji." };
   const existing = mockSymbols.find((symbol) =>

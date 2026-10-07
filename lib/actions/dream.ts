@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { mockDreams } from "@/data/mock-dreams";
+import { requireUser } from "@/lib/auth/session";
 import { dreamSchema, type DreamFormValues } from "@/lib/validation/dream";
 
 function formatDreamDate(date: string) {
@@ -11,6 +12,7 @@ function formatDreamDate(date: string) {
 }
 
 export async function createDream(values: DreamFormValues) {
+  await requireUser();
   const parsed = dreamSchema.safeParse(values);
   if (!parsed.success) return { error: "Check the dream fields and try again." };
 
@@ -25,12 +27,14 @@ export async function createDream(values: DreamFormValues) {
 }
 
 export async function deleteDream(id: string) {
+  await requireUser();
   const index = mockDreams.findIndex((dream) => dream.id === id);
   if (index !== -1) mockDreams.splice(index, 1);
   revalidatePath("/", "layout");
 }
 
 export async function updateDream(id: string, values: DreamFormValues) {
+  await requireUser();
   const parsed = dreamSchema.safeParse(values);
   if (!parsed.success) return { error: "Check the dream fields and try again." };
   const dream = mockDreams.find((dream) => dream.id === id);

@@ -2,10 +2,12 @@ import type { ReactNode } from "react";
 import { Suspense } from "react";
 import { Sidebar } from "@/components/sidebar";
 import { connection } from "next/server";
+import { requireUser } from "@/lib/auth/session";
 
 export default async function ArchiveLayout({ children }: { children: ReactNode }) {
   // Mock records can change while the server is running.
   await connection();
+  await requireUser();
   return (
     <div className="flex h-dvh overflow-hidden bg-paper-light">
       <Suspense
