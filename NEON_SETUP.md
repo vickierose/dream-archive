@@ -50,10 +50,10 @@ branch URLs in your hosting environment, and add your deployed origin to Neon Au
 - Google login uses the existing button and requires the provider setup above.
 
 Authentication does not automatically enforce ownership in database queries.
-The database tooling and table definitions are now in place; see
-[Database design](DATABASE.md). No application tables have been created in Neon yet,
-and the UI/actions still use mock records. Next: generate/review/apply the first
-migration, then replace mock access with user-scoped queries.
+The database tooling, table definitions, and initial migration are now in place;
+see [Database design](DATABASE.md). The migration has been applied to the database
+configured in `.env.local`. The UI/actions still use mock records. Next: replace
+mock access with authenticated, user-scoped queries.
 
 ## Verification
 

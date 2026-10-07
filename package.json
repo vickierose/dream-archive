@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
     "db:check": "tsx scripts/check-db.ts",
     "test:db": "tsx --test lib/db/schema.test.ts"
   },

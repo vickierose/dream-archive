@@ -1,7 +1,8 @@
 # Database design and tooling
 
-Steps 5 and 6 define the connection and schema in code. They do not create tables
-in Neon or replace the shared mock records used by the app.
+The connection and schema are defined in code, and step 7's initial migration has
+been applied to the Neon database configured in `.env.local`. The app still uses
+shared mock records until its data-access layer is connected to these tables.
 
 ## Files and dependencies
 
@@ -103,13 +104,26 @@ unchanged for now; the data-access layer will map rows and symbol links into the
 ```sh
 npm run db:check
 npm run test:db
+npm run db:migrate
 ```
 
 `db:check` reads only auth column metadata. `test:db` uses an in-memory database and
 fake users, never the Neon connection or real accounts. It checks cross-user links,
 duplicates, missing owners, validation constraints, and deletion behavior.
 
-For step 7, `npm run db:generate` generates versioned SQL migration files locally;
-it does not apply them. Review those files before applying them to the development
-branch. Generation and application of the initial migration are intentionally left
-for that step. No `db:push` command is provided to bypass migration review.
+`npm run db:generate` generates versioned SQL migration files locally; it does not
+apply them. Review the SQL, then run `npm run db:migrate` against the intended
+database in `DATABASE_URL`. Migration commands load `.env.local` through the config.
+No `db:push` command is provided to bypass migration review.
+
+The initial migration is `drizzle/0000_initial_dream_archive.sql`. Commit the entire
+`drizzle` folder, including its `meta` journal and snapshot. Drizzle records applied
+migrations in `drizzle.__drizzle_migrations`, so another migrate run skips them.
+Do not edit an already-applied migration; generate a new one for future changes.
+
+The constraint tests now execute the checked-in migration against in-memory
+PostgreSQL and verify that a second run is a no-op. The applied Neon schema was
+also inspected for its tables, constraints, indexes, and matching migration hash.
+Existing auth records were not changed and no sample journal data was inserted.
+
+Next: replace mock reads/writes with authenticated, user-scoped database operations.

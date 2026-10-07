@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import test from "node:test";
 import { PGlite } from "@electric-sql/pglite";
-import { generateDrizzleJson, generateMigration } from "drizzle-kit/api";
+import { generateDrizzleJson } from "drizzle-kit/api";
+import { drizzle } from "drizzle-orm/pglite";
+import { migrate } from "drizzle-orm/pglite/migrator";
 import * as schema from "./schema";
 
 test("database ownership and integrity constraints", async (t) => {
@@ -13,10 +15,13 @@ test("database ownership and integrity constraints", async (t) => {
     assert.deepEqual(Object.keys(snapshot.tables).sort(), [
       "public.dream_symbols", "public.dreams", "public.symbols",
     ]);
-    const statements = await generateMigration(generateDrizzleJson({}), snapshot);
     // Stand-in for the Neon-managed table; application DDL must not create it.
     await database.exec('CREATE SCHEMA neon_auth; CREATE TABLE neon_auth."user" (id uuid PRIMARY KEY)');
-    for (const statement of statements) await database.exec(statement);
+    const db = drizzle(database);
+    await migrate(db, { migrationsFolder: "./drizzle" });
+    // Re-running must use migration history rather than recreate existing tables.
+    await migrate(db, { migrationsFolder: "./drizzle" });
+    assert.equal((await database.query('SELECT * FROM drizzle.__drizzle_migrations')).rows.length, 1);
 
     const alice = randomUUID();
     const bob = randomUUID();
