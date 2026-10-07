@@ -50,9 +50,10 @@ branch URLs in your hosting environment, and add your deployed origin to Neon Au
 - Google login uses the existing button and requires the provider setup above.
 
 Authentication does not automatically enforce ownership in database queries.
-`DATABASE_URL` is reserved for the next step; no dream tables or database client have
-been created yet. That step will add Drizzle, migrations, and user-scoped queries for
-`dreams`, `symbols`, and `dream_symbols`.
+The database tooling and table definitions are now in place; see
+[Database design](DATABASE.md). No application tables have been created in Neon yet,
+and the UI/actions still use mock records. Next: generate/review/apply the first
+migration, then replace mock access with user-scoped queries.
 
 ## Verification
 
@@ -61,6 +62,8 @@ npm run lint
 npx tsc --noEmit
 npm run build
 node scripts/check-auth.mjs
+npm run db:check
+npm run test:db
 ```
 
 With the development server running:
@@ -89,12 +92,12 @@ warnings. The project passes TypeScript, lint, and production build checks with
 the installed lockfile. Some transitive tooling also asks for a newer Node version
 than the local Node 22.7.0; use a maintained Node release for deployment.
 
-The installation audit reported 8 advisories (7 high, 1 critical) in the existing
-Next.js/tooling dependency families, including Next.js 16.3.5. These have not been
-fixed by this authentication change. Review and patch these dependencies before
-public deployment; do not run a forced audit fix that downgrades Next.js tooling.
+After installing database tooling, npm reported 15 advisories (7 moderate, 7 high,
+1 critical). The previously identified Next.js 16.3.5 advisory remains unresolved.
+Dependency security updates are separate from this schema change. Review and patch
+before public deployment; do not run a forced audit fix that downgrades Next.js tooling.
 
 ## References
 
 - [Neon Auth Next.js integration](https://github.com/neondatabase/neon-js/blob/main/packages/auth/NEXT-JS.md)
-- [Drizzle and Neon (next implementation step)](https://orm.drizzle.team/docs/get-started/neon-new)
+- [Drizzle PostgreSQL drivers](https://orm.drizzle.team/docs/get-started-postgresql)
