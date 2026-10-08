@@ -1,5 +1,6 @@
 "use client";
 
+import { FormActions } from "@/components/ui/form-actions";
 import { localToday } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,85 +19,119 @@ type DreamFormProps = {
   submitLabel?: string;
 };
 
-export function DreamForm({ defaultValues, onSubmit, onCancel, submitLabel = "Record dream" }: DreamFormProps) {
-  const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<DreamFormValues>({
+export function DreamForm({
+  defaultValues,
+  onSubmit,
+  onCancel,
+  submitLabel = "Record dream",
+}: DreamFormProps) {
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<DreamFormValues>({
     resolver: zodResolver(dreamSchema),
-    defaultValues: { title: "", date: localToday(), plot: "", symbols: [], ...defaultValues },
+    defaultValues: {
+      title: "",
+      date: localToday(),
+      plot: "",
+      symbols: [],
+      ...defaultValues,
+    },
   });
   const { field: moodField } = useController({ name: "mood", control });
   const { field: symbolsField } = useController({ name: "symbols", control });
   const plot = useWatch({ control, name: "plot" });
   return (
-      <form className="mt-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          {...register("title")}
-          id="title"
-          label="Title"
-          placeholder="A short title for your dream..."
-          type="text"
-          error={errors.title?.message}
-        />
-        <TextField
-          {...register("date")}
-          id="date"
-          label="Date"
-          type="date"
-          leadingIcon={<CalendarDays size={17} />}
-          error={errors.date?.message}
-        />
-        <TextField
-          {...register("plot")}
-          as="textarea"
-          id="plot"
-          label="Dream"
-          maxLength={3000}
-          placeholder="Describe your dream..."
-          error={errors.plot?.message}
-          hint={<span className="block text-right">{plot.length}/3000</span>}
-        />
+    <form className="space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
+      <TextField
+        {...register("title")}
+        id="title"
+        label="Title"
+        placeholder="A short title for your dream..."
+        type="text"
+        error={errors.title?.message}
+      />
+      <TextField
+        {...register("date")}
+        id="date"
+        label="Date"
+        type="date"
+        leadingIcon={<CalendarDays size={17} />}
+        error={errors.date?.message}
+      />
+      <TextField
+        {...register("plot")}
+        as="textarea"
+        id="plot"
+        label="Dream"
+        maxLength={3000}
+        placeholder="Describe your dream..."
+        error={errors.plot?.message}
+        hint={<span className="block text-right">{plot.length}/3000</span>}
+      />
 
-        <fieldset aria-invalid={!!errors.mood} aria-describedby={errors.mood ? "mood-error" : undefined}>
-          <legend className="font-base text-sm font-bold text-ink">Mood</legend>
-          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {Object.values(Mood).map((moodOption, index) => {
-              const isSelected = moodField.value === moodOption;
+      <fieldset
+        aria-invalid={!!errors.mood}
+        aria-describedby={errors.mood ? "mood-error" : undefined}
+      >
+        <legend className="field-label">Mood</legend>
+        <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {Object.values(Mood).map((moodOption, index) => {
+            const isSelected = moodField.value === moodOption;
 
-              return (
-                  <SelectableButton
-                    className="w-full justify-center"
-                    key={moodOption}
-                    ref={index === 0 ? moodField.ref : undefined}
-                    onBlur={moodField.onBlur}
-                    onClick={() => moodField.onChange(moodOption)}
-                    isSelected={isSelected}
-                  >
-                    {moodOption}
-                  </SelectableButton>
-              );
-            })}
-          </div>
-          <FormError id="mood-error" message={errors.mood?.message} />
-        </fieldset>
-
-        <fieldset aria-invalid={!!errors.symbols} aria-describedby={errors.symbols ? "symbols-error" : undefined}>
-          <legend className="font-base text-sm font-bold text-ink">
-            Symbols
-          </legend>
-          <DreamSymbols
-            value={symbolsField.value}
-            onChange={symbolsField.onChange}
-            onBlur={symbolsField.onBlur}
-            buttonRef={symbolsField.ref}
-          />
-          <FormError id="symbols-error" message={errors.symbols?.message} />
-        </fieldset>
-
-        <div className="flex justify-end gap-3 pt-3">
-          {onCancel && <Button type="button" variant="secondary" onClick={onCancel} disabled={isSubmitting}>Cancel</Button>}
-          <Button className="w-full disabled:opacity-60 sm:w-auto" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : submitLabel}
-          </Button>
+            return (
+              <SelectableButton
+                className="w-full justify-center"
+                key={moodOption}
+                ref={index === 0 ? moodField.ref : undefined}
+                onBlur={moodField.onBlur}
+                onClick={() => moodField.onChange(moodOption)}
+                isSelected={isSelected}
+              >
+                {moodOption}
+              </SelectableButton>
+            );
+          })}
         </div>
-      </form>
+        <FormError id="mood-error" message={errors.mood?.message} />
+      </fieldset>
+
+      <fieldset
+        aria-invalid={!!errors.symbols}
+        aria-describedby={errors.symbols ? "symbols-error" : undefined}
+      >
+        <legend className="field-label">Symbols</legend>
+        <DreamSymbols
+          value={symbolsField.value}
+          onChange={symbolsField.onChange}
+          onBlur={symbolsField.onBlur}
+          buttonRef={symbolsField.ref}
+        />
+        <FormError id="symbols-error" message={errors.symbols?.message} />
+      </fieldset>
+
+      <FormActions>
+        {onCancel && (
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onCancel}
+            disabled={isSubmitting}
+          >
+            Cancel
+          </Button>
+        )}
+        <Button
+          className="w-full sm:w-auto"
+          type="submit"
+          loading={isSubmitting}
+          loadingLabel="Saving..."
+        >
+          {submitLabel}
+        </Button>
+      </FormActions>
+    </form>
   );
 }

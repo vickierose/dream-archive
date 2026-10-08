@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Heading } from "@/components/ui/heading";
 
 type PageHeaderProps = {
   title: ReactNode;
@@ -14,13 +15,11 @@ export function PageHeader({
   prefix,
 }: PageHeaderProps) {
   return (
-    <header className="flex flex-col gap-5 pb-8 sm:flex-row sm:items-baseline sm:justify-between">
-      <div className="flex gap-4 items-center">
+    <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-baseline sm:justify-between">
+      <div className="flex min-w-0 items-center gap-4">
         {prefix}
         <div>
-          <h1 className="font-handwritten text-4xl leading-none text-ink sm:text-5xl">
-            {title}
-          </h1>
+          <Heading as="h1">{title}</Heading>
           {description && (
             <p className="mt-1 font-base text-sm text-ink-soft">
               {description}

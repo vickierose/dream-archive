@@ -1,5 +1,7 @@
 "use client";
 
+import { PageHeader } from "@/components/layout/page-header";
+import { Feedback } from "@/components/ui/feedback";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/ui/back-button";
@@ -32,11 +34,11 @@ export default function NewDreamPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <BackButton label="Back to dreams" />
-      <h1 className="mt-5 font-handwritten text-4xl leading-none text-ink sm:text-5xl">
-        Record a dream
-      </h1>
-      {error && <p role="alert" className="mt-4 font-base text-sm text-danger">{error}</p>}
+      <div className="mb-4">
+        <BackButton label="Back to dreams" />
+      </div>
+      <PageHeader title="Record a dream" />
+      {error && <Feedback className="mb-6">{error}</Feedback>}
       <DreamForm onSubmit={save} />
     </div>
   );

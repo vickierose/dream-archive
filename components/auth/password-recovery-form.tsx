@@ -1,5 +1,6 @@
 "use client";
 
+import { Feedback } from "@/components/ui/feedback";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { authClient } from "@/lib/auth/client";
@@ -59,9 +60,9 @@ export function PasswordRecoveryForm({
 
   if (reset && !token) {
     return (
-      <p className="mt-6 text-sm text-ink-soft">
+      <p className="text-sm leading-relaxed text-ink-soft">
         This reset link is missing or invalid.{" "}
-        <Link className="text-purple underline" href="/forgot-password">
+        <Link className="text-link underline" href="/forgot-password">
           Request a new link
         </Link>
         .
@@ -70,7 +71,7 @@ export function PasswordRecoveryForm({
   }
 
   return (
-    <form onSubmit={handleRecoverySubmit} className="mt-8 space-y-5">
+    <form onSubmit={handleRecoverySubmit} className="space-y-6">
       <TextField
         id="recovery-input"
         label={reset ? "New password" : "Email"}
@@ -81,24 +82,17 @@ export function PasswordRecoveryForm({
         minLength={reset ? 8 : undefined}
         maxLength={reset ? 128 : undefined}
       />
-      {error && (
-        <p role="alert" className="text-sm text-danger">
-          {error}
-        </p>
-      )}
-      {notice && (
-        <p role="status" className="text-sm text-ink-soft">
-          {notice}
-        </p>
-      )}
+      {error && <Feedback>{error}</Feedback>}
+      {notice && <Feedback tone="notice">{notice}</Feedback>}
       <Button
         className="w-full"
         type="submit"
-        disabled={pending || isResetComplete}
+        disabled={isResetComplete}
+        loading={pending}
       >
-        {pending ? "Please wait..." : submitLabel}
+        {submitLabel}
       </Button>
-      <Link href="/login" className="block text-center text-sm text-purple">
+      <Link href="/login" className="text-link block text-center text-sm">
         Back to login
       </Link>
     </form>

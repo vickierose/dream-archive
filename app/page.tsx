@@ -1,5 +1,7 @@
 import { MoonStar, MoveRight } from "lucide-react";
 import Link from "next/link";
+import { Heading } from "@/components/ui/heading";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -11,7 +13,7 @@ export default function Home() {
       >
         <Link
           href="/"
-          className="absolute left-8 top-6 font-handwritten text-xl text-white flex gap-1 items-center"
+          className="focus-ring absolute left-8 top-6 font-handwritten text-xl text-white flex gap-1 items-center"
         >
           <MoonStar color="white" size={20} />
           Dream Archive
@@ -21,24 +23,16 @@ export default function Home() {
       {/* Paper */}
       <section className="flex min-h-screen flex-col justify-center bg-paper px-8 py-12 md:px-12 lg:px-16">
         <div className="max-w-md">
-          <h1 className="mt-3 font-handwritten text-5xl text-ink">
-            Dream Archive
-          </h1>
+          <Heading as="h1">Dream Archive</Heading>
 
-          <p className="mt-5 font-base text-base text-ink-soft max-w-60">
+          <p className="mt-4 max-w-60 text-sm leading-relaxed text-ink-soft">
             A private place for the things your sleeping mind invents.
           </p>
 
-          <Link
-            href="/login"
-            className="mt-8 inline-flex items-center gap-2 rounded-full
-                       bg-purple px-6 py-3
-                       font-base text-sm text-white
-                       transition hover:bg-purple-dark"
-          >
+          <Button href="/login" className="mt-8">
             Enter the archive
             <MoveRight color="white" size={16} />
-          </Link>
+          </Button>
         </div>
       </section>
     </main>

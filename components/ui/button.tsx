@@ -12,7 +12,10 @@ type ButtonBaseProps = {
 };
 
 type NativeButtonProps = ButtonBaseProps &
-  Omit<ComponentProps<"button">, "children" | "className">;
+  Omit<ComponentProps<"button">, "children" | "className"> & {
+    loading?: boolean;
+    loadingLabel?: ReactNode;
+  };
 
 type LinkButtonProps = ButtonBaseProps & {
   href: string;
@@ -22,10 +25,12 @@ type LinkButtonProps = ButtonBaseProps & {
 type ButtonProps = NativeButtonProps | LinkButtonProps;
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: "bg-purple text-white hover:bg-purple-dark",
-  secondary: "border border-lavender-dark text-purple hover:bg-lavender-light",
-  danger: "border border-danger text-danger hover:bg-danger-light",
-  ghost: "text-ink-soft hover:bg-lavender-light hover:text-purple",
+  primary: "bg-purple text-white not-disabled:hover:bg-purple-dark",
+  secondary:
+    "border border-lavender-dark text-purple not-disabled:hover:bg-lavender-light",
+  danger: "border border-danger text-danger not-disabled:hover:bg-danger-light",
+  ghost:
+    "text-ink-soft not-disabled:hover:bg-lavender-light not-disabled:hover:text-purple",
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -57,13 +62,21 @@ export function Button(props: ButtonProps) {
     className = "",
     size = "md",
     variant = "primary",
+    loading = false,
+    loadingLabel = "Please wait...",
+    disabled,
     ...buttonProps
   } = props;
   const classes = getButtonClasses(variant, size, className);
 
   return (
-    <button className={classes} {...buttonProps}>
-      {children}
+    <button
+      {...buttonProps}
+      className={classes}
+      disabled={disabled || loading}
+      aria-busy={loading || buttonProps["aria-busy"]}
+    >
+      {loading ? loadingLabel : children}
     </button>
   );
 }
@@ -73,7 +86,7 @@ function getButtonClasses(
   size: ButtonSize,
   className: string,
 ) {
-  return `inline-flex items-center justify-center gap-2 rounded-full font-base font-bold transition cursor-pointer ${
+  return `control-interaction inline-flex items-center justify-center gap-2 rounded-full font-base font-bold ${
     variant === "danger"
       ? "focus-visible:outline-danger"
       : "focus-visible:outline-purple"

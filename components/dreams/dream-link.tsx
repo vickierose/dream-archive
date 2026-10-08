@@ -12,7 +12,7 @@ type DreamLinkProps = {
 export function DreamLink({ dream, sharedSymbols = [] }: DreamLinkProps) {
   return (
     <Link
-      className="flex items-center gap-4 border-b border-line px-5 py-4 transition last:border-b-0 hover:bg-lavender-pale"
+      className="focus-ring flex items-center gap-4 border-b border-line px-5 py-4 transition-colors duration-200 motion-reduce:transition-none focus-visible:-outline-offset-2 last:border-b-0 hover:bg-lavender-pale"
       href={`/dreams/${dream.id}`}
     >
       <div className="min-w-0 flex-1">

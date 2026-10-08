@@ -33,7 +33,13 @@ function pickRandom<T>(options: readonly T[]): T {
   return options[Math.floor(Math.random() * options.length)];
 }
 
-export function TapedCard({ children, href, label, className = "", size = "normal" }: TapedCardProps) {
+export function TapedCard({
+  children,
+  href,
+  label,
+  className = "",
+  size = "normal",
+}: TapedCardProps) {
   const cardPalette = pickRandom(cardPalettes);
   const tapeColor = pickRandom(tapeColors);
   const tapePosition = pickRandom(tapePositions);
@@ -42,10 +48,10 @@ export function TapedCard({ children, href, label, className = "", size = "norma
   return (
     <Link
       aria-label={label}
-      className={`group relative rounded-sm border
+      className={`group relative rounded-paper border
         shadow-paper transition duration-200
         hover:-translate-y-1 hover:shadow-paper-raised
-        focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple
+        focus-ring
         motion-reduce:transform-none motion-reduce:transition-none ${cardPalette} ${cardSizes[size]} ${className}`}
       href={href}
     >

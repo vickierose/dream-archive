@@ -1,3 +1,4 @@
+import { PageHeader } from "@/components/layout/page-header";
 import Link from "next/link";
 import { AuthForm } from "@/components/auth/auth-form";
 import { SocialLogin } from "@/components/auth/social-login";
@@ -5,23 +6,18 @@ import { SocialLogin } from "@/components/auth/social-login";
 export default function SignupPage() {
   return (
     <div className="w-full max-w-md">
-      <h1 className="mt-1 font-handwritten text-5xl text-ink">
-        Create an account
-      </h1>
-      <p className="mt-4 max-w-xs font-base text-sm text-ink-soft">
-        Start keeping the dreams you want to remember.
-      </p>
+      <PageHeader
+        title="Create an account"
+        description="Start keeping the dreams you want to remember."
+      />
 
       <AuthForm mode="signup" />
 
       <SocialLogin />
 
-      <p className="mt-7 text-center font-base text-sm text-ink-soft">
+      <p className="mt-6 text-center font-base text-sm text-ink-soft">
         Already have an account?{" "}
-        <Link
-          className="font-semibold text-purple hover:text-purple-dark"
-          href="/login"
-        >
+        <Link className="text-link font-semibold" href="/login">
           Log in
         </Link>
       </p>

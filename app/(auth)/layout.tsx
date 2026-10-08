@@ -11,7 +11,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       >
         <Link
           href="/"
-          className="absolute left-8 top-6 flex items-center gap-1 font-handwritten text-xl text-white"
+          className="focus-ring absolute left-8 top-6 flex items-center gap-1 font-handwritten text-xl text-white"
         >
           <MoonStar aria-hidden="true" size={20} />
           Dream Archive

@@ -1,4 +1,5 @@
 import { TapedCard } from "@/components/ui/taped-card";
+import { Heading } from "@/components/ui/heading";
 import type { Symbol } from "@/types/symbol";
 
 type SymbolCardProps = {
@@ -19,9 +20,9 @@ export function SymbolCard({ symbol, dreamCount }: SymbolCardProps) {
       <span aria-hidden="true" className="text-4xl leading-none">
         {symbol.emoji}
       </span>
-      <h2 className="mt-4 font-handwritten text-2xl leading-tight text-ink">
+      <Heading as="h2" size="subsection" className="mt-4">
         {symbol.name}
-      </h2>
+      </Heading>
       <p className="mt-1 font-base text-sm text-ink-soft">{countLabel}</p>
     </TapedCard>
   );

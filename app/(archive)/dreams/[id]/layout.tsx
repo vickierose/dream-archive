@@ -1,3 +1,5 @@
+import { FormActions } from "@/components/ui/form-actions";
+import { Panel } from "@/components/ui/panel";
 import { formatDreamDate } from "@/lib/date";
 import { Pencil } from "lucide-react";
 import { DeleteDreamButton } from "@/components/dreams/delete-dream-button";
@@ -53,13 +55,15 @@ export default async function DreamLayout({
   return (
     <>
       <div className="mx-auto max-w-3xl">
-        <BackButton />
+        <div className="mb-4">
+          <BackButton />
+        </div>
         <PageHeader
           title={dream.title}
           description={formatDreamDate(dream.date)}
         />
 
-        <article className="relative mt-6 border border-paper-dark bg-paper p-6 shadow-paper sm:p-8">
+        <article className="relative border border-paper-dark bg-paper p-6 shadow-paper sm:p-8">
           <Chip className="w-fit absolute -top-2 left-6">{dream.mood}</Chip>
           <span
             aria-hidden="true"
@@ -72,7 +76,7 @@ export default async function DreamLayout({
 
         <section className="mt-8" aria-labelledby="symbols-heading">
           <SectionHeading id="symbols-heading" title="Symbols" />
-          <ul className="mt-3 flex flex-wrap gap-4">
+          <ul className="mt-4 flex flex-wrap gap-4">
             {dreamSymbols.map((symbol) => (
               <li
                 className="w-16 text-center flex flex-col items-center"
@@ -95,7 +99,7 @@ export default async function DreamLayout({
             id="connections-heading"
             title="Dream connections"
           />
-          <div className="mt-3 overflow-hidden rounded-xl border border-line bg-paper-light">
+          <Panel padding="none" className="mt-4">
             {connectedDreams.length > 0 ? (
               connectedDreams.map(
                 ({ dream: connectedDream, sharedSymbols }) => (
@@ -107,14 +111,14 @@ export default async function DreamLayout({
                 ),
               )
             ) : (
-              <p className="px-5 py-4 font-base text-sm text-ink-soft">
+              <p className="p-6 text-sm leading-relaxed text-ink-soft">
                 No shared symbols yet.
               </p>
             )}
-          </div>
+          </Panel>
         </section>
 
-        <div className="mt-7 flex justify-end gap-3">
+        <FormActions className="mt-8">
           <Button
             href={`/dreams/${dream.id}/edit`}
             size="sm"
@@ -124,7 +128,7 @@ export default async function DreamLayout({
             Edit
           </Button>
           <DeleteDreamButton dreamId={dream.id} />
-        </div>
+        </FormActions>
       </div>
       {children}
     </>

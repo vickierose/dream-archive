@@ -1,5 +1,8 @@
 "use client";
 
+import { FormActions } from "@/components/ui/form-actions";
+import { Dialog } from "@/components/ui/dialog";
+import { Feedback } from "@/components/ui/feedback";
 import { useEffect, useId, useRef, useState, type Ref } from "react";
 import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
@@ -12,7 +15,11 @@ import type { Symbol } from "@/types/symbol";
 
 const EmojiPicker = dynamic(() => import("@/components/ui/emoji-picker"), {
   ssr: false,
-  loading: () => <p className="p-4 text-sm text-ink-soft">Loading emojis...</p>,
+  loading: () => (
+    <Feedback tone="notice" className="p-4">
+      Loading emojis...
+    </Feedback>
+  ),
 });
 
 type DreamSymbolsProps = {
@@ -81,15 +88,15 @@ export function DreamSymbols({
           type="button"
           onBlur={onBlur}
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft transition hover:border-lavender-dark hover:text-purple cursor-pointer"
+          className="control-interaction inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft not-disabled:hover:border-lavender-dark not-disabled:hover:text-purple"
         >
           <Plus aria-hidden="true" size={16} /> Add symbol
         </button>
       </div>
       {loadError && (
-        <p role="alert" className="mt-2 text-sm text-danger">
+        <Feedback className="mt-2">
           Could not load symbols. Open Add symbol to retry.
-        </p>
+        </Feedback>
       )}
       {open &&
         createPortal(
@@ -153,7 +160,7 @@ function SymbolSelect({
         }
       }}
     >
-      <div className="flex items-center rounded-xl border border-line bg-paper-light focus-within:border-purple focus-within:ring-1 focus-within:ring-purple">
+      <div className="flex items-center rounded-control border border-line bg-paper-light focus-within:border-lavender-dark focus-within:ring-2 focus-within:ring-lavender-light">
         <input
           ref={inputRef}
           role="combobox"
@@ -166,7 +173,7 @@ function SymbolSelect({
           }
           disabled={disabled}
           autoComplete="off"
-          className="min-w-0 flex-1 rounded-xl bg-transparent px-4 py-3 font-base text-sm text-ink outline-none"
+          className="min-w-0 flex-1 rounded-control bg-transparent px-4 py-3 font-base text-sm text-ink outline-none"
           placeholder={
             loading
               ? "Loading symbols..."
@@ -218,7 +225,7 @@ function SymbolSelect({
             type="button"
             aria-label="Clear selected symbol"
             disabled={disabled}
-            className="p-2 text-ink-soft hover:text-purple"
+            className="control-interaction rounded-control p-2 text-ink-soft not-disabled:hover:text-purple"
             onClick={() => {
               onChange("");
               setQuery("");
@@ -233,7 +240,7 @@ function SymbolSelect({
           type="button"
           aria-label="Toggle symbol options"
           disabled={disabled}
-          className="p-3 text-ink-soft"
+          className="control-interaction rounded-control p-3 text-ink-soft not-disabled:hover:text-purple"
           onClick={() => {
             setOpen(!open);
             inputRef.current?.focus();
@@ -243,7 +250,7 @@ function SymbolSelect({
         </button>
       </div>
       {open && !disabled && (
-        <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-44 overflow-y-auto rounded-xl border border-line bg-paper-light py-1 shadow-lg">
+        <div className="absolute left-0 right-0 top-full z-20 mt-1 max-h-44 overflow-y-auto rounded-panel border border-line bg-paper-light py-1 shadow-popover">
           <ul
             id={`${id}-options`}
             role="listbox"
@@ -351,10 +358,11 @@ function SymbolPopup({
   }
 
   return (
-    <dialog
+    <Dialog
       ref={dialogRef}
-      aria-labelledby={`${id}-title`}
-      className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-lg overflow-visible rounded-2xl border border-line bg-paper-light p-6 text-ink shadow-xl backdrop:bg-ink/40 sm:p-8"
+      titleId={`${id}-title`}
+      title="Add symbol"
+      overflow="visible"
       onCancel={(event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -362,19 +370,15 @@ function SymbolPopup({
       }}
     >
       <form
+        className="space-y-6"
         onSubmit={(event) => {
           event.preventDefault();
           event.stopPropagation();
           void add();
         }}
       >
-        <h2 id={`${id}-title`} className="font-handwritten text-3xl">
-          Add symbol
-        </h2>
-        <fieldset disabled={saving || loading} className="mt-5">
-          <legend className="font-base text-sm font-bold">
-            Choose an existing symbol
-          </legend>
+        <fieldset disabled={saving || loading}>
+          <legend className="field-label">Choose an existing symbol</legend>
           <SymbolSelect
             id={id}
             symbols={symbols}
@@ -390,18 +394,16 @@ function SymbolPopup({
         </fieldset>
         <fieldset
           disabled={!!selectedId || saving}
-          className="mt-6 border-t border-line pt-4 disabled:opacity-50"
+          className="border-t border-line pt-6 disabled:opacity-50"
         >
-          <legend className="font-base text-sm font-bold">
-            Create a new symbol
-          </legend>
+          <legend className="field-label">Create a new symbol</legend>
           <div className="relative flex items-center gap-3">
             <button
               type="button"
               aria-label={emoji ? "Change emoji" : "Choose emoji"}
               aria-expanded={showEmojis}
               aria-controls={`${id}-emoji-picker`}
-              className="mt-2 grid size-11 shrink-0 place-items-center rounded-xl border border-line bg-paper-light text-purple transition hover:bg-lavender-light focus-visible:outline-2 focus-visible:outline-purple disabled:opacity-50"
+              className="control-interaction mt-2 grid size-11 shrink-0 place-items-center rounded-control border border-line bg-paper-light text-purple not-disabled:hover:bg-lavender-light"
               onClick={() => setShowEmojis(!showEmojis)}
             >
               {emoji ? (
@@ -424,7 +426,7 @@ function SymbolPopup({
             {showEmojis && !selectedId && (
               <div
                 id={`${id}-emoji-picker`}
-                className="absolute bottom-full left-0 z-30 mb-2 w-80 max-w-full rounded-xl bg-paper-light shadow-xl"
+                className="absolute bottom-full left-0 z-30 mb-2 w-80 max-w-full rounded-panel bg-paper-light shadow-popover"
                 inert={saving}
                 onKeyDown={(event) => {
                   if (event.key === "Escape") {
@@ -444,12 +446,8 @@ function SymbolPopup({
             )}
           </div>
         </fieldset>
-        {error && (
-          <p role="alert" className="mt-4 font-base text-sm text-danger">
-            {error}
-          </p>
-        )}
-        <div className="mt-6 flex justify-end gap-3">
+        {error && <Feedback>{error}</Feedback>}
+        <FormActions>
           <Button
             type="button"
             variant="secondary"
@@ -460,12 +458,14 @@ function SymbolPopup({
           </Button>
           <Button
             type="submit"
-            disabled={saving || (!selectedId && (!name.trim() || !emoji))}
+            disabled={!selectedId && (!name.trim() || !emoji)}
+            loading={saving}
+            loadingLabel="Adding..."
           >
-            {saving ? "Adding..." : "Add"}
+            Add
           </Button>
-        </div>
+        </FormActions>
       </form>
-    </dialog>
+    </Dialog>
   );
 }

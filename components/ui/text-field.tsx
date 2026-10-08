@@ -5,19 +5,20 @@ type SharedProps = Omit<FormFieldProps, "children" | "className"> & {
   wrapperClassName?: string;
 };
 
-type TextFieldProps = SharedProps & (
-  | (Omit<ComponentProps<"input">, keyof SharedProps | "children"> & {
-      as?: "input";
-      leadingIcon?: ReactNode;
-    })
-  | (Omit<ComponentProps<"textarea">, keyof SharedProps | "children"> & {
-      as: "textarea";
-      leadingIcon?: never;
-    })
-);
+type TextFieldProps = SharedProps &
+  (
+    | (Omit<ComponentProps<"input">, keyof SharedProps | "children"> & {
+        as?: "input";
+        leadingIcon?: ReactNode;
+      })
+    | (Omit<ComponentProps<"textarea">, keyof SharedProps | "children"> & {
+        as: "textarea";
+        leadingIcon?: never;
+      })
+  );
 
 const controlClasses =
-  "w-full rounded-xl border border-line bg-paper-light py-3 font-base text-sm text-ink outline-none transition placeholder:text-ink-muted focus:border-lavender-dark focus:ring-2 focus:ring-lavender-light aria-invalid:border-danger aria-invalid:focus:border-danger disabled:cursor-not-allowed disabled:opacity-50";
+  "w-full rounded-control border border-line bg-paper-light py-3 font-base text-sm text-ink outline-none transition-colors duration-200 motion-reduce:transition-none placeholder:text-ink-muted focus:border-lavender-dark focus:ring-2 focus:ring-lavender-light aria-invalid:border-danger aria-invalid:focus:border-danger disabled:cursor-not-allowed disabled:opacity-50";
 
 export function TextField({
   id,

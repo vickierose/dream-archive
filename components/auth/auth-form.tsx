@@ -1,5 +1,6 @@
 "use client";
 
+import { Feedback } from "@/components/ui/feedback";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -73,7 +74,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <form
-      className="mt-8 space-y-5"
+      className="space-y-6"
       noValidate
       onSubmit={handleSubmit(handleAuthSubmit)}
     >
@@ -97,26 +98,14 @@ export function AuthForm({ mode }: AuthFormProps) {
       />
 
       {!isSignup && (
-        <Link href="/forgot-password" className="block text-sm text-purple">
+        <Link href="/forgot-password" className="text-link block text-sm">
           Forgot password?
         </Link>
       )}
-      {submitError && (
-        <p role="alert" className="font-base text-sm text-danger">
-          {submitError}
-        </p>
-      )}
-      {notice && (
-        <p role="status" className="font-base text-sm text-ink-soft">
-          {notice}
-        </p>
-      )}
-      <Button
-        className="w-full disabled:opacity-60"
-        type="submit"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Please wait..." : submitLabel}
+      {submitError && <Feedback>{submitError}</Feedback>}
+      {notice && <Feedback tone="notice">{notice}</Feedback>}
+      <Button className="w-full" type="submit" loading={isSubmitting}>
+        {submitLabel}
       </Button>
     </form>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { Dialog } from "@/components/ui/dialog";
+import { Feedback } from "@/components/ui/feedback";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DreamForm } from "@/components/dreams/dream-form";
@@ -20,7 +22,8 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
   }, []);
 
   function dismiss() {
-    if (!savingRef.current) router.replace(`/dreams/${dream.id}`, { scroll: false });
+    if (!savingRef.current)
+      router.replace(`/dreams/${dream.id}`, { scroll: false });
   }
 
   async function save(values: DreamFormValues) {
@@ -41,28 +44,34 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
   }
 
   return (
-    <dialog
+    <Dialog
       ref={dialogRef}
-      aria-labelledby="edit-dream-title"
-      className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-3xl overflow-y-auto rounded-2xl border border-line bg-paper-light p-6 text-ink shadow-xl backdrop:bg-ink/40 backdrop:backdrop-blur-sm sm:p-8"
-      onCancel={(event) => { event.preventDefault(); dismiss(); }}
+      titleId="edit-dream-title"
+      title="Edit dream"
+      size="lg"
+      onCancel={(event) => {
+        event.preventDefault();
+        dismiss();
+      }}
       onClick={(event) => {
         if (event.target !== event.currentTarget) return;
         const bounds = event.currentTarget.getBoundingClientRect();
-        if (event.clientX < bounds.left || event.clientX > bounds.right ||
-            event.clientY < bounds.top || event.clientY > bounds.bottom) dismiss();
+        if (
+          event.clientX < bounds.left ||
+          event.clientX > bounds.right ||
+          event.clientY < bounds.top ||
+          event.clientY > bounds.bottom
+        )
+          dismiss();
       }}
     >
-      <h2 id="edit-dream-title" className="font-handwritten text-4xl leading-none sm:text-5xl">
-        Edit dream
-      </h2>
-      {error && <p role="alert" className="mt-4 font-base text-sm text-danger">{error}</p>}
+      {error && <Feedback>{error}</Feedback>}
       <DreamForm
         defaultValues={dream}
         onSubmit={save}
         onCancel={dismiss}
         submitLabel="Save"
       />
-    </dialog>
+    </Dialog>
   );
 }

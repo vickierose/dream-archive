@@ -19,7 +19,7 @@ export default async function SymbolsPage() {
           description="Create one while recording a dream."
         />
       ) : (
-        <div className="mt-5 grid grid-cols-[repeat(auto-fill,minmax(0,10rem))] gap-x-5 gap-y-8 sm:gap-x-6">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(0,10rem))] gap-x-6 gap-y-8">
           {availableSymbols.map((symbol) => (
             <SymbolCard
               key={symbol.id}

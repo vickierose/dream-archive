@@ -1,5 +1,8 @@
 "use client";
 
+import { FormActions } from "@/components/ui/form-actions";
+import { Dialog } from "@/components/ui/dialog";
+import { Feedback } from "@/components/ui/feedback";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
@@ -51,26 +54,39 @@ export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
         <Trash2 aria-hidden="true" size={15} />
         Delete
       </Button>
-      <dialog
+      <Dialog
         ref={dialogRef}
-        aria-labelledby="delete-dream-title"
+        titleId="delete-dream-title"
+        title="Are you sure you want to delete this dream?"
+        size="sm"
         aria-busy={isDeleting}
-        className="fixed inset-0 m-auto max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl border border-line bg-paper-light p-6 text-ink shadow-xl backdrop:bg-ink/40 backdrop:backdrop-blur-sm sm:p-8"
-        onCancel={(event) => { event.preventDefault(); close(); }}
+        onCancel={(event) => {
+          event.preventDefault();
+          close();
+        }}
       >
-        <h2 id="delete-dream-title" className="font-base text-lg font-bold">
-          Are you sure you want to delete this dream?
-        </h2>
-        {error && <p role="alert" className="mt-4 font-base text-sm text-danger">{error}</p>}
-        <div className="mt-6 flex justify-end gap-3">
-          <Button type="button" variant="danger" onClick={confirmDelete} disabled={isDeleting}>
+        {error && <Feedback>{error}</Feedback>}
+        <FormActions>
+          <Button
+            type="button"
+            variant="danger"
+            onClick={confirmDelete}
+            loading={isDeleting}
+            loadingLabel="Deleting..."
+          >
             Yes
           </Button>
-          <Button ref={noButtonRef} type="button" variant="secondary" onClick={close} disabled={isDeleting}>
+          <Button
+            ref={noButtonRef}
+            type="button"
+            variant="secondary"
+            onClick={close}
+            disabled={isDeleting}
+          >
             No
           </Button>
-        </div>
-      </dialog>
+        </FormActions>
+      </Dialog>
     </>
   );
 }

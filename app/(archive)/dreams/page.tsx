@@ -26,7 +26,7 @@ export default async function DreamsPage() {
           description="Record your first dream to begin."
         />
       ) : (
-        <div className="mt-5 grid max-w-2xl gap-6 sm:grid-cols-2">
+        <div className="grid max-w-2xl gap-6 sm:grid-cols-2">
           {archiveDreams.map((dream) => (
             <DreamCard
               availableSymbols={availableSymbols}

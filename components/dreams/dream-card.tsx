@@ -2,6 +2,7 @@ import { formatDreamDate } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
 import { TapedCard } from "@/components/ui/taped-card";
 import { Chip } from "@/components/ui/chip";
+import { Heading } from "@/components/ui/heading";
 import type { Dream } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
 
@@ -25,9 +26,9 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
       href={`/dreams/${dream.id}`}
     >
       <section>
-        <h2 className="pr-3 font-handwritten text-2xl leading-none text-ink">
+        <Heading as="h2" size="subsection" className="pr-3">
           {dream.title}
-        </h2>
+        </Heading>
         <p className="mt-3 flex items-center gap-1.5 font-base text-xs font-semibold text-ink-soft">
           <CalendarDays aria-hidden="true" size={14} />
           {formatDreamDate(dream.date)}
@@ -50,9 +51,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
           ))}
         </div>
 
-        <Chip className="mt-6">
-          {dream.mood}
-        </Chip>
+        <Chip className="mt-6">{dream.mood}</Chip>
       </section>
     </TapedCard>
   );

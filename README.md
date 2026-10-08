@@ -2,8 +2,8 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-See [Neon setup](NEON_SETUP.md) for environment variables, authentication settings,
-and authentication testing. See [Database design](DATABASE.md) for migrations,
+See [Neon setup](docs/NEON_SETUP.md) for environment variables, authentication settings,
+and authentication testing. See [Database design](docs/DATABASE.md) for migrations,
 ownership rules, and the archive data-access layer.
 
 First, run the development server:

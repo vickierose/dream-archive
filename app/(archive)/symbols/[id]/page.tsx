@@ -1,3 +1,4 @@
+import { Panel } from "@/components/ui/panel";
 import Link from "next/link";
 import { BackButton } from "@/components/ui/back-button";
 import { Chip } from "@/components/ui/chip";
@@ -35,11 +36,13 @@ export default async function SymbolPage({
     .filter(({ count }) => count > 0)
     .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
   const symbolLinkClasses =
-    "rounded-full transition hover:opacity-75 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple";
+    "focus-ring inline-flex rounded-full transition-opacity duration-200 hover:opacity-75 motion-reduce:transition-none";
 
   return (
     <div className="relative mx-auto max-w-3xl pb-28">
-      <BackButton fallbackHref="/symbols" />
+      <div className="mb-4">
+        <BackButton fallbackHref="/symbols" />
+      </div>
       <PageHeader
         title={symbol.name}
         description={`Appeared in ${dreams.length} ${dreams.length === 1 ? "dream" : "dreams"}`}
@@ -52,13 +55,13 @@ export default async function SymbolPage({
           </span>
         }
       />
-      <section className="mt-10" aria-labelledby="frequent-symbols-heading">
+      <section aria-labelledby="frequent-symbols-heading">
         <SectionHeading
           id="frequent-symbols-heading"
           title="Often appears with"
         />
         {frequentSymbols.length > 0 ? (
-          <ul className="mt-3 flex flex-wrap gap-3">
+          <ul className="mt-4 flex flex-wrap gap-3">
             {frequentSymbols.map((otherSymbol) => (
               <li key={otherSymbol.id}>
                 <Link
@@ -73,7 +76,7 @@ export default async function SymbolPage({
             ))}
           </ul>
         ) : (
-          <p className="mt-3 font-base text-sm text-ink-soft">
+          <p className="mt-4 font-base text-sm text-ink-soft">
             No symbols have appeared alongside this one yet.
           </p>
         )}
@@ -81,7 +84,7 @@ export default async function SymbolPage({
 
       <section className="mt-8" aria-labelledby="symbol-dreams-heading">
         <SectionHeading id="symbol-dreams-heading" title="Dreams" />
-        <div className="mt-3 overflow-hidden rounded-xl border border-line bg-paper-light">
+        <Panel padding="none" className="mt-4">
           {dreams.length > 0 ? (
             dreams.map((dream) => (
               <DreamLink
@@ -91,11 +94,11 @@ export default async function SymbolPage({
               />
             ))
           ) : (
-            <p className="font-base text-sm text-ink-soft">
+            <p className="p-6 text-sm leading-relaxed text-ink-soft">
               This symbol hasn’t appeared in a dream yet.
             </p>
           )}
-        </div>
+        </Panel>
       </section>
     </div>
   );

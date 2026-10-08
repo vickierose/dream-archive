@@ -17,10 +17,10 @@ export function SelectableButton({
   return (
     <button
       aria-pressed={isSelected}
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-3 font-base text-sm font-semibold transition cursor-pointer ${
+      className={`control-interaction inline-flex items-center gap-2 rounded-full border px-4 py-3 font-base text-sm font-semibold ${
         isSelected
           ? "border-lavender-dark bg-lavender-light text-purple"
-          : "border-line bg-paper-light text-ink-soft hover:border-lavender"
+          : "border-line bg-paper-light text-ink-soft not-disabled:hover:border-lavender"
       } ${className}`}
       type="button"
       {...props}

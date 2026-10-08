@@ -1,5 +1,6 @@
 "use client";
 
+import { Feedback } from "@/components/ui/feedback";
 import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
@@ -39,16 +40,13 @@ export function SocialLogin() {
       <Button
         variant="secondary"
         className="w-full"
-        disabled={pending}
+        loading={pending}
+        loadingLabel="Connecting..."
         onClick={handleGoogleLogin}
       >
-        {pending ? "Connecting..." : "Continue with Google"}
+        Continue with Google
       </Button>
-      {error && (
-        <p role="alert" className="mt-3 text-sm text-danger">
-          {error}
-        </p>
-      )}
+      {error && <Feedback className="mt-4">{error}</Feedback>}
     </>
   );
 }
