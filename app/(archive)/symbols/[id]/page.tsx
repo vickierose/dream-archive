@@ -4,6 +4,8 @@ import { Chip } from "@/components/ui/chip";
 import { DreamLink } from "@/components/dreams/dream-link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getArchive } from "@/lib/data/archive";
+import { PageHeader } from "@/components/layout/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default async function SymbolPage({
   params,
@@ -15,10 +17,10 @@ export default async function SymbolPage({
 
   if (!symbol) {
     return (
-      <div className="mx-auto max-w-3xl">
-        <BackButton fallbackHref="/symbols" />
-        <SectionHeading as="h1" className="mt-6" title="Symbol not found" />
-      </div>
+      <EmptyState
+        title="Symbol not found"
+        action={<BackButton fallbackHref="/symbols" label="Back to symbols" />}
+      />
     );
   }
 
@@ -38,18 +40,18 @@ export default async function SymbolPage({
   return (
     <div className="relative mx-auto max-w-3xl pb-28">
       <BackButton fallbackHref="/symbols" />
-
-      <header className="mt-6 flex items-start gap-4">
-        <span aria-hidden="true" className="text-4xl leading-none sm:text-5xl">
-          {symbol.emoji}
-        </span>
-        <SectionHeading
-          as="h1"
-          title={symbol.name}
-          description={`Appeared in ${dreams.length} ${dreams.length === 1 ? "dream" : "dreams"}`}
-        />
-      </header>
-
+      <PageHeader
+        title={symbol.name}
+        description={`Appeared in ${dreams.length} ${dreams.length === 1 ? "dream" : "dreams"}`}
+        prefix={
+          <span
+            aria-hidden="true"
+            className="text-6xl leading-none sm:text-6xl"
+          >
+            {symbol.emoji}
+          </span>
+        }
+      />
       <section className="mt-10" aria-labelledby="frequent-symbols-heading">
         <SectionHeading
           id="frequent-symbols-heading"

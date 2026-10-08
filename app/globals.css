@@ -18,6 +18,11 @@
   --color-paper: #f7f0e7;
   --color-paper-light: #fcf8f2;
   --color-paper-dark: #ebe0d2;
+  --color-paper-border: #eadbcc;
+  --color-paper-lilac: #f3edf5;
+  --color-paper-lilac-border: #d9cce1;
+  --color-paper-rose: #fcf0f1;
+  --color-paper-rose-border: #ecd2d8;
 
   /* Ink */
   --color-ink: #443653;
@@ -37,6 +42,9 @@
   /* Borders & decoration */
   --color-line: #d9ccdc;
   --color-tape: #d8c6df;
+  --color-tape-gold: #f6deb3;
+  --color-tape-rose: #e8bbc7;
+  --color-chip: #ead9df;
 
   /* Night */
   --color-night: #29233d;
@@ -44,6 +52,11 @@
 
   /* Feedback */
   --color-danger: #b87582;
+  --color-danger-light: #f8e7ea;
+
+  /* Paper elevation */
+  --shadow-paper: 0 5px 12px rgba(68, 54, 83, 0.08);
+  --shadow-paper-raised: 0 10px 20px rgba(68, 54, 83, 0.14);
 }
 
 @media (prefers-color-scheme: dark) {

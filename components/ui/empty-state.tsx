@@ -1,11 +1,13 @@
 import { MoonStar } from "lucide-react";
+import { ReactNode } from "react";
 
 type EmptyStateProps = {
   title: string;
   description?: string;
+  action?: ReactNode;
 };
 
-export function EmptyState({ title, description }: EmptyStateProps) {
+export function EmptyState({ title, description, action }: EmptyStateProps) {
   return (
     <div className="flex min-h-[50dvh] flex-col items-center justify-center gap-3 px-4 py-12 text-center font-base">
       <MoonStar aria-hidden="true" size={32} className="text-ink" />
@@ -15,6 +17,7 @@ export function EmptyState({ title, description }: EmptyStateProps) {
           {description}
         </p>
       )}
+      {action}
     </div>
   );
 }

@@ -25,7 +25,7 @@ export function BackButton({
 
   return (
     <button
-      className="inline-flex items-center gap-1.5 font-base text-sm font-bold text-ink-soft transition hover:text-purple focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple"
+      className="inline-flex items-center gap-1.5 font-base text-sm font-bold text-ink-soft transition hover:text-purple cursor-pointer"
       onClick={goBack}
       type="button"
     >

@@ -27,7 +27,6 @@ export function Sidebar() {
         setSigningOut(false);
         return;
       }
-      // A full navigation also discards cached private page content.
       window.location.replace("/login");
     } catch {
       setError("Could not log out. Please try again.");
@@ -38,10 +37,10 @@ export function Sidebar() {
   return (
     <aside className="flex h-full w-56 shrink-0 flex-col overflow-hidden border-r border-line bg-lavender-pale px-4 py-6">
       <Link
-        className="flex items-center gap-2 px-3 font-handwritten font-medium text-xl text-ink "
+        className="flex items-center gap-2 px-3 font-handwritten font-medium text-2xl text-ink"
         href="/dreams"
       >
-        <MoonStar aria-hidden="true" className="text-purple" size={20} />
+        <MoonStar aria-hidden="true" className="text-purple" size={24} />
         Dream Archive
       </Link>
 
@@ -67,7 +66,7 @@ export function Sidebar() {
       </nav>
 
       <button
-        className="mt-auto flex items-center gap-3 rounded-lg px-3 py-2.5 font-base text-sm text-ink-soft transition hover:bg-lavender-pale hover:text-ink"
+        className="mt-auto flex items-center gap-3 rounded-lg px-3 py-2.5 font-base text-sm text-ink-soft transition hover:bg-lavender-pale hover:text-ink cursor-pointer"
         type="button"
         disabled={signingOut}
         onClick={handleLogout}

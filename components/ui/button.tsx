@@ -24,7 +24,7 @@ type ButtonProps = NativeButtonProps | LinkButtonProps;
 const variantClasses: Record<ButtonVariant, string> = {
   primary: "bg-purple text-white hover:bg-purple-dark",
   secondary: "border border-lavender-dark text-purple hover:bg-lavender-light",
-  danger: "border border-danger text-danger hover:bg-[#f8e7ea]",
+  danger: "border border-danger text-danger hover:bg-danger-light",
   ghost: "text-ink-soft hover:bg-lavender-light hover:text-purple",
 };
 
@@ -73,7 +73,7 @@ function getButtonClasses(
   size: ButtonSize,
   className: string,
 ) {
-  return `inline-flex items-center justify-center gap-2 rounded-full font-base font-bold transition focus-visible:outline-2 focus-visible:outline-offset-4 ${
+  return `inline-flex items-center justify-center gap-2 rounded-full font-base font-bold transition cursor-pointer ${
     variant === "danger"
       ? "focus-visible:outline-danger"
       : "focus-visible:outline-purple"

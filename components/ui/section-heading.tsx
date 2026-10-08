@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 type HeadingElement = "h1" | "h2" | "h3";
 
 type SectionHeadingProps = {
-  action?: ReactNode;
   as?: HeadingElement;
   className?: string;
   description?: ReactNode;
@@ -18,7 +17,6 @@ const headingClasses: Record<HeadingElement, string> = {
 };
 
 export function SectionHeading({
-  action,
   as: Heading = "h2",
   className = "",
   description,
@@ -28,14 +26,16 @@ export function SectionHeading({
   return (
     <div className={`flex items-end justify-between gap-4 ${className}`}>
       <div>
-        <Heading className={`font-handwritten text-ink ${headingClasses[Heading]}`} id={id}>
+        <Heading
+          className={`font-handwritten text-ink ${headingClasses[Heading]}`}
+          id={id}
+        >
           {title}
         </Heading>
         {description && (
           <p className="mt-1 font-base text-sm text-ink-soft">{description}</p>
         )}
       </div>
-      {action}
     </div>
   );
 }

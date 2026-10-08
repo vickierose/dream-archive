@@ -20,12 +20,12 @@ const tapeSizes = {
 } as const;
 
 const cardPalettes = [
-  "border-[#eadbcc] bg-paper-light",
-  "border-[#d9cce1] bg-[#f3edf5]",
-  "border-[#ecd2d8] bg-[#fcf0f1]",
+  "border-paper-border bg-paper-light",
+  "border-paper-lilac-border bg-paper-lilac",
+  "border-paper-rose-border bg-paper-rose",
 ] as const;
 
-const tapeColors = ["bg-[#f6deb3]", "bg-tape", "bg-[#e8bbc7]"] as const;
+const tapeColors = ["bg-tape-gold", "bg-tape", "bg-tape-rose"] as const;
 const tapePositions = ["left-[26%]", "left-1/2", "left-[74%]"] as const;
 const tapeRotations = ["-rotate-3", "rotate-3"] as const;
 
@@ -43,8 +43,8 @@ export function TapedCard({ children, href, label, className = "", size = "norma
     <Link
       aria-label={label}
       className={`group relative rounded-sm border
-        shadow-[0_5px_12px_rgba(68,54,83,0.08)] transition duration-200
-        hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(68,54,83,0.14)]
+        shadow-paper transition duration-200
+        hover:-translate-y-1 hover:shadow-paper-raised
         focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-purple
         motion-reduce:transform-none motion-reduce:transition-none ${cardPalette} ${cardSizes[size]} ${className}`}
       href={href}

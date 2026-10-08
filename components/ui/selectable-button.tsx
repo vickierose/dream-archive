@@ -17,7 +17,7 @@ export function SelectableButton({
   return (
     <button
       aria-pressed={isSelected}
-      className={`inline-flex items-center gap-2 rounded-full border px-4 py-3 font-base text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple ${
+      className={`inline-flex items-center gap-2 rounded-full border px-4 py-3 font-base text-sm font-semibold transition cursor-pointer ${
         isSelected
           ? "border-lavender-dark bg-lavender-light text-purple"
           : "border-line bg-paper-light text-ink-soft hover:border-lavender"

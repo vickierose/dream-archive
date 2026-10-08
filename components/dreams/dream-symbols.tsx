@@ -81,7 +81,7 @@ export function DreamSymbols({
           type="button"
           onBlur={onBlur}
           onClick={() => setOpen(true)}
-          className="inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft transition hover:border-lavender-dark hover:text-purple focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple"
+          className="inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft transition hover:border-lavender-dark hover:text-purple cursor-pointer"
         >
           <Plus aria-hidden="true" size={16} /> Add symbol
         </button>

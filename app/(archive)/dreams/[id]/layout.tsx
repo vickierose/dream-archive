@@ -7,24 +7,24 @@ import { Chip } from "@/components/ui/chip";
 import { DreamLink } from "@/components/dreams/dream-link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getArchive } from "@/lib/data/archive";
+import { PageHeader } from "@/components/layout/page-header";
+import { EmptyState } from "@/components/ui/empty-state";
 
-export default async function DreamLayout({ params, children }: LayoutProps<"/dreams/[id]">) {
+export default async function DreamLayout({
+  params,
+  children,
+}: LayoutProps<"/dreams/[id]">) {
   const { id } = await params;
-  const { dreams: archiveDreams, symbols: availableSymbols } = await getArchive();
+  const { dreams: archiveDreams, symbols: availableSymbols } =
+    await getArchive();
   const dream = archiveDreams.find((entry) => entry.id === id);
 
   if (!dream) {
     return (
-      <div className="grid min-h-full place-items-center">
-        <div className="text-center">
-          <h1 className="font-handwritten text-5xl text-ink">
-            Dream not found
-          </h1>
-          <div className="mt-5">
-            <BackButton label="Back to dreams" />
-          </div>
-        </div>
-      </div>
+      <EmptyState
+        title="Dream not found"
+        action={<BackButton label="Back to dreams" />}
+      />
     );
   }
 
@@ -54,20 +54,13 @@ export default async function DreamLayout({ params, children }: LayoutProps<"/dr
     <>
       <div className="mx-auto max-w-3xl">
         <BackButton />
+        <PageHeader
+          title={dream.title}
+          description={formatDreamDate(dream.date)}
+        />
 
-        <header className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h1 className="font-handwritten text-4xl leading-none text-ink sm:text-5xl">
-              {dream.title}
-            </h1>
-            <p className="mt-3 font-base text-sm font-semibold text-ink-soft">
-              {formatDreamDate(dream.date)}
-            </p>
-          </div>
-          <Chip className="w-fit">{dream.mood}</Chip>
-        </header>
-
-        <article className="relative mt-6 border border-paper-dark bg-paper p-6 shadow-[0_5px_12px_rgba(68,54,83,0.08)] sm:p-8">
+        <article className="relative mt-6 border border-paper-dark bg-paper p-6 shadow-paper sm:p-8">
+          <Chip className="w-fit absolute -top-2 left-6">{dream.mood}</Chip>
           <span
             aria-hidden="true"
             className="absolute -right-1 top-[-1.1rem] h-9 w-4 rounded-full border-2 border-line bg-transparent"
@@ -122,7 +115,11 @@ export default async function DreamLayout({ params, children }: LayoutProps<"/dr
         </section>
 
         <div className="mt-7 flex justify-end gap-3">
-          <Button href={`/dreams/${dream.id}/edit`} size="sm" variant="secondary">
+          <Button
+            href={`/dreams/${dream.id}/edit`}
+            size="sm"
+            variant="secondary"
+          >
             <Pencil aria-hidden="true" size={15} />
             Edit
           </Button>
