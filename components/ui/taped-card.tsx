@@ -10,7 +10,7 @@ type TapedCardProps = {
 };
 
 const cardSizes = {
-  normal: "min-h-64 p-6 pt-8",
+  normal: "min-h-60 p-6 pt-8",
   sm: "w-full max-w-40 min-h-44 px-3 pb-4 pt-6",
 } as const;
 

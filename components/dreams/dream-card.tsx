@@ -40,7 +40,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
         >
           {dreamSymbols.map((symbol) => (
             <span
-              className="grid size-9 place-items-center rounded-full bg-white/45"
+              className="grid size-9 place-items-center rounded-full border border-line bg-lavender-pale "
               key={symbol.id}
               title={symbol.name}
             >
