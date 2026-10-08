@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 
 export function SocialLogin() {
   const [pending, setPending] = useState(false);

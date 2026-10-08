@@ -1,4 +1,4 @@
-import { TapedCard } from "@/components/taped-card";
+import { TapedCard } from "@/components/ui/taped-card";
 import type { Symbol } from "@/types/symbol";
 
 type SymbolCardProps = {

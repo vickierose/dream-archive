@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { AuthForm } from "@/components/auth-form";
-import { SocialLogin } from "@/components/social-login";
+import { AuthForm } from "@/components/auth/auth-form";
+import { SocialLogin } from "@/components/auth/social-login";
 
 export default function LoginPage() {
   return (

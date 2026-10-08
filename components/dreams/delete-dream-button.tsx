@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { deleteDream } from "@/lib/actions/dream";
 
 export function DeleteDreamButton({ dreamId }: { dreamId: string }) {

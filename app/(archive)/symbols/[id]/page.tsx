@@ -1,15 +1,16 @@
 import Link from "next/link";
-import { BackButton } from "@/components/back-button";
-import { Chip } from "@/components/chip";
-import { DreamLink } from "@/components/dream-link";
-import { SectionHeading } from "@/components/section-heading";
+import { BackButton } from "@/components/ui/back-button";
+import { Chip } from "@/components/ui/chip";
+import { DreamLink } from "@/components/dreams/dream-link";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { getArchive } from "@/lib/data/archive";
 
 export default async function SymbolPage({
   params,
 }: PageProps<"/symbols/[id]">) {
   const { id } = await params;
-  const { dreams: archiveDreams, symbols: availableSymbols } = await getArchive();
+  const { dreams: archiveDreams, symbols: availableSymbols } =
+    await getArchive();
   const symbol = availableSymbols.find((symbol) => symbol.id === id);
 
   if (!symbol) {
@@ -78,7 +79,7 @@ export default async function SymbolPage({
 
       <section className="mt-8" aria-labelledby="symbol-dreams-heading">
         <SectionHeading id="symbol-dreams-heading" title="Dreams" />
-        <div className="mt-3">
+        <div className="mt-3 overflow-hidden rounded-xl border border-line bg-paper-light">
           {dreams.length > 0 ? (
             dreams.map((dream) => (
               <DreamLink

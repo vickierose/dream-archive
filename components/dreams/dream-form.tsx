@@ -4,11 +4,12 @@ import { localToday } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useController, useForm, useWatch } from "react-hook-form";
-import { Button } from "@/components/button";
-import { SelectableButton } from "@/components/selectable-button";
-import { DreamSymbols } from "@/components/dream-symbols";
+import { Button } from "@/components/ui/button";
+import { SelectableButton } from "@/components/ui/selectable-button";
+import { DreamSymbols } from "@/components/dreams/dream-symbols";
 import { Mood } from "@/types/dream";
-import { FormError } from "@/components/form-error";
+import { FormError } from "@/components/ui/form-error";
+import { TextField } from "@/components/ui/text-field";
 import { dreamSchema, type DreamFormValues } from "@/lib/validation/dream";
 type DreamFormProps = {
   defaultValues?: Partial<DreamFormValues>;
@@ -27,71 +28,32 @@ export function DreamForm({ defaultValues, onSubmit, onCancel, submitLabel = "Re
   const plot = useWatch({ control, name: "plot" });
   return (
       <form className="mt-8 space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
-        <div>
-          <label
-            className="font-base text-sm font-bold text-ink"
-            htmlFor="title"
-          >
-            Title
-          </label>
-          <input
-            className="mt-2 w-full rounded-xl border border-line bg-paper-light px-4 py-3 font-base text-sm text-ink outline-none transition placeholder:text-ink-muted focus:border-lavender-dark focus:ring-2 focus:ring-lavender-light"
-            id="title"
-            {...register("title")}
-            aria-invalid={!!errors.title}
-            aria-describedby={errors.title ? "title-error" : undefined}
-            placeholder="A short title for your dream..."
-            type="text"
-          />
-          <FormError id="title-error" message={errors.title?.message} />
-        </div>
-
-        <div>
-          <label
-            className="font-base text-sm font-bold text-ink"
-            htmlFor="date"
-          >
-            Date
-          </label>
-          <div className="relative mt-2">
-            <CalendarDays
-              aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lavender-dark"
-              size={17}
-            />
-            <input
-              className="w-full rounded-xl border border-line bg-paper-light py-3 pl-10 pr-4 font-base text-sm text-ink outline-none transition focus:border-lavender-dark focus:ring-2 focus:ring-lavender-light"
-              id="date"
-              {...register("date")}
-              aria-invalid={!!errors.date}
-              aria-describedby={errors.date ? "date-error" : undefined}
-              type="date"
-            />
-          </div>
-          <FormError id="date-error" message={errors.date?.message} />
-        </div>
-
-        <div>
-          <label
-            className="font-base text-sm font-bold text-ink"
-            htmlFor="plot"
-          >
-            Dream
-          </label>
-          <textarea
-            className="mt-2 min-h-36 w-full resize-y rounded-xl border border-line bg-paper-light px-4 py-3 font-base text-sm text-ink outline-none transition placeholder:text-ink-muted focus:border-lavender-dark focus:ring-2 focus:ring-lavender-light"
-            id="plot"
-            maxLength={3000}
-            {...register("plot")}
-            aria-invalid={!!errors.plot}
-            aria-describedby={errors.plot ? "plot-error plot-count" : "plot-count"}
-            placeholder="Describe your dream..."
-          />
-          <FormError id="plot-error" message={errors.plot?.message} />
-          <p id="plot-count" className="mt-1 text-right font-base text-xs text-ink-muted">
-            {plot.length}/3000
-          </p>
-        </div>
+        <TextField
+          {...register("title")}
+          id="title"
+          label="Title"
+          placeholder="A short title for your dream..."
+          type="text"
+          error={errors.title?.message}
+        />
+        <TextField
+          {...register("date")}
+          id="date"
+          label="Date"
+          type="date"
+          leadingIcon={<CalendarDays size={17} />}
+          error={errors.date?.message}
+        />
+        <TextField
+          {...register("plot")}
+          as="textarea"
+          id="plot"
+          label="Dream"
+          maxLength={3000}
+          placeholder="Describe your dream..."
+          error={errors.plot?.message}
+          hint={<span className="block text-right">{plot.length}/3000</span>}
+        />
 
         <fieldset aria-invalid={!!errors.mood} aria-describedby={errors.mood ? "mood-error" : undefined}>
           <legend className="font-base text-sm font-bold text-ink">Mood</legend>

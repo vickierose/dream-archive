@@ -1,7 +1,7 @@
 import { formatDreamDate } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
-import { TapedCard } from "@/components/taped-card";
-import { Chip } from "@/components/chip";
+import { TapedCard } from "@/components/ui/taped-card";
+import { Chip } from "@/components/ui/chip";
 import type { Dream } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
 

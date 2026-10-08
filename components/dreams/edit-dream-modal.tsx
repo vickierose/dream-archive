@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { DreamForm } from "@/components/dream-form";
+import { DreamForm } from "@/components/dreams/dream-form";
 import { updateDream } from "@/lib/actions/dream";
 import type { DreamFormValues } from "@/lib/validation/dream";
 import type { Dream } from "@/types/dream";

@@ -20,8 +20,6 @@ export async function createSymbol(values: { name: string; emoji: string }) {
   if (!parsed.success) return { error: "Enter a name and choose an emoji." };
   try {
     const symbol = await archive.createSymbol(parsed.data);
-    // The form updates its symbol selection from the returned record. Do not
-    // refresh its active layout while a modal is open and the dream is unsaved.
     revalidatePath("/symbols");
     revalidatePath("/dreams");
     return { symbol };

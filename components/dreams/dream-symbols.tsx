@@ -4,12 +4,13 @@ import { useEffect, useId, useRef, useState, type Ref } from "react";
 import { createPortal } from "react-dom";
 import dynamic from "next/dynamic";
 import { ChevronDown, Plus, SmilePlus, X } from "lucide-react";
-import { Button } from "@/components/button";
-import { SelectableButton } from "@/components/selectable-button";
+import { Button } from "@/components/ui/button";
+import { TextField } from "@/components/ui/text-field";
+import { SelectableButton } from "@/components/ui/selectable-button";
 import { createSymbol, getSymbols } from "@/lib/actions/symbol";
 import type { Symbol } from "@/types/symbol";
 
-const EmojiPicker = dynamic(() => import("@/components/emoji-picker"), {
+const EmojiPicker = dynamic(() => import("@/components/ui/emoji-picker"), {
   ssr: false,
   loading: () => <p className="p-4 text-sm text-ink-soft">Loading emojis...</p>,
 });
@@ -299,8 +300,6 @@ function SymbolPopup({
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>();
-  const inputClass =
-    "mt-2 w-full rounded-xl border border-line bg-paper-light px-4 py-3 font-base text-sm text-ink focus:outline-purple disabled:opacity-50";
 
   useEffect(() => {
     const dialog = dialogRef.current!;
@@ -411,14 +410,13 @@ function SymbolPopup({
                 <SmilePlus size={21} aria-hidden="true" />
               )}
             </button>
-            <label htmlFor={`${id}-name`} className="sr-only">
-              Symbol name
-            </label>
-            <input
+            <TextField
               id={`${id}-name`}
+              label="Symbol name"
+              hideLabel
+              wrapperClassName="mt-2 min-w-0 flex-1"
               value={name}
               maxLength={80}
-              className={`${inputClass} min-w-0`}
               placeholder="Symbol name"
               onFocus={() => setShowEmojis(false)}
               onChange={(event) => setName(event.target.value)}

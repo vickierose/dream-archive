@@ -1,4 +1,4 @@
-import { PasswordRecoveryForm } from "@/components/password-recovery-form";
+import { PasswordRecoveryForm } from "@/components/auth/password-recovery-form";
 
 type ResetPasswordPageProps = {
   searchParams: Promise<{ token?: string | string[]; error?: string }>;

@@ -1,11 +1,11 @@
 import { formatDreamDate } from "@/lib/date";
 import { Pencil } from "lucide-react";
-import { DeleteDreamButton } from "@/components/delete-dream-button";
-import { BackButton } from "@/components/back-button";
-import { Button } from "@/components/button";
-import { Chip } from "@/components/chip";
-import { DreamLink } from "@/components/dream-link";
-import { SectionHeading } from "@/components/section-heading";
+import { DeleteDreamButton } from "@/components/dreams/delete-dream-button";
+import { BackButton } from "@/components/ui/back-button";
+import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
+import { DreamLink } from "@/components/dreams/dream-link";
+import { SectionHeading } from "@/components/ui/section-heading";
 import { getArchive } from "@/lib/data/archive";
 
 export default async function DreamLayout({ params, children }: LayoutProps<"/dreams/[id]">) {

@@ -1,8 +1,8 @@
 import { Plus } from "lucide-react";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { getArchive } from "@/lib/data/archive";
-import { DreamCard } from "@/components/dream-card";
-import { EmptyState } from "@/components/empty-state";
+import { DreamCard } from "@/components/dreams/dream-card";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export default async function DreamsPage() {
   const { dreams: archiveDreams, symbols: availableSymbols } = await getArchive();

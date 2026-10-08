@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { EditDreamModal } from "@/components/edit-dream-modal";
+import { EditDreamModal } from "@/components/dreams/edit-dream-modal";
 import { getDream } from "@/lib/data/archive";
 
 export default async function EditDreamPage({ params }: PageProps<"/dreams/[id]/edit">) {

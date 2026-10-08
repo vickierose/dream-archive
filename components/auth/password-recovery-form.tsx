@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { authClient } from "@/lib/auth/client";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
+import { TextField } from "@/components/ui/text-field";
 
 type PasswordRecoveryFormProps = {
   reset?: boolean;
@@ -70,21 +71,15 @@ export function PasswordRecoveryForm({
 
   return (
     <form onSubmit={handleRecoverySubmit} className="mt-8 space-y-5">
-      <label
-        className="block font-base text-sm font-semibold"
-        htmlFor="recovery-input"
-      >
-        {reset ? "New password" : "Email"}
-      </label>
-      <input
+      <TextField
         id="recovery-input"
+        label={reset ? "New password" : "Email"}
         name={reset ? "password" : "email"}
         type={reset ? "password" : "email"}
         autoComplete={reset ? "new-password" : "email"}
         required
         minLength={reset ? 8 : undefined}
         maxLength={reset ? 128 : undefined}
-        className="w-full rounded-xl border border-line bg-paper-light px-4 py-3 text-sm text-ink"
       />
       {error && (
         <p role="alert" className="text-sm text-danger">

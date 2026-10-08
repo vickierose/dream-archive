@@ -1,6 +1,6 @@
 import { Sparkles } from "lucide-react";
-import { SymbolCard } from "@/components/symbol-card";
-import { EmptyState } from "@/components/empty-state";
+import { SymbolCard } from "@/components/symbols/symbol-card";
+import { EmptyState } from "@/components/ui/empty-state";
 import { getArchive } from "@/lib/data/archive";
 
 export default async function SymbolsPage() {

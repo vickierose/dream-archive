@@ -2,8 +2,8 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { BackButton } from "@/components/back-button";
-import { DreamForm } from "@/components/dream-form";
+import { BackButton } from "@/components/ui/back-button";
+import { DreamForm } from "@/components/dreams/dream-form";
 import { createDream } from "@/lib/actions/dream";
 import type { DreamFormValues } from "@/lib/validation/dream";
 
