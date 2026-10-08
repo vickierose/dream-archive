@@ -58,7 +58,7 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
       </h2>
       {error && <p role="alert" className="mt-4 font-base text-sm text-danger">{error}</p>}
       <DreamForm
-        defaultValues={{ ...dream, date: new Date(`${dream.date} UTC`).toISOString().slice(0, 10) }}
+        defaultValues={dream}
         onSubmit={save}
         onCancel={dismiss}
         submitLabel="Save"

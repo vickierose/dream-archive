@@ -1,8 +1,8 @@
 # Neon setup
 
-Neon Auth handles accounts and sessions. Dream and symbol records still use shared,
-in-memory demo arrays: they are not persistent or private per user yet. Do not enter
-personal journal data until the database migration and ownership checks are implemented.
+Neon Auth handles accounts and sessions. Dreams and symbols are stored in PostgreSQL
+and accessed through authenticated, owner-scoped queries. New accounts start with an
+empty archive; the sample records are not imported into users' collections.
 
 ## Local setup
 
@@ -52,8 +52,8 @@ branch URLs in your hosting environment, and add your deployed origin to Neon Au
 Authentication does not automatically enforce ownership in database queries.
 The database tooling, table definitions, and initial migration are now in place;
 see [Database design](DATABASE.md). The migration has been applied to the database
-configured in `.env.local`. The UI/actions still use mock records. Next: replace
-mock access with authenticated, user-scoped queries.
+configured in `.env.local`. Archive pages and actions now use the database through
+`lib/data/archive.ts`, which obtains the owner from the verified session.
 
 ## Verification
 
@@ -77,8 +77,10 @@ With the development server running:
    the new password works. A missing reset token should offer a new reset link.
 7. If Google is enabled, verify its redirect and return flow.
 
-These checks verify authentication only. Two-account data isolation must be tested
-after replacing the shared mock records with user-owned database records.
+The auth smoke checks verify signed-out routing. `npm run test:db` additionally
+tests two-account repository isolation and transaction rollback using local fake users.
+For a browser check, sign in with two accounts and verify that each has a separate
+archive, including when opening another account's dream or symbol URL.
 
 The automated smoke check starts a temporary production server on port 3127,
 checks public pages and signed-out redirects, and stops it. It creates no accounts

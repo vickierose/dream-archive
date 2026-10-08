@@ -1,8 +1,8 @@
 # Database design and tooling
 
 The connection and schema are defined in code, and step 7's initial migration has
-been applied to the Neon database configured in `.env.local`. The app still uses
-shared mock records until its data-access layer is connected to these tables.
+been applied to the Neon database configured in `.env.local`. The app now reads and
+writes these tables through authenticated, owner-scoped data access.
 
 ## Files and dependencies
 
@@ -89,15 +89,16 @@ Foreign keys enforce valid relationships; they do not decide who may read a row.
 This connection does not automatically inherit the current Neon Auth session, and
 this step does not enable PostgreSQL row-level security.
 
-When replacing mocks, every operation must get the user from `requireUser()` and
-filter by that ID. Never accept the owner from form input. Reading/updating/deleting
+Every operation gets the user from `requireUser()` through `lib/data/archive.ts` and
+filters by that ID. Never accept the owner from form input. Reading/updating/deleting
 one dream must match both `dreams.id` and `dreams.userId`; the same rule applies to
 symbols. Validate symbol ownership and save a dream plus its links in one transaction.
 Keep direct database access in server-only data-access modules. Do not expose these
 tables through a browser Data API without adding and testing RLS policies.
 
 `DreamRecord` and `SymbolRecord` describe database rows. Existing UI types remain
-unchanged for now; the data-access layer will map rows and symbol links into them.
+unchanged in shape; the repository maps rows and symbol links into them. Their date
+field now consistently contains `YYYY-MM-DD`; `lib/date.ts` formats it for display.
 
 ## Commands and next step
 
@@ -126,4 +127,26 @@ PostgreSQL and verify that a second run is a no-op. The applied Neon schema was
 also inspected for its tables, constraints, indexes, and matching migration hash.
 Existing auth records were not changed and no sample journal data was inserted.
 
-Next: replace mock reads/writes with authenticated, user-scoped database operations.
+## Runtime data flow
+
+Pages and server actions use `lib/data/archive.ts`. This server-only module verifies
+the session and creates an internal repository (`lib/db/archive.ts`) bound to that
+user ID. The repository is injectable so the exact production query logic can be
+tested against local PostgreSQL. It must never receive an owner ID from browser input.
+
+For this small app, archive reads fetch the user's dreams, symbols, and links in
+three queries. Pages derive counts, shared symbols, and co-occurrence from that
+personal dataset. React `cache` deduplicates these reads within a server render;
+there is no shared persistent cache of private data. Pagination and SQL aggregation
+can replace this approach if individual archives become large.
+
+Create/edit operations validate form data in server actions, verify symbol ownership,
+and save the dream and replace its links in one transaction. A failed link write rolls
+back the entire save. Updates and deletes match both owner and record ID. Symbol
+creation uses the database's unique index plus `ON CONFLICT` to reuse existing names.
+Errors returned to the UI do not include database internals or other users' records.
+
+Manually curated symbol relationships remain deferred. The mock Related symbols
+section is removed; Often appears with uses only the current user's actual dreams.
+Sample data files remain as unused examples. No real users or dreams are created
+by the automated tests.

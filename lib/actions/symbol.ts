@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { mockSymbols } from "@/data/mock-symbols";
-import { requireUser } from "@/lib/auth/session";
+import { getUserArchiveRepository } from "@/lib/data/archive";
 
 const symbolSchema = z.object({
   name: z.string().trim().min(1).max(80),
@@ -11,20 +10,22 @@ const symbolSchema = z.object({
 });
 
 export async function getSymbols() {
-  await requireUser();
-  return mockSymbols;
+  const archive = await getUserArchiveRepository();
+  return archive.getSymbols();
 }
 
 export async function createSymbol(values: { name: string; emoji: string }) {
-  await requireUser();
+  const archive = await getUserArchiveRepository();
   const parsed = symbolSchema.safeParse(values);
   if (!parsed.success) return { error: "Enter a name and choose an emoji." };
-  const existing = mockSymbols.find((symbol) =>
-    symbol.name.toLowerCase() === parsed.data.name.toLowerCase());
-  if (existing) return { symbol: existing };
-
-  const symbol = { id: crypto.randomUUID(), ...parsed.data };
-  mockSymbols.push(symbol);
-  revalidatePath("/", "layout");
-  return { symbol };
+  try {
+    const symbol = await archive.createSymbol(parsed.data);
+    // The form updates its symbol selection from the returned record. Do not
+    // refresh its active layout while a modal is open and the dream is unsaved.
+    revalidatePath("/symbols");
+    revalidatePath("/dreams");
+    return { symbol };
+  } catch {
+    return { error: "Could not add the symbol. Please try again." };
+  }
 }

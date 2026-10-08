@@ -10,7 +10,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:check": "tsx scripts/check-db.ts",
-    "test:db": "tsx --test lib/db/schema.test.ts"
+    "test:db": "tsx --test lib/db/schema.test.ts lib/db/archive.test.ts"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",

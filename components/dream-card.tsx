@@ -1,3 +1,4 @@
+import { formatDreamDate } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
 import { TapedCard } from "@/components/taped-card";
 import { Chip } from "@/components/chip";
@@ -29,7 +30,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
         </h2>
         <p className="mt-3 flex items-center gap-1.5 font-base text-xs font-semibold text-ink-soft">
           <CalendarDays aria-hidden="true" size={14} />
-          {dream.date}
+          {formatDreamDate(dream.date)}
         </p>
 
         <div

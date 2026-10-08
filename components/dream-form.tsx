@@ -1,5 +1,6 @@
 "use client";
 
+import { localToday } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useController, useForm, useWatch } from "react-hook-form";
@@ -19,7 +20,7 @@ type DreamFormProps = {
 export function DreamForm({ defaultValues, onSubmit, onCancel, submitLabel = "Record dream" }: DreamFormProps) {
   const { register, control, handleSubmit, formState: { errors, isSubmitting } } = useForm<DreamFormValues>({
     resolver: zodResolver(dreamSchema),
-    defaultValues: { title: "", date: "2026-09-14", plot: "", symbols: [], ...defaultValues },
+    defaultValues: { title: "", date: localToday(), plot: "", symbols: [], ...defaultValues },
   });
   const { field: moodField } = useController({ name: "mood", control });
   const { field: symbolsField } = useController({ name: "symbols", control });

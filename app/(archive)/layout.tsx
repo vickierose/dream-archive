@@ -4,8 +4,11 @@ import { Sidebar } from "@/components/sidebar";
 import { connection } from "next/server";
 import { requireUser } from "@/lib/auth/session";
 
-export default async function ArchiveLayout({ children }: { children: ReactNode }) {
-  // Mock records can change while the server is running.
+export default async function ArchiveLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   await connection();
   await requireUser();
   return (

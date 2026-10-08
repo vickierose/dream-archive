@@ -1,3 +1,4 @@
+import { formatDreamDate } from "@/lib/date";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Dream } from "@/types/dream";
@@ -19,7 +20,7 @@ export function DreamLink({ dream, sharedSymbols = [] }: DreamLinkProps) {
           {dream.title}
         </p>
         <p className="mt-1 font-base text-xs text-ink-soft">
-          {dream.date}
+          {formatDreamDate(dream.date)}
           {sharedSymbols.length > 0 && ` · Shared: ${sharedSymbols.join(", ")}`}
         </p>
       </div>

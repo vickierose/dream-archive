@@ -1,10 +1,11 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/components/button";
-import { mockDreams } from "@/data/mock-dreams";
-import { mockSymbols } from "@/data/mock-symbols";
+import { getArchive } from "@/lib/data/archive";
 import { DreamCard } from "@/components/dream-card";
+import { EmptyState } from "@/components/empty-state";
 
-export default function DreamsPage() {
+export default async function DreamsPage() {
+  const { dreams: archiveDreams, symbols: availableSymbols } = await getArchive();
   return (
     <div className="mx-auto max-w-5xl">
         <header className="flex flex-col gap-5 pb-8 sm:flex-row sm:items-center sm:justify-between">
@@ -13,7 +14,7 @@ export default function DreamsPage() {
               Your Dreams
             </h1>
             <p className="mt-2 font-base text-sm text-ink-soft">
-              27 dreams · 143 symbols · last recorded 2 days ago
+              {archiveDreams.length} dreams · {availableSymbols.length} symbols
             </p>
           </div>
 
@@ -23,15 +24,22 @@ export default function DreamsPage() {
           </Button>
         </header>
 
+        {archiveDreams.length === 0 ? (
+          <EmptyState
+            title="No dreams yet"
+            description="Record your first dream to begin."
+          />
+        ) : (
         <div className="mt-5 grid max-w-2xl gap-6 sm:grid-cols-2">
-          {mockDreams.map((dream) => (
+          {archiveDreams.map((dream) => (
             <DreamCard
-              availableSymbols={mockSymbols}
+              availableSymbols={availableSymbols}
               dream={dream}
               key={dream.id}
             />
           ))}
         </div>
+        )}
     </div>
   );
 }

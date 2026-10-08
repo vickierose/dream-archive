@@ -1,10 +1,10 @@
 import { notFound } from "next/navigation";
 import { EditDreamModal } from "@/components/edit-dream-modal";
-import { mockDreams } from "@/data/mock-dreams";
+import { getDream } from "@/lib/data/archive";
 
 export default async function EditDreamPage({ params }: PageProps<"/dreams/[id]/edit">) {
   const { id } = await params;
-  const dream = mockDreams.find((dream) => dream.id === id);
+  const dream = await getDream(id);
   if (!dream) notFound();
   return <EditDreamModal dream={dream} />;
 }

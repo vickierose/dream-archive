@@ -1,47 +1,45 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { mockDreams } from "@/data/mock-dreams";
-import { requireUser } from "@/lib/auth/session";
+import { getUserArchiveRepository } from "@/lib/data/archive";
+import { ArchiveError } from "@/lib/db/archive";
 import { dreamSchema, type DreamFormValues } from "@/lib/validation/dream";
 
-function formatDreamDate(date: string) {
-  return new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
-    year: "numeric", month: "long", day: "numeric", timeZone: "UTC",
-  });
-}
-
 export async function createDream(values: DreamFormValues) {
-  await requireUser();
+  const archive = await getUserArchiveRepository();
   const parsed = dreamSchema.safeParse(values);
   if (!parsed.success) return { error: "Check the dream fields and try again." };
-
-  const id = crypto.randomUUID();
-  mockDreams.push({
-    ...parsed.data,
-    id,
-    date: formatDreamDate(parsed.data.date),
-  });
-  revalidatePath("/", "layout");
-  return { id };
-}
-
-export async function deleteDream(id: string) {
-  await requireUser();
-  const index = mockDreams.findIndex((dream) => dream.id === id);
-  if (index !== -1) mockDreams.splice(index, 1);
-  revalidatePath("/", "layout");
+  try {
+    const id = await archive.saveDream(parsed.data);
+    revalidatePath("/", "layout");
+    return { id };
+  } catch (error) {
+    return { error: error instanceof ArchiveError ? error.message : "Could not save your dream. Please try again." };
+  }
 }
 
 export async function updateDream(id: string, values: DreamFormValues) {
-  await requireUser();
+  const archive = await getUserArchiveRepository();
+  // Server Action arguments are untrusted even though TypeScript declares a string.
+  if (typeof id !== "string") return { error: "This dream could not be found." };
   const parsed = dreamSchema.safeParse(values);
   if (!parsed.success) return { error: "Check the dream fields and try again." };
-  const dream = mockDreams.find((dream) => dream.id === id);
-  if (!dream) return { error: "This dream could not be found." };
-  Object.assign(dream, parsed.data, {
-    date: formatDreamDate(parsed.data.date),
-  });
-  revalidatePath("/", "layout");
-  return { success: true };
+  try {
+    await archive.saveDream(parsed.data, id);
+    revalidatePath("/", "layout");
+    return { success: true };
+  } catch (error) {
+    return { error: error instanceof ArchiveError ? error.message : "Could not save your dream. Please try again." };
+  }
+}
+
+export async function deleteDream(id: string) {
+  const archive = await getUserArchiveRepository();
+  try {
+    await archive.deleteDream(id);
+    revalidatePath("/", "layout");
+    return { success: true };
+  } catch (error) {
+    return { error: error instanceof ArchiveError ? error.message : "Could not delete your dream. Please try again." };
+  }
 }

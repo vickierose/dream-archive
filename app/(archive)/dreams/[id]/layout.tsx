@@ -1,3 +1,4 @@
+import { formatDreamDate } from "@/lib/date";
 import { Pencil } from "lucide-react";
 import { DeleteDreamButton } from "@/components/delete-dream-button";
 import { BackButton } from "@/components/back-button";
@@ -5,12 +6,12 @@ import { Button } from "@/components/button";
 import { Chip } from "@/components/chip";
 import { DreamLink } from "@/components/dream-link";
 import { SectionHeading } from "@/components/section-heading";
-import { mockDreams } from "@/data/mock-dreams";
-import { mockSymbols } from "@/data/mock-symbols";
+import { getArchive } from "@/lib/data/archive";
 
 export default async function DreamLayout({ params, children }: LayoutProps<"/dreams/[id]">) {
   const { id } = await params;
-  const dream = mockDreams.find((mockDream) => mockDream.id === id);
+  const { dreams: archiveDreams, symbols: availableSymbols } = await getArchive();
+  const dream = archiveDreams.find((entry) => entry.id === id);
 
   if (!dream) {
     return (
@@ -28,11 +29,11 @@ export default async function DreamLayout({ params, children }: LayoutProps<"/dr
   }
 
   const dreamSymbols = dream.symbols.flatMap((symbolId) => {
-    const symbol = mockSymbols.find(({ id }) => id === symbolId);
+    const symbol = availableSymbols.find(({ id }) => id === symbolId);
 
     return symbol ? [symbol] : [];
   });
-  const connectedDreams = mockDreams
+  const connectedDreams = archiveDreams
     .filter(
       (otherDream) =>
         otherDream.id !== dream.id &&
@@ -43,7 +44,7 @@ export default async function DreamLayout({ params, children }: LayoutProps<"/dr
       sharedSymbols: otherDream.symbols
         .filter((symbolId) => dream.symbols.includes(symbolId))
         .flatMap((symbolId) => {
-          const symbol = mockSymbols.find(({ id }) => id === symbolId);
+          const symbol = availableSymbols.find(({ id }) => id === symbolId);
 
           return symbol ? [symbol.name] : [];
         }),
@@ -60,7 +61,7 @@ export default async function DreamLayout({ params, children }: LayoutProps<"/dr
               {dream.title}
             </h1>
             <p className="mt-3 font-base text-sm font-semibold text-ink-soft">
-              {dream.date}
+              {formatDreamDate(dream.date)}
             </p>
           </div>
           <Chip className="w-fit">{dream.mood}</Chip>

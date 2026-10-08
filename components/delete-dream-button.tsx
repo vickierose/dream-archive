@@ -30,7 +30,13 @@ export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
     setIsDeleting(true);
     setError(undefined);
     try {
-      await deleteDream(dreamId);
+      const result = await deleteDream(dreamId);
+      if (result.error) {
+        setError(result.error);
+        deletingRef.current = false;
+        setIsDeleting(false);
+        return;
+      }
       router.replace("/dreams");
     } catch {
       setError("Could not delete your dream. Please try again.");
