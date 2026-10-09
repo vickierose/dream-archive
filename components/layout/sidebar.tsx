@@ -17,7 +17,6 @@ export function Sidebar() {
   const pathname = usePathname();
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState<string>();
-
   async function handleLogout() {
     setSigningOut(true);
     setError(undefined);
@@ -35,8 +34,8 @@ export function Sidebar() {
     }
   }
 
-  return (
-    <aside className="flex h-full w-56 shrink-0 flex-col overflow-hidden border-r border-line bg-lavender-pale px-4 py-6">
+  const content = (
+    <>
       <Link
         className="focus-ring flex items-center gap-2 px-3 font-handwritten font-medium text-2xl text-ink"
         href="/dreams"
@@ -78,6 +77,38 @@ export function Sidebar() {
         {signingOut ? "Logging out..." : "Log out"}
       </button>
       {error && <Feedback className="px-3">{error}</Feedback>}
-    </aside>
+    </>
+  );
+
+  return (
+    <>
+      <aside className="hidden h-full w-56 shrink-0 flex-col overflow-y-auto border-r border-line bg-lavender-pale px-4 py-6 md:flex">
+        {content}
+      </aside>
+      <nav
+        aria-label="Mobile archive navigation"
+        className="fixed inset-x-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-30 mx-auto grid max-w-md grid-cols-3 justify-items-center gap-2 rounded-3xl border border-line bg-lavender-pale/95 p-2 shadow-paper-raised backdrop-blur-xl md:hidden"
+      >
+        {navigation.map(({ href, label, icon: Icon }) => {
+          const isActive = pathname === href || pathname.startsWith(`${href}/`);
+
+          return (
+            <Link
+              key={href}
+              href={href}
+              aria-current={isActive ? "page" : undefined}
+              className={`control-interaction flex size-16 flex-col items-center justify-center gap-1 rounded-2xl font-base text-xs font-semibold ${
+                isActive
+                  ? "bg-purple text-paper-light shadow-paper"
+                  : "text-ink-soft hover:bg-lavender-light hover:text-purple"
+              }`}
+            >
+              <Icon aria-hidden="true" size={24} strokeWidth={1.75} />
+              {label}
+            </Link>
+          );
+        })}
+      </nav>
+    </>
   );
 }

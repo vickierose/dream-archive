@@ -115,6 +115,7 @@ export function DreamForm({
       <FormActions>
         {onCancel && (
           <Button
+            className="w-full sm:w-auto"
             type="button"
             variant="secondary"
             onClick={onCancel}
