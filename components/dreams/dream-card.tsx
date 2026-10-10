@@ -17,6 +17,8 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
 
     return symbol ? [symbol] : [];
   });
+  const visibleSymbols = dreamSymbols.length > 4 ? dreamSymbols.slice(0, 3) : dreamSymbols;
+  const remainingCount = dreamSymbols.length - visibleSymbols.length;
 
   return (
     <TapedCard
@@ -38,7 +40,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
           aria-label={`Symbols: ${dreamSymbols.map(({ name }) => name).join(", ")}`}
           className="mt-6 flex gap-3"
         >
-          {dreamSymbols.map((symbol) => (
+          {visibleSymbols.map((symbol) => (
             <span
               className="grid size-9 place-items-center rounded-full border border-line bg-lavender-pale "
               key={symbol.id}
@@ -49,6 +51,15 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
               </span>
             </span>
           ))}
+          {remainingCount > 0 && (
+            <span
+              className="grid size-9 place-items-center rounded-full border border-line bg-lavender-pale font-base text-sm font-semibold text-ink-soft"
+              aria-label={`${remainingCount} more symbols`}
+              title={dreamSymbols.slice(3).map(({ name }) => name).join(", ")}
+            >
+              +{remainingCount}
+            </span>
+          )}
         </div>
 
         <Chip className="mt-6">{dream.mood}</Chip>
