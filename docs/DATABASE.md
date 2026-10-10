@@ -6,15 +6,15 @@ writes these tables through authenticated, owner-scoped data access.
 
 ## Files and dependencies
 
-| File | Responsibility |
-| --- | --- |
-| `lib/db/index.ts` | Server-only Drizzle client backed by a small `pg` connection pool |
-| `lib/db/env.ts` | Validate the database URL without logging its contents |
-| `lib/db/schema.ts` | Application tables, constraints, indexes, relations, and inferred row types |
-| `lib/db/auth-schema.ts` | Reference the existing Neon-managed user ID; not a migration target |
-| `drizzle.config.ts` | Load Next.js environment files and configure schema generation |
-| `scripts/check-db.ts` | Read-only connection and auth ID type check |
-| `lib/db/schema.test.ts` | Test generated schema in isolated, in-memory PostgreSQL |
+| File                    | Responsibility                                                              |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `lib/db/index.ts`       | Server-only Drizzle client backed by a small `pg` connection pool           |
+| `lib/db/env.ts`         | Validate the database URL without logging its contents                      |
+| `lib/db/schema.ts`      | Application tables, constraints, indexes, relations, and inferred row types |
+| `lib/db/auth-schema.ts` | Reference the existing Neon-managed user ID; not a migration target         |
+| `drizzle.config.ts`     | Load Next.js environment files and configure schema generation              |
+| `scripts/check-db.ts`   | Read-only connection and auth ID type check                                 |
+| `lib/db/schema.test.ts` | Test generated schema in isolated, in-memory PostgreSQL                     |
 
 `drizzle-orm` provides typed queries; `pg` connects to PostgreSQL from the Next.js
 Node runtime and supports interactive transactions. Use Neon's pooled connection
@@ -51,7 +51,7 @@ and updated by Drizzle's `$onUpdate`; it is not a database trigger. Any future r
 SQL updates must set it explicitly.
 
 Moods use the six existing `Mood` values. A future change to that enum requires a
-migration. Plot length is capped at 3000 PostgreSQL characters, symbol names at 80,
+migration. Symbol names length is capped at 80 PostgreSQL character,
 and emoji at 32 (to accommodate multi-codepoint emoji). Application validation still
 runs before writes; JavaScript string length and PostgreSQL character length can
 differ for emoji. Blank values made only of spaces are rejected by database checks.
@@ -60,7 +60,7 @@ differ for emoji. Blank values made only of spaces are rejected by database chec
 
 Each dream and symbol must reference an existing auth user. Symbol names are unique
 per owner using `lower(btrim(name))`: Alice and Bob can each have Moon, but Alice
-cannot have both Moon and ` moon `. Application writes should still trim names.
+cannot have both Moon and `moon`. Application writes should still trim names.
 PostgreSQL case conversion uses the database locale; this is not fuzzy matching or
 full Unicode normalization.
 

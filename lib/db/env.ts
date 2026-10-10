@@ -1,7 +1,10 @@
 // Shared by server code and command-line tooling; never import into client code.
 export function getDatabaseUrl() {
   const value = process.env.DATABASE_URL;
-  if (!value) throw new Error("Missing DATABASE_URL. Set it in .env.local or hosting settings.");
+  if (!value)
+    throw new Error(
+      "Missing DATABASE_URL. Set it in .env.local or hosting settings.",
+    );
 
   let url: URL;
   try {

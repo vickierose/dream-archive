@@ -4,7 +4,7 @@ import { FormActions } from "@/components/ui/form-actions";
 import { localToday } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useController, useForm, useWatch } from "react-hook-form";
+import { useController, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { SelectableButton } from "@/components/ui/selectable-button";
 import { DreamSymbols } from "@/components/dreams/dream-symbols";
@@ -42,7 +42,6 @@ export function DreamForm({
   });
   const { field: moodField } = useController({ name: "mood", control });
   const { field: symbolsField } = useController({ name: "symbols", control });
-  const plot = useWatch({ control, name: "plot" });
   return (
     <form className="space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
       <TextField
