@@ -66,10 +66,8 @@ export function DreamForm({
         as="textarea"
         id="plot"
         label="Dream"
-        maxLength={3000}
         placeholder="Describe your dream..."
         error={errors.plot?.message}
-        hint={<span className="block text-right">{plot.length}/3000</span>}
       />
 
       <fieldset
