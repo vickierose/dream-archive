@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { MoonStar } from "lucide-react";
 import Link from "next/link";
+import { Illustration } from "@/components/layout/illustration";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -15,17 +16,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         </Link>
       </header>
 
-      <section
-        className="relative hidden min-h-svh bg-cover bg-center md:block"
-        style={{ backgroundImage: "url('/night-view.png')" }}
-      >
-        <Link
-          href="/"
-          className="focus-ring absolute left-8 top-6 flex items-center gap-1 font-handwritten text-xl text-white"
-        >
-          <MoonStar aria-hidden="true" size={20} />
-          Dream Archive
-        </Link>
+      <section className="relative hidden min-h-svh md:block">
+        <Illustration sizes="(min-width: 48rem) 50vw, 100vw" />
       </section>
 
       <main className="flex flex-1 items-start justify-center px-6 pt-6 pb-10 sm:items-center sm:px-10 sm:py-12 md:px-12 lg:px-16">
