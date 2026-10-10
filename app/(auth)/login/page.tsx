@@ -2,8 +2,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import Link from "next/link";
 import { AuthForm } from "@/components/auth/auth-form";
 import { SocialLogin } from "@/components/auth/social-login";
+import { requireGuest } from "@/lib/auth/session";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  await requireGuest();
   return (
     <div className="w-full max-w-md">
       <PageHeader title="Welcome back" description="Your dreams are waiting." />

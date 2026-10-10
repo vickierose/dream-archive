@@ -2,8 +2,10 @@ import { PageHeader } from "@/components/layout/page-header";
 import Link from "next/link";
 import { AuthForm } from "@/components/auth/auth-form";
 import { SocialLogin } from "@/components/auth/social-login";
+import { requireGuest } from "@/lib/auth/session";
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  await requireGuest();
   return (
     <div className="w-full max-w-md">
       <PageHeader

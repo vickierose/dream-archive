@@ -2,6 +2,7 @@ import { MoonStar, MoveRight } from "lucide-react";
 import Link from "next/link";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import styles from "./page.module.css";
 
 export default function Home() {
   return (
@@ -21,7 +22,7 @@ export default function Home() {
       </section>
 
       {/* Paper */}
-      <section className="flex flex-1 flex-col justify-center px-6 py-8 sm:px-10 md:px-8 md:py-12 lg:px-12 xl:px-16">
+      <section className={`${styles.paper} relative flex flex-1 flex-col justify-center bg-paper px-6 py-8 sm:px-10 md:px-8 md:py-12 lg:px-12 xl:px-16`}>
         <div className="mx-auto w-full max-w-md">
           <Heading as="h1">Dream Archive</Heading>
 
