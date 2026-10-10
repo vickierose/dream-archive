@@ -11,6 +11,7 @@ import { SectionHeading } from "@/components/ui/section-heading";
 import { getArchive } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
+import Link from "next/link";
 
 export default async function DreamLayout({
   params,
@@ -78,16 +79,18 @@ export default async function DreamLayout({
           <SectionHeading id="symbols-heading" title="Symbols" />
           <ul className="mt-4 flex flex-wrap gap-4">
             {dreamSymbols.map((symbol) => (
-              <li
-                className="w-16 text-center flex flex-col items-center"
-                key={symbol.id}
-              >
-                <span className="grid size-12 place-items-center rounded-full border border-line bg-lavender-pale text-2xl shadow-sm">
-                  <span aria-hidden="true">{symbol.emoji}</span>
-                </span>
-                <span className="mt-1 block font-base text-xs font-semibold text-ink-soft">
-                  {symbol.name}
-                </span>
+              <li className="w-16" key={symbol.id}>
+                <Link
+                  href={`/symbols/${symbol.id}`}
+                  className="text-center flex flex-col items-center"
+                >
+                  <span className="grid size-12 place-items-center rounded-full border border-line bg-lavender-pale text-2xl shadow-sm">
+                    <span aria-hidden="true">{symbol.emoji}</span>
+                  </span>
+                  <span className="mt-1 block font-base text-xs font-semibold text-ink-soft">
+                    {symbol.name}
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
