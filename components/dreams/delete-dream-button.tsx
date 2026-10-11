@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { FormActions } from "@/components/ui/form-actions";
 import { Dialog } from "@/components/ui/dialog";
 import { Feedback } from "@/components/ui/feedback";
@@ -10,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { deleteDream } from "@/lib/actions/dream";
 
 export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
+  const t = useTranslations();
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const noButtonRef = useRef<HTMLButtonElement>(null);
@@ -42,7 +45,7 @@ export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
       }
       router.replace("/dreams");
     } catch {
-      setError("Could not delete your dream. Please try again.");
+      setError(t("Errors.deleteDream"));
       deletingRef.current = false;
       setIsDeleting(false);
     }
@@ -52,12 +55,12 @@ export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
     <>
       <Button size="sm" variant="danger" type="button" onClick={open}>
         <Trash2 aria-hidden="true" size={15} />
-        Delete
+        {t("Common.delete")}
       </Button>
       <Dialog
         ref={dialogRef}
         titleId="delete-dream-title"
-        title="Are you sure you want to delete this dream?"
+        title={t("Dreams.confirmDelete")}
         size="sm"
         aria-busy={isDeleting}
         onCancel={(event) => {
@@ -72,9 +75,9 @@ export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
             variant="danger"
             onClick={confirmDelete}
             loading={isDeleting}
-            loadingLabel="Deleting..."
+            loadingLabel={t("Common.deleting")}
           >
-            Yes
+            {t("Common.yes")}
           </Button>
           <Button
             ref={noButtonRef}
@@ -83,7 +86,7 @@ export function DeleteDreamButton({ dreamId }: { dreamId: string }) {
             onClick={close}
             disabled={isDeleting}
           >
-            No
+            {t("Common.no")}
           </Button>
         </FormActions>
       </Dialog>

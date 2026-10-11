@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/layout/page-header";
 import { PasswordRecoveryForm } from "@/components/auth/password-recovery-form";
 import { requireGuest } from "@/lib/auth/session";
@@ -9,6 +10,7 @@ type ResetPasswordPageProps = {
 export default async function ResetPasswordPage({
   searchParams,
 }: ResetPasswordPageProps) {
+  const t = await getTranslations();
   await requireGuest();
   const params = await searchParams;
   const token =
@@ -18,7 +20,7 @@ export default async function ResetPasswordPage({
 
   return (
     <div className="w-full max-w-md">
-      <PageHeader title="Reset password" />
+      <PageHeader title={t("Auth.reset")} />
       <PasswordRecoveryForm reset token={token} />
     </div>
   );

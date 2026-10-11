@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { FormActions } from "@/components/ui/form-actions";
 import { localToday } from "@/lib/date";
 import { CalendarDays } from "lucide-react";
@@ -11,7 +13,7 @@ import { DreamSymbols } from "@/components/dreams/dream-symbols";
 import { Mood } from "@/types/dream";
 import { FormError } from "@/components/ui/form-error";
 import { TextField } from "@/components/ui/text-field";
-import { dreamSchema, type DreamFormValues } from "@/lib/validation/dream";
+import { createDreamSchema, type DreamFormValues } from "@/lib/validation/dream";
 type DreamFormProps = {
   defaultValues?: Partial<DreamFormValues>;
   onSubmit: (values: DreamFormValues) => void | Promise<void>;
@@ -23,15 +25,17 @@ export function DreamForm({
   defaultValues,
   onSubmit,
   onCancel,
-  submitLabel = "Record dream",
+  submitLabel,
 }: DreamFormProps) {
+  const t = useTranslations();
+  const validation = useTranslations("Validation");
   const {
     register,
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<DreamFormValues>({
-    resolver: zodResolver(dreamSchema),
+    resolver: zodResolver(createDreamSchema(validation)),
     defaultValues: {
       title: "",
       date: localToday(),
@@ -47,15 +51,15 @@ export function DreamForm({
       <TextField
         {...register("title")}
         id="title"
-        label="Title"
-        placeholder="A short title for your dream..."
+        label={t("Dreams.fieldTitle")}
+        placeholder={t("Dreams.titlePlaceholder")}
         type="text"
         error={errors.title?.message}
       />
       <TextField
         {...register("date")}
         id="date"
-        label="Date"
+        label={t("Dreams.date")}
         type="date"
         leadingIcon={<CalendarDays size={17} />}
         error={errors.date?.message}
@@ -64,8 +68,8 @@ export function DreamForm({
         {...register("plot")}
         as="textarea"
         id="plot"
-        label="Dream"
-        placeholder="Describe your dream..."
+        label={t("Dreams.dream")}
+        placeholder={t("Dreams.plotPlaceholder")}
         error={errors.plot?.message}
       />
 
@@ -73,7 +77,7 @@ export function DreamForm({
         aria-invalid={!!errors.mood}
         aria-describedby={errors.mood ? "mood-error" : undefined}
       >
-        <legend className="field-label">Mood</legend>
+        <legend className="field-label">{t("Dreams.mood")}</legend>
         <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {Object.values(Mood).map((moodOption, index) => {
             const isSelected = moodField.value === moodOption;
@@ -87,7 +91,7 @@ export function DreamForm({
                 onClick={() => moodField.onChange(moodOption)}
                 isSelected={isSelected}
               >
-                {moodOption}
+                {t(`Mood.${moodOption}`)}
               </SelectableButton>
             );
           })}
@@ -99,7 +103,7 @@ export function DreamForm({
         aria-invalid={!!errors.symbols}
         aria-describedby={errors.symbols ? "symbols-error" : undefined}
       >
-        <legend className="field-label">Symbols</legend>
+        <legend className="field-label">{t("Navigation.symbols")}</legend>
         <DreamSymbols
           value={symbolsField.value}
           onChange={symbolsField.onChange}
@@ -118,16 +122,16 @@ export function DreamForm({
             onClick={onCancel}
             disabled={isSubmitting}
           >
-            Cancel
+            {t("Common.cancel")}
           </Button>
         )}
         <Button
           className="w-full sm:w-auto"
           type="submit"
           loading={isSubmitting}
-          loadingLabel="Saving..."
+          loadingLabel={t("Common.saving")}
         >
-          {submitLabel}
+          {submitLabel ?? t("Dreams.recordSubmit")}
         </Button>
       </FormActions>
     </form>

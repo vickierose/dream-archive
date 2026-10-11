@@ -1,5 +1,8 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
+
 import { PageHeader } from "@/components/layout/page-header";
 import { Feedback } from "@/components/ui/feedback";
 import { useRef, useState } from "react";
@@ -10,6 +13,7 @@ import { createDream } from "@/lib/actions/dream";
 import type { DreamFormValues } from "@/lib/validation/dream";
 
 export default function NewDreamPage() {
+  const t = useTranslations();
   const router = useRouter();
   const savingRef = useRef(false);
   const [error, setError] = useState<string>();
@@ -27,7 +31,7 @@ export default function NewDreamPage() {
         savingRef.current = false;
       }
     } catch {
-      setError("Could not save your dream. Please try again.");
+      setError(t("Errors.saveDream"));
       savingRef.current = false;
     }
   }
@@ -35,9 +39,9 @@ export default function NewDreamPage() {
   return (
     <div className="mx-auto max-w-3xl">
       <div className="mb-4">
-        <BackButton label="Back to dreams" />
+        <BackButton label={t("Dreams.back")} />
       </div>
-      <PageHeader title="Record a dream" />
+      <PageHeader title={t("Dreams.record")} />
       {error && <Feedback className="mb-6">{error}</Feedback>}
       <DreamForm onSubmit={save} />
     </div>

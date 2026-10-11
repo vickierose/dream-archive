@@ -3,12 +3,14 @@
 import { useEffect, useRef } from "react";
 import { Picker } from "emoji-mart";
 import data from "@emoji-mart/data";
+import { useMessages } from "next-intl";
 
 export default function EmojiPicker({
   onSelect,
 }: {
   onSelect: (emoji: string) => void;
 }) {
+  const { EmojiPicker: translations } = useMessages();
   const containerRef = useRef<HTMLDivElement>(null);
   const onSelectRef = useRef(onSelect);
 
@@ -20,6 +22,7 @@ export default function EmojiPicker({
     const container = containerRef.current!;
     const picker = new Picker({
       data,
+      i18n: translations,
       theme: "light",
       set: "native",
       autoFocus: false,
@@ -33,7 +36,7 @@ export default function EmojiPicker({
     });
     container.appendChild(picker as unknown as HTMLElement);
     return () => container.replaceChildren();
-  }, []);
+  }, [translations]);
 
   return <div ref={containerRef} className="dream-emoji-picker" />;
 }

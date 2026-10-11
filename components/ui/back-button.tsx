@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -10,8 +12,9 @@ type BackButtonProps = {
 
 export function BackButton({
   fallbackHref = "/dreams",
-  label = "Back",
+  label,
 }: BackButtonProps) {
+  const t = useTranslations();
   const router = useRouter();
 
   function goBack() {
@@ -30,7 +33,7 @@ export function BackButton({
       type="button"
     >
       <ArrowLeft aria-hidden="true" size={16} />
-      {label}
+      {label ?? t("Common.back")}
     </button>
   );
 }

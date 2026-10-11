@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Panel } from "@/components/ui/panel";
 import Link from "next/link";
 import { BackButton } from "@/components/ui/back-button";
@@ -11,6 +12,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 export default async function SymbolPage({
   params,
 }: PageProps<"/symbols/[id]">) {
+  const t = await getTranslations();
   const { id } = await params;
   const { dreams: archiveDreams, symbols: availableSymbols } =
     await getArchive();
@@ -19,8 +21,8 @@ export default async function SymbolPage({
   if (!symbol) {
     return (
       <EmptyState
-        title="Symbol not found"
-        action={<BackButton fallbackHref="/symbols" label="Back to symbols" />}
+        title={t("Symbols.notFound")}
+        action={<BackButton fallbackHref="/symbols" label={t("Symbols.back")} />}
       />
     );
   }
@@ -45,7 +47,7 @@ export default async function SymbolPage({
       </div>
       <PageHeader
         title={symbol.name}
-        description={`Appeared in ${dreams.length} ${dreams.length === 1 ? "dream" : "dreams"}`}
+        description={t("Symbols.appeared", { count: dreams.length })}
         prefix={
           <span
             aria-hidden="true"
@@ -58,7 +60,7 @@ export default async function SymbolPage({
       <section aria-labelledby="frequent-symbols-heading">
         <SectionHeading
           id="frequent-symbols-heading"
-          title="Often appears with"
+          title={t("Symbols.often")}
         />
         {frequentSymbols.length > 0 ? (
           <ul className="mt-4 flex flex-wrap gap-3">
@@ -77,13 +79,13 @@ export default async function SymbolPage({
           </ul>
         ) : (
           <p className="mt-4 font-base text-sm text-ink-soft">
-            No symbols have appeared alongside this one yet.
+            {t("Symbols.noCompanions")}
           </p>
         )}
       </section>
 
       <section className="mt-8" aria-labelledby="symbol-dreams-heading">
-        <SectionHeading id="symbol-dreams-heading" title="Dreams" />
+        <SectionHeading id="symbol-dreams-heading" title={t("Navigation.dreams")} />
         <Panel padding="none" className="mt-4">
           {dreams.length > 0 ? (
             dreams.map((dream) => (
@@ -95,7 +97,7 @@ export default async function SymbolPage({
             ))
           ) : (
             <p className="p-6 text-sm leading-relaxed text-ink-soft">
-              This symbol hasn’t appeared in a dream yet.
+              {t("Symbols.noDreams")}
             </p>
           )}
         </Panel>

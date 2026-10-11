@@ -1,4 +1,5 @@
 import { TapedCard } from "@/components/ui/taped-card";
+import { useTranslations } from "next-intl";
 import { Heading } from "@/components/ui/heading";
 import type { Symbol } from "@/types/symbol";
 
@@ -8,7 +9,8 @@ type SymbolCardProps = {
 };
 
 export function SymbolCard({ symbol, dreamCount }: SymbolCardProps) {
-  const countLabel = `${dreamCount} ${dreamCount === 1 ? "dream" : "dreams"}`;
+  const t = useTranslations();
+  const countLabel = t("Dreams.count", { count: dreamCount });
 
   return (
     <TapedCard

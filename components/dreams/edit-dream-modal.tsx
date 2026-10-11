@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Dialog } from "@/components/ui/dialog";
 import { Feedback } from "@/components/ui/feedback";
 import { useEffect, useRef, useState } from "react";
@@ -10,6 +12,7 @@ import type { DreamFormValues } from "@/lib/validation/dream";
 import type { Dream } from "@/types/dream";
 
 export function EditDreamModal({ dream }: { dream: Dream }) {
+  const t = useTranslations();
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const savingRef = useRef(false);
@@ -37,7 +40,7 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
         router.replace(`/dreams/${dream.id}`, { scroll: false });
       }
     } catch {
-      setError("Could not save your dream. Please try again.");
+      setError(t("Errors.saveDream"));
     } finally {
       savingRef.current = false;
     }
@@ -47,7 +50,7 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
     <Dialog
       ref={dialogRef}
       titleId="edit-dream-title"
-      title="Edit dream"
+      title={t("Dreams.edit")}
       size="lg"
       onCancel={(event) => {
         event.preventDefault();
@@ -70,7 +73,7 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
         defaultValues={dream}
         onSubmit={save}
         onCancel={dismiss}
-        submitLabel="Save"
+        submitLabel={t("Common.save")}
       />
     </Dialog>
   );

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { FormActions } from "@/components/ui/form-actions";
 import { Dialog } from "@/components/ui/dialog";
 import { Feedback } from "@/components/ui/feedback";
@@ -15,12 +17,17 @@ import type { Symbol } from "@/types/symbol";
 
 const EmojiPicker = dynamic(() => import("@/components/ui/emoji-picker"), {
   ssr: false,
-  loading: () => (
-    <Feedback tone="notice" className="p-4">
-      Loading emojis...
-    </Feedback>
-  ),
+  loading: LoadingEmojis,
 });
+
+function LoadingEmojis() {
+  const t = useTranslations();
+  return (
+    <Feedback tone="notice" className="p-4">
+      {t("Symbols.loadingEmoji")}
+    </Feedback>
+  );
+}
 
 type DreamSymbolsProps = {
   value: string[];
@@ -35,6 +42,7 @@ export function DreamSymbols({
   onBlur,
   buttonRef,
 }: DreamSymbolsProps) {
+  const t = useTranslations();
   const [symbols, setSymbols] = useState<Symbol[]>([]);
   const [open, setOpen] = useState(false);
   const [loadError, setLoadError] = useState(false);
@@ -72,13 +80,13 @@ export function DreamSymbols({
               key={id}
               isSelected
               onBlur={onBlur}
-              aria-label={`Remove ${symbol?.name ?? "symbol"}`}
+              aria-label={t("Symbols.remove", { name: symbol?.name ?? t("Symbols.fallback") })}
               onClick={() =>
                 onChange(value.filter((selectedId) => selectedId !== id))
               }
             >
               <span aria-hidden="true">{symbol?.emoji}</span>
-              {symbol?.name ?? "Loading symbol..."}
+              {symbol?.name ?? t("Symbols.loadingOne")}
               <X size={14} aria-hidden="true" />
             </SelectableButton>
           );
@@ -90,12 +98,12 @@ export function DreamSymbols({
           onClick={() => setOpen(true)}
           className="control-interaction inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft not-disabled:hover:border-lavender-dark not-disabled:hover:text-purple"
         >
-          <Plus aria-hidden="true" size={16} /> Add symbol
+          <Plus aria-hidden="true" size={16} /> {t("Symbols.add")}
         </button>
       </div>
       {loadError && (
         <Feedback className="mt-2">
-          Could not load symbols. Open Add symbol to retry.
+          {t("Symbols.loadError")}
         </Feedback>
       )}
       {open &&
@@ -132,6 +140,7 @@ function SymbolSelect({
   loading: boolean;
   onChange: (value: string) => void;
 }) {
+  const t = useTranslations();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(-1);
@@ -164,7 +173,7 @@ function SymbolSelect({
         <input
           ref={inputRef}
           role="combobox"
-          aria-label="Search and select a symbol"
+          aria-label={t("Symbols.searchLabel")}
           aria-expanded={open}
           aria-controls={`${id}-options`}
           aria-autocomplete="list"
@@ -176,10 +185,10 @@ function SymbolSelect({
           className="min-w-0 flex-1 rounded-control bg-transparent px-4 py-3 font-base text-sm text-ink outline-none"
           placeholder={
             loading
-              ? "Loading symbols..."
+              ? t("Symbols.loading")
               : selected
                 ? `${selected.emoji} ${selected.name}`
-                : "Select or search symbols..."
+                : t("Symbols.searchPlaceholder")
           }
           value={
             open ? query : selected ? `${selected.emoji} ${selected.name}` : ""
@@ -223,7 +232,7 @@ function SymbolSelect({
         {value && (
           <button
             type="button"
-            aria-label="Clear selected symbol"
+            aria-label={t("Symbols.clear")}
             disabled={disabled}
             className="control-interaction rounded-control p-2 text-ink-soft not-disabled:hover:text-purple"
             onClick={() => {
@@ -238,7 +247,7 @@ function SymbolSelect({
         )}
         <button
           type="button"
-          aria-label="Toggle symbol options"
+          aria-label={t("Symbols.toggle")}
           disabled={disabled}
           className="control-interaction rounded-control p-3 text-ink-soft not-disabled:hover:text-purple"
           onClick={() => {
@@ -254,7 +263,7 @@ function SymbolSelect({
           <ul
             id={`${id}-options`}
             role="listbox"
-            aria-label="Available symbols"
+            aria-label={t("Symbols.available")}
           >
             {options.map((symbol, index) => (
               <li
@@ -270,12 +279,12 @@ function SymbolSelect({
                 }}
               >
                 {symbol.emoji} {symbol.name}
-                {selectedIds.includes(symbol.id) ? " (already added)" : ""}
+                {selectedIds.includes(symbol.id) ? t("Symbols.alreadyAdded") : ""}
               </li>
             ))}
           </ul>
           {options.length === 0 && (
-            <p className="px-4 py-2 text-sm text-ink-soft">No symbols found.</p>
+            <p className="px-4 py-2 text-sm text-ink-soft">{t("Symbols.noResults")}</p>
           )}
         </div>
       )}
@@ -294,6 +303,7 @@ function SymbolPopup({
   onClose: () => void;
   onLoad: (symbols: Symbol[]) => void;
 }) {
+  const t = useTranslations();
   const id = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const busyRef = useRef(false);
@@ -320,7 +330,7 @@ function SymbolPopup({
       })
       .catch(() => {
         if (active)
-          setError("Could not load symbols. Close and reopen to retry.");
+          setError(t("Symbols.retryError"));
       })
       .finally(() => {
         if (active) setLoading(false);
@@ -329,7 +339,7 @@ function SymbolPopup({
       active = false;
       dialog.close();
     };
-  }, []);
+  }, [t]);
 
   async function add() {
     if (busyRef.current) return;
@@ -340,7 +350,7 @@ function SymbolPopup({
       return;
     }
     if (!name.trim() || !emoji) {
-      setError("Enter a name and choose an emoji.");
+      setError(t("Errors.symbolFields"));
       return;
     }
     busyRef.current = true;
@@ -350,7 +360,7 @@ function SymbolPopup({
       if (result.symbol) onSelect(result.symbol);
       else setError(result.error);
     } catch {
-      setError("Could not add the symbol. Please try again.");
+      setError(t("Errors.addSymbol"));
     } finally {
       busyRef.current = false;
       setSaving(false);
@@ -361,7 +371,7 @@ function SymbolPopup({
     <Dialog
       ref={dialogRef}
       titleId={`${id}-title`}
-      title="Add symbol"
+      title={t("Symbols.add")}
       overflow="visible"
       onCancel={(event) => {
         event.preventDefault();
@@ -378,7 +388,7 @@ function SymbolPopup({
         }}
       >
         <fieldset disabled={saving || loading}>
-          <legend className="field-label">Choose an existing symbol</legend>
+          <legend className="field-label">{t("Symbols.chooseExisting")}</legend>
           <SymbolSelect
             id={id}
             symbols={symbols}
@@ -396,11 +406,11 @@ function SymbolPopup({
           disabled={!!selectedId || saving}
           className="border-t border-line pt-6 disabled:opacity-50"
         >
-          <legend className="field-label">Create a new symbol</legend>
+          <legend className="field-label">{t("Symbols.createNew")}</legend>
           <div className="relative flex items-center gap-3">
             <button
               type="button"
-              aria-label={emoji ? "Change emoji" : "Choose emoji"}
+              aria-label={emoji ? t("Symbols.changeEmoji") : t("Symbols.chooseEmoji")}
               aria-expanded={showEmojis}
               aria-controls={`${id}-emoji-picker`}
               className="control-interaction mt-2 grid size-11 shrink-0 place-items-center rounded-control border border-line bg-paper-light text-purple not-disabled:hover:bg-lavender-light"
@@ -414,12 +424,12 @@ function SymbolPopup({
             </button>
             <TextField
               id={`${id}-name`}
-              label="Symbol name"
+              label={t("Symbols.name")}
               hideLabel
               wrapperClassName="mt-2 min-w-0 flex-1"
               value={name}
               maxLength={80}
-              placeholder="Symbol name"
+              placeholder={t("Symbols.name")}
               onFocus={() => setShowEmojis(false)}
               onChange={(event) => setName(event.target.value)}
             />
@@ -454,15 +464,15 @@ function SymbolPopup({
             disabled={saving}
             onClick={onClose}
           >
-            Cancel
+            {t("Common.cancel")}
           </Button>
           <Button
             type="submit"
             disabled={!selectedId && (!name.trim() || !emoji)}
             loading={saving}
-            loadingLabel="Adding..."
+            loadingLabel={t("Common.adding")}
           >
-            Add
+            {t("Common.add")}
           </Button>
         </FormActions>
       </form>

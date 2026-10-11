@@ -1,4 +1,5 @@
 import { formatDreamDate } from "@/lib/date";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { Dream } from "@/types/dream";
@@ -10,6 +11,8 @@ type DreamLinkProps = {
 };
 
 export function DreamLink({ dream, sharedSymbols = [] }: DreamLinkProps) {
+  const t = useTranslations();
+  const locale = useLocale();
   return (
     <Link
       className="focus-ring flex items-center gap-4 border-b border-line px-5 py-4 transition-colors duration-200 motion-reduce:transition-none focus-visible:-outline-offset-2 last:border-b-0 hover:bg-lavender-pale"
@@ -20,8 +23,8 @@ export function DreamLink({ dream, sharedSymbols = [] }: DreamLinkProps) {
           {dream.title}
         </p>
         <p className="mt-1 font-base text-xs text-ink-soft">
-          {formatDreamDate(dream.date)}
-          {sharedSymbols.length > 0 && ` · Shared: ${sharedSymbols.join(", ")}`}
+          {formatDreamDate(dream.date, locale)}
+          {sharedSymbols.length > 0 && t("Dreams.shared", { names: sharedSymbols.join(", ") })}
         </p>
       </div>
       <ChevronRight

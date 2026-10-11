@@ -24,6 +24,20 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Localization
+
+The app uses `next-intl` with English (`en`, default) and Ukrainian (`uk`).
+The language selector saves a one-year cookie; URLs and authentication callbacks
+remain the same in both languages. Request configuration lives in `i18n/request.ts`.
+
+Edit `messages/en.json` and `messages/uk.json` together. Use `useTranslations` in
+synchronous components and `getTranslations` in async server components/actions.
+Use ICU plural messages for counts; Ukrainian has one, few, many, and other forms.
+Stored moods remain stable English values and are translated only for display.
+Dream text and user-created symbol names are never automatically translated.
+
+Run `npm run test:i18n` to check catalog parity, messages, plurals, dates, and validation.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

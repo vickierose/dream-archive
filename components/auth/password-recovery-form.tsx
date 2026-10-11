@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Feedback } from "@/components/ui/feedback";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
@@ -16,10 +18,11 @@ export function PasswordRecoveryForm({
   reset = false,
   token,
 }: PasswordRecoveryFormProps) {
+  const t = useTranslations();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
   const [notice, setNotice] = useState<string>();
-  const submitLabel = reset ? "Update password" : "Send reset link";
+  const submitLabel = reset ? t("Auth.updatePassword") : t("Auth.sendReset");
   const isResetComplete = reset && !!notice;
 
   async function handleRecoverySubmit(event: FormEvent<HTMLFormElement>) {
@@ -41,18 +44,18 @@ export function PasswordRecoveryForm({
       if (result.error) {
         setError(
           reset
-            ? "This reset link may have expired. Request a new one and try again."
-            : "Could not request a reset email. Please try again.",
+            ? t("Auth.expiredLink")
+            : t("Auth.resetError"),
         );
         return;
       }
       setNotice(
         reset
-          ? "Password updated. You can now log in."
-          : "If an account exists for this email, you will receive a password reset link.",
+          ? t("Auth.passwordUpdated")
+          : t("Auth.resetSent"),
       );
     } catch {
-      setError("Could not reach the sign-in service. Please try again.");
+      setError(t("Auth.serviceError"));
     } finally {
       setPending(false);
     }
@@ -61,9 +64,9 @@ export function PasswordRecoveryForm({
   if (reset && !token) {
     return (
       <p className="text-sm leading-relaxed text-ink-soft">
-        This reset link is missing or invalid.{" "}
+        {t("Auth.invalidLink")}{" "}
         <Link className="text-link underline" href="/forgot-password">
-          Request a new link
+          {t("Auth.requestLink")}
         </Link>
         .
       </p>
@@ -74,7 +77,7 @@ export function PasswordRecoveryForm({
     <form onSubmit={handleRecoverySubmit} className="space-y-6">
       <TextField
         id="recovery-input"
-        label={reset ? "New password" : "Email"}
+        label={reset ? t("Auth.newPassword") : t("Auth.email")}
         name={reset ? "password" : "email"}
         type={reset ? "password" : "email"}
         autoComplete={reset ? "new-password" : "email"}
@@ -93,7 +96,7 @@ export function PasswordRecoveryForm({
         {submitLabel}
       </Button>
       <Link href="/login" className="text-link block text-center text-sm">
-        Back to login
+        {t("Auth.backToLogin")}
       </Link>
     </form>
   );

@@ -1,4 +1,5 @@
 import { formatDreamDate } from "@/lib/date";
+import { useLocale, useTranslations } from "next-intl";
 import { CalendarDays } from "lucide-react";
 import { TapedCard } from "@/components/ui/taped-card";
 import { Chip } from "@/components/ui/chip";
@@ -12,6 +13,8 @@ type DreamCardProps = {
 };
 
 export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
+  const t = useTranslations();
+  const locale = useLocale();
   const dreamSymbols = dream.symbols.flatMap((symbolId) => {
     const symbol = availableSymbols.find(({ id }) => id === symbolId);
 
@@ -22,7 +25,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
 
   return (
     <TapedCard
-      label={`Read dream: ${dream.title}`}
+      label={t("Dreams.read", { title: dream.title })}
       className="block"
       size="normal"
       href={`/dreams/${dream.id}`}
@@ -33,11 +36,11 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
         </Heading>
         <p className="mt-3 flex items-center gap-1.5 font-base text-xs font-semibold text-ink-soft">
           <CalendarDays aria-hidden="true" size={14} />
-          {formatDreamDate(dream.date)}
+          {formatDreamDate(dream.date, locale)}
         </p>
 
         <div
-          aria-label={`Symbols: ${dreamSymbols.map(({ name }) => name).join(", ")}`}
+          aria-label={t("Dreams.symbolList", { names: dreamSymbols.map(({ name }) => name).join(", ") })}
           className="mt-6 flex gap-3"
         >
           {visibleSymbols.map((symbol) => (
@@ -54,7 +57,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
           {remainingCount > 0 && (
             <span
               className="grid size-9 place-items-center rounded-full border border-line bg-lavender-pale font-base text-sm font-semibold text-ink-soft"
-              aria-label={`${remainingCount} more symbols`}
+              aria-label={t("Dreams.moreSymbols", { count: remainingCount })}
               title={dreamSymbols.slice(3).map(({ name }) => name).join(", ")}
             >
               +{remainingCount}
@@ -62,7 +65,7 @@ export function DreamCard({ dream, availableSymbols }: DreamCardProps) {
           )}
         </div>
 
-        <Chip className="mt-6">{dream.mood}</Chip>
+        <Chip className="mt-6">{t(`Mood.${dream.mood}`)}</Chip>
       </section>
     </TapedCard>
   );

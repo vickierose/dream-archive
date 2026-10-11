@@ -1,11 +1,14 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Feedback } from "@/components/ui/feedback";
 import { useState } from "react";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 
 export function SocialLogin() {
+  const t = useTranslations();
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -21,11 +24,11 @@ export function SocialLogin() {
         newUserCallbackURL: callbackURL,
       });
       if (result.error) {
-        setError(result.error.message || "Google sign-in is unavailable.");
+        setError(t("Auth.googleUnavailable"));
         setPending(false);
       }
     } catch {
-      setError("Could not start Google sign-in. Please try again.");
+      setError(t("Auth.googleError"));
       setPending(false);
     }
   }
@@ -34,17 +37,17 @@ export function SocialLogin() {
     <>
       <div className="my-6 flex items-center gap-3 text-ink-muted">
         <span className="h-px flex-1 bg-line" />
-        <span className="font-base text-xs">or</span>
+        <span className="font-base text-xs">{t("Auth.or")}</span>
         <span className="h-px flex-1 bg-line" />
       </div>
       <Button
         variant="secondary"
         className="w-full"
         loading={pending}
-        loadingLabel="Connecting..."
+        loadingLabel={t("Auth.connecting")}
         onClick={handleGoogleLogin}
       >
-        Continue with Google
+        {t("Auth.google")}
       </Button>
       {error && <Feedback className="mt-4">{error}</Feedback>}
     </>
