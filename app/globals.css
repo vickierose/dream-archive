@@ -55,8 +55,12 @@
   --color-danger-light: #f8e7ea;
 
   /* Paper elevation */
-  --shadow-paper: 0 5px 12px rgba(68, 54, 83, 0.08);
-  --shadow-paper-raised: 0 10px 20px rgba(68, 54, 83, 0.14);
+  --shadow-paper-edge:
+    -4px 0 8px rgba(68, 54, 83, 0.2),
+    -16px 0 64px rgba(255, 255, 255, 0.5);
+  --shadow-paper: 0 2px 8px rgba(68, 54, 83, 0.15);
+  --shadow-paper-raised: var(--shadow-paper), 0 20px 10px rgba(68, 54, 83, 0.05);
+	--shadow-paper-raised-sm: var(--shadow-paper), 0 10px 10px rgba(68, 54, 83, 0.05);
 
   /* Surface roles */
   --radius-paper: 0.125rem;
@@ -67,6 +71,7 @@
     0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
   --shadow-dialog:
     0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+	--shadow-tape: inset 0 0 6px rgb(0 0 0 / 0.05);
 }
 
 @utility focus-ring {

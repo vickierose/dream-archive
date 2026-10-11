@@ -20,9 +20,9 @@ const tapeSizes = {
 } as const;
 
 const cardPalettes = [
-  "border-paper-border bg-paper-light",
-  "border-paper-lilac-border bg-paper-lilac",
-  "border-paper-rose-border bg-paper-rose",
+  "bg-paper-light",
+  "bg-paper-lilac",
+  "bg-paper-rose",
 ] as const;
 
 const tapeColors = ["bg-tape-gold", "bg-tape", "bg-tape-rose"] as const;
@@ -48,16 +48,16 @@ export function TapedCard({
   return (
     <Link
       aria-label={label}
-      className={`group relative rounded-paper border
+      className={`group relative rounded-paper
         shadow-paper transition duration-200
-        hover:-translate-y-1 hover:shadow-paper-raised
+        ${size === "sm" ? "hover:shadow-paper-raised-sm" : "hover:shadow-paper-raised"}
         focus-ring
         motion-reduce:transform-none motion-reduce:transition-none ${cardPalette} ${cardSizes[size]} ${className}`}
       href={href}
     >
       <span
         aria-hidden="true"
-        className={`pointer-events-none absolute max-w-[40%] -translate-x-1/2 opacity-70 ${tapeSizes[size]} ${tapeColor} ${tapePosition} ${tapeRotation}`}
+        className={`pointer-events-none absolute max-w-[40%] -translate-x-1/2 opacity-50 shadow-tape ${tapeSizes[size]} ${tapeColor} ${tapePosition} ${tapeRotation}`}
       />
       {children}
     </Link>

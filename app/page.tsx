@@ -1,7 +1,6 @@
 import { MoveRight } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
-import styles from "./page.module.css";
 import { Illustration } from "@/components/layout/illustration";
 
 export default function Home() {
@@ -12,7 +11,7 @@ export default function Home() {
       </section>
 
       <section
-        className={`${styles.paper} relative flex flex-1 flex-col justify-center bg-paper px-6 py-8 sm:px-10 md:px-8 md:py-12 lg:px-12 xl:px-16`}
+        className="relative flex flex-1 flex-col justify-center bg-paper px-6 py-8 sm:px-10 md:px-8 md:py-12 md:shadow-paper-edge lg:px-12 xl:px-16"
       >
         <div className="mx-auto w-full max-w-md">
           <Heading as="h1">Dream Archive</Heading>
