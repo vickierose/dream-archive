@@ -98,6 +98,8 @@
     "logoutError": "Could not log out. Please try again."
   },
   "Dreams": {
+    "showMore": "Show more",
+    "showLess": "Show less",
     "title": "Your Dreams",
     "record": "Record a dream",
     "recordSubmit": "Record dream",
