@@ -1,5 +1,5 @@
-export function formatDreamDate(date: string) {
-  return new Date(`${date}T00:00:00Z`).toLocaleDateString("en-US", {
+export function formatDreamDate(date: string, locale: string = "en") {
+  return new Date(`${date}T00:00:00Z`).toLocaleDateString(locale, {
     year: "numeric", month: "long", day: "numeric", timeZone: "UTC",
   });
 }

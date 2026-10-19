@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Feedback } from "@/components/ui/feedback";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
@@ -10,8 +12,8 @@ import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
 import {
-  loginSchema,
-  signupSchema,
+  createLoginSchema,
+  createSignupSchema,
   type AuthFormValues,
 } from "@/lib/validation/auth";
 
@@ -20,6 +22,8 @@ type AuthFormProps = {
 };
 
 export function AuthForm({ mode }: AuthFormProps) {
+  const t = useTranslations();
+  const validation = useTranslations("Validation");
   const router = useRouter();
   const isSignup = mode === "signup";
   const [submitError, setSubmitError] = useState<string>();
@@ -29,10 +33,10 @@ export function AuthForm({ mode }: AuthFormProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AuthFormValues>({
-    resolver: zodResolver(isSignup ? signupSchema : loginSchema),
+    resolver: zodResolver(isSignup ? createSignupSchema(validation) : createLoginSchema(validation)),
     defaultValues: { email: "", password: "" },
   });
-  const submitLabel = isSignup ? "Create account" : "Log in";
+  const submitLabel = isSignup ? t("Auth.create") : t("Auth.login");
 
   async function handleAuthSubmit({ email, password }: AuthFormValues) {
     setSubmitError(undefined);
@@ -48,27 +52,27 @@ export function AuthForm({ mode }: AuthFormProps) {
         : await authClient.signIn.email({ email, password });
       if (result.error) {
         setSubmitError(
-          result.error.message || "Unable to sign in. Please try again.",
+          t("Auth.signInError"),
         );
         return;
       }
       const session = await authClient.getSession();
       if (session.error) {
-        setSubmitError("Unable to check your session. Please try logging in.");
+        setSubmitError(t("Auth.sessionError"));
         return;
       }
       if (!session.data?.user) {
         setNotice(
           isSignup
-            ? "Account created. If email verification is enabled, check your inbox before logging in."
-            : "Please verify your email, then try logging in again.",
+            ? t("Auth.created")
+            : t("Auth.verify"),
         );
         return;
       }
       router.replace("/dreams");
       router.refresh();
     } catch {
-      setSubmitError("Could not reach the sign-in service. Please try again.");
+      setSubmitError(t("Auth.serviceError"));
     }
   }
 
@@ -81,7 +85,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       <TextField
         {...register("email")}
         id="email"
-        label="Email"
+        label={t("Auth.email")}
         autoComplete="email"
         placeholder="you@example.com"
         type="email"
@@ -90,16 +94,16 @@ export function AuthForm({ mode }: AuthFormProps) {
       <TextField
         {...register("password")}
         id="password"
-        label="Password"
+        label={t("Auth.password")}
         autoComplete={isSignup ? "new-password" : "current-password"}
-        placeholder={isSignup ? "Create a password" : "Enter your password"}
+        placeholder={isSignup ? t("Auth.createPassword") : t("Auth.enterPassword")}
         type="password"
         error={errors.password?.message}
       />
 
       {!isSignup && (
         <Link href="/forgot-password" className="text-link block text-sm">
-          Forgot password?
+          {t("Auth.forgot")}
         </Link>
       )}
       {submitError && <Feedback>{submitError}</Feedback>}

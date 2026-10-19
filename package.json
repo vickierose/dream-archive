@@ -10,17 +10,22 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:check": "tsx scripts/check-db.ts",
-    "test:db": "tsx --test lib/db/schema.test.ts lib/db/archive.test.ts"
+    "test:db": "tsx --test lib/db/schema.test.ts lib/db/archive.test.ts",
+    "test:i18n": "tsx --test i18n/messages.test.ts"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",
     "@hookform/resolvers": "^5.9.1",
     "@neondatabase/auth": "^0.5.0-beta",
     "@next/env": "^16.3.5",
+    "@tsparticles/engine": "^4.4.0",
+    "@tsparticles/react": "^4.4.0",
+    "@tsparticles/slim": "^4.4.0",
     "drizzle-orm": "^0.45.3",
     "emoji-mart": "^5.6.0",
     "lucide-react": "^1.47.0",
     "next": "16.3.5",
+    "next-intl": "^4.14.9",
     "pg": "^8.23.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",

@@ -1,3 +1,4 @@
+import { getLocale, getTranslations } from "next-intl/server";
 import { FormActions } from "@/components/ui/form-actions";
 import { Panel } from "@/components/ui/panel";
 import { formatDreamDate } from "@/lib/date";
@@ -17,6 +18,8 @@ export default async function DreamLayout({
   params,
   children,
 }: LayoutProps<"/dreams/[id]">) {
+  const t = await getTranslations();
+  const locale = await getLocale();
   const { id } = await params;
   const { dreams: archiveDreams, symbols: availableSymbols } =
     await getArchive();
@@ -25,8 +28,8 @@ export default async function DreamLayout({
   if (!dream) {
     return (
       <EmptyState
-        title="Dream not found"
-        action={<BackButton label="Back to dreams" />}
+        title={t("Dreams.notFound")}
+        action={<BackButton label={t("Dreams.back")} />}
       />
     );
   }
@@ -61,11 +64,11 @@ export default async function DreamLayout({
         </div>
         <PageHeader
           title={dream.title}
-          description={formatDreamDate(dream.date)}
+          description={formatDreamDate(dream.date, locale)}
         />
 
         <article className="relative border border-paper-dark bg-paper p-6 shadow-paper sm:p-8">
-          <Chip className="w-fit absolute -top-2 left-6">{dream.mood}</Chip>
+          <Chip className="w-fit absolute -top-2 left-6">{t(`Mood.${dream.mood}`)}</Chip>
           <span
             aria-hidden="true"
             className="absolute -right-1 top-[-1.1rem] h-9 w-4 rounded-full border-2 border-line bg-transparent"
@@ -76,7 +79,7 @@ export default async function DreamLayout({
         </article>
 
         <section className="mt-8" aria-labelledby="symbols-heading">
-          <SectionHeading id="symbols-heading" title="Symbols" />
+          <SectionHeading id="symbols-heading" title={t("Navigation.symbols")} />
           <ul className="mt-4 flex flex-wrap gap-4">
             {dreamSymbols.map((symbol) => (
               <li className="w-16" key={symbol.id}>
@@ -98,9 +101,9 @@ export default async function DreamLayout({
 
         <section className="mt-8" aria-labelledby="connections-heading">
           <SectionHeading
-            description="This dream shares symbols with:"
+            description={t("Dreams.shares")}
             id="connections-heading"
-            title="Dream connections"
+            title={t("Dreams.connections")}
           />
           <Panel padding="none" className="mt-4">
             {connectedDreams.length > 0 ? (
@@ -115,7 +118,7 @@ export default async function DreamLayout({
               )
             ) : (
               <p className="p-6 text-sm leading-relaxed text-ink-soft">
-                No shared symbols yet.
+                {t("Dreams.noShared")}
               </p>
             )}
           </Panel>
@@ -128,7 +131,7 @@ export default async function DreamLayout({
             variant="secondary"
           >
             <Pencil aria-hidden="true" size={15} />
-            Edit
+            {t("Common.edit")}
           </Button>
           <DeleteDreamButton dreamId={dream.id} />
         </FormActions>

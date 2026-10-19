@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ComponentProps, MouseEventHandler, ReactNode } from "react";
 import Link from "next/link";
 
@@ -39,6 +40,7 @@ const sizeClasses: Record<ButtonSize, string> = {
 };
 
 export function Button(props: ButtonProps) {
+  const t = useTranslations();
   if ("href" in props) {
     const {
       children,
@@ -63,7 +65,7 @@ export function Button(props: ButtonProps) {
     size = "md",
     variant = "primary",
     loading = false,
-    loadingLabel = "Please wait...",
+    loadingLabel = t("Common.wait"),
     disabled,
     ...buttonProps
   } = props;

@@ -1,5 +1,7 @@
 "use server";
 
+import { getTranslations } from "next-intl/server";
+
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getUserArchiveRepository } from "@/lib/data/archive";
@@ -15,15 +17,16 @@ export async function getSymbols() {
 }
 
 export async function createSymbol(values: { name: string; emoji: string }) {
+  const t = await getTranslations();
   const archive = await getUserArchiveRepository();
   const parsed = symbolSchema.safeParse(values);
-  if (!parsed.success) return { error: "Enter a name and choose an emoji." };
+  if (!parsed.success) return { error: t("Errors.symbolFields") };
   try {
     const symbol = await archive.createSymbol(parsed.data);
     revalidatePath("/symbols");
     revalidatePath("/dreams");
     return { symbol };
   } catch {
-    return { error: "Could not add the symbol. Please try again." };
+    return { error: t("Errors.addSymbol") };
   }
 }
