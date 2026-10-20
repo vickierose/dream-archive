@@ -1,3 +1,4 @@
+import { getPageMetadata } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/layout/page-header";
 import { PasswordRecoveryForm } from "@/components/auth/password-recovery-form";
@@ -24,4 +25,8 @@ export default async function ResetPasswordPage({
       <PasswordRecoveryForm reset token={token} />
     </div>
   );
+}
+
+export async function generateMetadata() {
+  return getPageMetadata("resetPassword");
 }

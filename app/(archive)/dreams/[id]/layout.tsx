@@ -4,6 +4,7 @@ import { Panel } from "@/components/ui/panel";
 import { formatDreamDate } from "@/lib/date";
 import { Pencil } from "lucide-react";
 import { DeleteDreamButton } from "@/components/dreams/delete-dream-button";
+import { DreamPlot } from "@/components/dreams/dream-plot";
 import { BackButton } from "@/components/ui/back-button";
 import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
@@ -73,9 +74,7 @@ export default async function DreamLayout({
             aria-hidden="true"
             className="absolute -right-1 top-[-1.1rem] h-9 w-4 rounded-full border-2 border-line bg-transparent"
           />
-          <p className="whitespace-pre-wrap font-handwritten text-lg leading-relaxed text-ink sm:text-xl">
-            {dream.plot}
-          </p>
+          <DreamPlot key={dream.id} plot={dream.plot} />
         </article>
 
         <section className="mt-8" aria-labelledby="symbols-heading">

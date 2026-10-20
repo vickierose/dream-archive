@@ -70,20 +70,20 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto pt-6">
+      <div className="mt-auto">
         <LanguageSwitcher />
+        <button
+          className="control-interaction w-full flex items-center gap-3 rounded-control px-3 py-2.5 font-base text-sm text-ink-soft not-disabled:hover:bg-lavender-light not-disabled:hover:text-purple"
+          type="button"
+          disabled={signingOut}
+          aria-busy={signingOut}
+          onClick={handleLogout}
+        >
+          <LogOut aria-hidden="true" size={18} />
+          {signingOut ? t("Navigation.loggingOut") : t("Navigation.logout")}
+        </button>
+        {error && <Feedback className="px-3">{error}</Feedback>}
       </div>
-      <button
-        className="control-interaction flex items-center gap-3 rounded-control px-3 py-2.5 font-base text-sm text-ink-soft not-disabled:hover:bg-lavender-light not-disabled:hover:text-purple"
-        type="button"
-        disabled={signingOut}
-        aria-busy={signingOut}
-        onClick={handleLogout}
-      >
-        <LogOut aria-hidden="true" size={18} />
-        {signingOut ? t("Navigation.loggingOut") : t("Navigation.logout")}
-      </button>
-      {error && <Feedback className="px-3">{error}</Feedback>}
     </>
   );
 

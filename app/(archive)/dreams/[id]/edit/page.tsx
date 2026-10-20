@@ -1,3 +1,4 @@
+import { getPageMetadata } from "@/lib/metadata";
 import { notFound } from "next/navigation";
 import { EditDreamModal } from "@/components/dreams/edit-dream-modal";
 import { getDream } from "@/lib/data/archive";
@@ -7,4 +8,8 @@ export default async function EditDreamPage({ params }: PageProps<"/dreams/[id]/
   const dream = await getDream(id);
   if (!dream) notFound();
   return <EditDreamModal dream={dream} />;
+}
+
+export async function generateMetadata() {
+  return getPageMetadata("editDream");
 }

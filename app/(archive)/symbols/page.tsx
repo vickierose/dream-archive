@@ -1,3 +1,4 @@
+import { getPageMetadata } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 import { SymbolCard } from "@/components/symbols/symbol-card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -37,4 +38,8 @@ export default async function SymbolsPage() {
       )}
     </div>
   );
+}
+
+export async function generateMetadata() {
+  return getPageMetadata("symbols");
 }

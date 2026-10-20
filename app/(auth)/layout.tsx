@@ -1,9 +1,13 @@
 import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { privateRobots } from "@/lib/metadata";
 import type { ReactNode } from "react";
 import { MoonStar } from "lucide-react";
 import Link from "next/link";
 import { Illustration } from "@/components/layout/illustration";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+
+export const metadata: Metadata = { robots: privateRobots };
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   const t = useTranslations();

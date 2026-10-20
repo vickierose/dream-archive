@@ -1,3 +1,4 @@
+import { getPageMetadata } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/layout/page-header";
 import Link from "next/link";
@@ -24,4 +25,8 @@ export default async function LoginPage() {
       </p>
     </div>
   );
+}
+
+export async function generateMetadata() {
+  return getPageMetadata("login");
 }

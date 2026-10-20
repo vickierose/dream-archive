@@ -1,3 +1,4 @@
+import { getPageMetadata } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 import { Plus } from "lucide-react";
 import Link from "next/link";
@@ -50,4 +51,8 @@ export default async function DreamsPage() {
       )}
     </div>
   );
+}
+
+export async function generateMetadata() {
+  return getPageMetadata("dreams");
 }

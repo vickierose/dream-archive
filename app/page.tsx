@@ -1,9 +1,45 @@
 import { useTranslations } from "next-intl";
+import type { Metadata } from "next";
+import { getLocale, getTranslations } from "next-intl/server";
+import { getPageMetadata, getSiteUrl } from "@/lib/metadata";
 import { MoveRight } from "lucide-react";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Illustration } from "@/components/layout/illustration";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const [page, locale, t] = await Promise.all([
+    getPageMetadata("home"),
+    getLocale(),
+    getTranslations("Common"),
+  ]);
+  const siteUrl = getSiteUrl();
+  const { title, description } = page;
+  const images = siteUrl
+    ? [{ url: new URL("/night-view.png", siteUrl).href, alt: t("appName") }]
+    : undefined;
+
+  return {
+    title: { absolute: title },
+    description,
+    ...(siteUrl && { alternates: { canonical: siteUrl.href } }),
+    openGraph: {
+      type: "website",
+      siteName: t("appName"),
+      title,
+      description,
+      locale: locale === "uk" ? "uk_UA" : "en_US",
+      ...(siteUrl && { url: siteUrl.href, images }),
+    },
+    twitter: {
+      card: images ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(images && { images }),
+    },
+  };
+}
 
 export default function Home() {
   const t = useTranslations();
