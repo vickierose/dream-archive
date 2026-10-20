@@ -1,7 +1,14 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useId, useRef, useState, useTransition } from "react";
+import {
+  KeyboardEvent,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { setLocale } from "@/lib/actions/locale";
 import { Check, Languages } from "lucide-react";
 import type { AppLocale } from "@/i18n/config";
@@ -86,16 +93,41 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
     });
   }
 
+  function handleMenuKeyDown(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeMenu();
+    } else if (event.key === "Tab") {
+      closeMenu();
+    } else if (
+      ["ArrowDown", "ArrowUp", "Home", "End", "e", "E", "u", "U"].includes(
+        event.key,
+      )
+    ) {
+      event.preventDefault();
+      const buttons = Array.from(
+        event.currentTarget.querySelectorAll("button"),
+      );
+      const current = buttons.indexOf(
+        document.activeElement as HTMLButtonElement,
+      );
+      const next =
+        event.key === "Home" || event.key.toLowerCase() === "e"
+          ? 0
+          : event.key === "End" || event.key.toLowerCase() === "u"
+            ? languages.length - 1
+            : (current +
+                (event.key === "ArrowUp" ? -1 : 1) +
+                languages.length) %
+              languages.length;
+      focusOption(next);
+    }
+  }
   return (
     <div className="flex flex-col gap-1">
       <div
         className={`relative rounded-control text-ink-soft hover:bg-lavender-light hover:text-ink ${className}`}
       >
-        <Languages
-          aria-hidden="true"
-          size={18}
-          className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2"
-        />
         <button
           ref={triggerRef}
           id={`${id}-trigger`}
@@ -107,7 +139,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
           aria-controls={`${id}-menu`}
           popoverTarget={`${id}-menu`}
           disabled={pending}
-          className="control-interaction w-full rounded-control bg-transparent py-2.5 pl-10.5 pr-3 text-left font-base text-sm text-inherit focus:not-focus-visible:outline-none"
+          className="control-interaction w-full flex items-center gap-3 rounded-control bg-transparent py-2.5 px-3 font-base text-sm text-inherit focus:not-focus-visible:outline-none"
           onClick={(event) => {
             const keyboard = event.detail === 0;
             requestAnimationFrame(() => {
@@ -127,6 +159,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
               menuRef.current?.hidePopover();
           }}
         >
+          <Languages aria-hidden="true" size={18} />
           {languages.find((language) => language.locale === locale)?.label}
         </button>
       </div>
@@ -146,43 +179,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
             menuRef.current?.hidePopover();
           }
         }}
-        onKeyDown={(event) => {
-          if (event.key === "Escape") {
-            event.preventDefault();
-            closeMenu();
-          } else if (event.key === "Tab") {
-            closeMenu();
-          } else if (
-            [
-              "ArrowDown",
-              "ArrowUp",
-              "Home",
-              "End",
-              "e",
-              "E",
-              "u",
-              "U",
-            ].includes(event.key)
-          ) {
-            event.preventDefault();
-            const buttons = Array.from(
-              event.currentTarget.querySelectorAll("button"),
-            );
-            const current = buttons.indexOf(
-              document.activeElement as HTMLButtonElement,
-            );
-            const next =
-              event.key === "Home" || event.key.toLowerCase() === "e"
-                ? 0
-                : event.key === "End" || event.key.toLowerCase() === "u"
-                  ? languages.length - 1
-                  : (current +
-                      (event.key === "ArrowUp" ? -1 : 1) +
-                      languages.length) %
-                    languages.length;
-            focusOption(next);
-          }
-        }}
+        onKeyDown={handleMenuKeyDown}
       >
         {languages.map((language) => (
           <button
