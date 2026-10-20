@@ -20,7 +20,7 @@ export default async function SignupPage() {
 
       <SocialLogin />
 
-      <p className="mt-6 text-center font-base text-sm text-ink-soft">
+      <p className="mt-5 text-center font-base text-sm text-ink-soft">
         {t("Auth.already")}{" "}
         <Link className="text-link font-semibold" href="/login">
           {t("Auth.login")}

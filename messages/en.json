@@ -102,6 +102,10 @@
     "enter": "Enter the archive"
   },
   "Auth": {
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "passwordRequirements": "Use at least 8 characters, including an uppercase letter, a lowercase letter, and a number.",
     "welcome": "Welcome back",
     "waiting": "Your dreams are waiting.",
     "newHere": "New to Dream Archive?",
@@ -216,6 +220,10 @@
     "addSymbol": "Could not add the symbol. Please try again."
   },
   "Validation": {
+    "passwordUppercase": "Include at least one uppercase letter.",
+    "passwordLowercase": "Include at least one lowercase letter.",
+    "passwordNumber": "Include at least one number.",
+    "passwordMismatch": "Passwords must match.",
     "email": "Enter a valid email address.",
     "password": "Enter your password.",
     "passwordLength": "Use at least 8 characters for your password.",
@@ -223,6 +231,21 @@
     "date": "Choose a valid date.",
     "plot": "Describe your dream.",
     "mood": "Choose a mood for your dream."
+  },
+  "Explore": {
+    "description": "Discover the constellations hidden in your dreams.",
+    "empty": "Your constellation starts with a symbol",
+    "emptyDescription": "Add symbols to a dream to see how your dream world connects.",
+    "loading": "Gathering your stars…",
+    "chartLabel": "Dream symbol constellation",
+    "instructions": "Drag symbols to rearrange them. Drag the background to pan, and scroll or pinch to zoom. Hover over a connection to see shared dreams.",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "reset": "Reset view",
+    "legend": "Bigger circles appear in more dreams. Thicker lines mean more shared dreams: 1, 2–3, 4–7, or 8+.",
+    "clearFocus": "Show all symbols",
+    "focusHint": "Click a symbol to focus. Click it again or click the background to show everything.",
+    "textView": "View symbols and connections as text"
   },
   "Mood": {
     "Peaceful": "Peaceful",
