@@ -1,9 +1,13 @@
 import type { ReactNode } from "react";
+import type { Metadata } from "next";
+import { privateRobots } from "@/lib/metadata";
 import { Suspense } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { connection } from "next/server";
 import { requireUser } from "@/lib/auth/session";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
+
+export const metadata: Metadata = { robots: privateRobots };
 
 export default async function ArchiveLayout({
   children,

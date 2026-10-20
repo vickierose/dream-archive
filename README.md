@@ -38,6 +38,29 @@ Dream text and user-created symbol names are never automatically translated.
 
 Run `npm run test:i18n` to check catalog parity, messages, plurals, dates, and validation.
 
+## Page metadata and search indexing
+
+Set `SITE_URL` to the public production origin (for example,
+`https://dreams.example.com`) in your deployment environment before building.
+It supplies the homepage canonical URL, absolute social preview URLs, and sitemap.
+Leave it unset locally; the app omits domain-dependent metadata and returns an
+empty sitemap rather than advertising localhost. Invalid URLs fail explicitly.
+
+Titles and descriptions for every page live in the `Metadata` namespace in both
+translation catalogs. Child page titles use `Page | App name`; the homepage has
+its own full title. The existing `night-view.png` illustration supplies the
+homepage Open Graph and Twitter preview image.
+
+Only the public homepage is included in `/sitemap.xml`. Account and archive
+layouts emit `noindex, nofollow, noarchive`. Detail page titles use the dream title
+or symbol name from the authenticated user's archive; descriptions stay generic.
+Missing entries fall back to the localized generic title. `/robots.txt` blocks API crawling and links
+to the sitemap when `SITE_URL` is configured. Other pages remain crawlable so
+crawlers can read their `noindex` tags; authentication still protects the archive.
+
+Language is cookie-based, so both languages share the same canonical URL. There
+are no language-specific URLs to advertise via `hreflang` yet.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

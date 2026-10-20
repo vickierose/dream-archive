@@ -3,6 +3,7 @@ import { Caveat, Nunito } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
+import { getSiteUrl } from "@/lib/metadata";
 
 const caveat = Caveat({
   variable: "--font-caveat",
@@ -16,7 +17,16 @@ const nunito = Nunito({
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
-  return { title: t("Common.appName"), description: t("Common.description") };
+  return {
+    metadataBase: getSiteUrl() ?? null,
+    applicationName: t("Common.appName"),
+    title: {
+      default: t("Common.appName"),
+      template: `%s | ${t("Common.appName")}`,
+    },
+    description: t("Common.description"),
+    referrer: "strict-origin-when-cross-origin",
+  };
 }
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,3 +1,4 @@
+import { getPageMetadata } from "@/lib/metadata";
 import { getTranslations } from "next-intl/server";
 import { Panel } from "@/components/ui/panel";
 import Link from "next/link";
@@ -104,4 +105,14 @@ export default async function SymbolPage({
       </section>
     </div>
   );
+}
+
+export async function generateMetadata({ params }: PageProps<"/symbols/[id]">) {
+  const { id } = await params;
+  const [metadata, archive] = await Promise.all([
+    getPageMetadata("symbol"),
+    getArchive(),
+  ]);
+  const symbol = archive.symbols.find((symbol) => symbol.id === id);
+  return { ...metadata, title: symbol?.name ?? metadata.title };
 }

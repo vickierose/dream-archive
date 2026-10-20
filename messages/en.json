@@ -1,4 +1,54 @@
 {
+  "Metadata": {
+    "home": {
+      "title": "Dream Archive — Your private dream journal",
+      "description": "Record your dreams, collect recurring symbols, and discover connections in your own private dream journal."
+    },
+    "login": {
+      "title": "Log in",
+      "description": "Log in to your private Dream Archive to revisit your dreams and symbols."
+    },
+    "signup": {
+      "title": "Create an account",
+      "description": "Create your Dream Archive account and start a private journal for the dreams you want to remember."
+    },
+    "forgotPassword": {
+      "title": "Forgot password",
+      "description": "Request a password reset link for your Dream Archive account."
+    },
+    "resetPassword": {
+      "title": "Reset password",
+      "description": "Set a new password for your Dream Archive account."
+    },
+    "dreams": {
+      "title": "Your dreams",
+      "description": "Browse and revisit the dreams in your private journal."
+    },
+    "newDream": {
+      "title": "Record a dream",
+      "description": "Save a dream with its story, mood, and symbols in your private journal."
+    },
+    "dream": {
+      "title": "Dream",
+      "description": "Revisit a dream and its connections in your private archive."
+    },
+    "editDream": {
+      "title": "Edit dream",
+      "description": "Update a dream in your private journal."
+    },
+    "symbols": {
+      "title": "Your symbols",
+      "description": "Browse the recurring images and symbols in your dreams."
+    },
+    "symbol": {
+      "title": "Symbol",
+      "description": "Explore a symbol and the dreams it connects in your private archive."
+    },
+    "explore": {
+      "title": "Explore",
+      "description": "Dream exploration features are coming soon to Dream Archive."
+    }
+  },
   "EmojiPicker": {
     "search": "Search",
     "search_no_results_1": "No results",
