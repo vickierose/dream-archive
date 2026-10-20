@@ -2,6 +2,12 @@ import type { Dream } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
 
 export type ConstellationNode = Symbol & { dreamCount: number };
+export type ConstellationDream = Pick<Dream, "id" | "title" | "date" | "symbols">;
+
+export function matchingDreams(dreams: ConstellationDream[], selectedIds: readonly string[]) {
+  if (selectedIds.length < 2) return [];
+  return dreams.filter((dream) => selectedIds.every((id) => dream.symbols.includes(id)));
+}
 export type ConstellationLink = {
   source: string;
   target: string;

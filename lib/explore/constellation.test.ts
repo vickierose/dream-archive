@@ -1,6 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildConstellation, connectionWidth, nodeRadius } from "./constellation";
+import { buildConstellation, connectionWidth, nodeRadius, matchingDreams } from "./constellation";
+
+test("shared dreams must contain every selected symbol, including three or more", () => {
+  const dreams = [
+    { id: "triple", title: "Three", date: "2026-10-20", symbols: ["a", "b", "c"] },
+    { id: "pair", title: "Two", date: "2026-10-19", symbols: ["a", "b"] },
+    { id: "other", title: "Other", date: "2026-10-18", symbols: ["b", "c"] },
+  ];
+  assert.deepEqual(matchingDreams(dreams, ["a", "b"]).map((dream) => dream.id), ["triple", "pair"]);
+  assert.deepEqual(matchingDreams(dreams, ["a", "b", "c"]).map((dream) => dream.id), ["triple"]);
+  assert.deepEqual(matchingDreams(dreams, ["a", "b", "missing"]), []);
+  assert.deepEqual(matchingDreams(dreams, []), []);
+  assert.deepEqual(matchingDreams(dreams, ["a"]), []);
+});
 
 const symbols = [
   { id: "a", name: "Moon", emoji: "🌙" },
