@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth/client";
 import { Button } from "@/components/ui/button";
 import { TextField } from "@/components/ui/text-field";
+import { PasswordField } from "@/components/ui/password-field";
 import {
   createLoginSchema,
   createSignupSchema,
@@ -33,8 +34,10 @@ export function AuthForm({ mode }: AuthFormProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<AuthFormValues>({
-    resolver: zodResolver(isSignup ? createSignupSchema(validation) : createLoginSchema(validation)),
-    defaultValues: { email: "", password: "" },
+    resolver: zodResolver(
+      isSignup ? createSignupSchema(validation) : createLoginSchema(validation),
+    ),
+    defaultValues: { email: "", password: "", confirmPassword: "" },
   });
   const submitLabel = isSignup ? t("Auth.create") : t("Auth.login");
 
@@ -51,9 +54,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           })
         : await authClient.signIn.email({ email, password });
       if (result.error) {
-        setSubmitError(
-          t("Auth.signInError"),
-        );
+        setSubmitError(t("Auth.signInError"));
         return;
       }
       const session = await authClient.getSession();
@@ -62,11 +63,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         return;
       }
       if (!session.data?.user) {
-        setNotice(
-          isSignup
-            ? t("Auth.created")
-            : t("Auth.verify"),
-        );
+        setNotice(isSignup ? t("Auth.created") : t("Auth.verify"));
         return;
       }
       router.replace("/dreams");
@@ -78,7 +75,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <form
-      className="space-y-6"
+      className="space-y-5"
       noValidate
       onSubmit={handleSubmit(handleAuthSubmit)}
     >
@@ -91,15 +88,26 @@ export function AuthForm({ mode }: AuthFormProps) {
         type="email"
         error={errors.email?.message}
       />
-      <TextField
+      <PasswordField
         {...register("password")}
         id="password"
         label={t("Auth.password")}
         autoComplete={isSignup ? "new-password" : "current-password"}
-        placeholder={isSignup ? t("Auth.createPassword") : t("Auth.enterPassword")}
-        type="password"
+        placeholder={
+          isSignup ? t("Auth.createPassword") : t("Auth.enterPassword")
+        }
+        hint={isSignup ? t("Auth.passwordRequirements") : undefined}
         error={errors.password?.message}
       />
+      {isSignup && (
+        <PasswordField
+          {...register("confirmPassword")}
+          id="confirm-password"
+          label={t("Auth.confirmPassword")}
+          autoComplete="new-password"
+          error={errors.confirmPassword?.message}
+        />
+      )}
 
       {!isSignup && (
         <Link href="/forgot-password" className="text-link block text-sm">

@@ -30,10 +30,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <Illustration sizes="(min-width: 48rem) 50vw, 100vw" />
       </section>
 
-      <main className="relative flex flex-1 items-start justify-center bg-paper px-6 pt-6 pb-10 sm:items-center sm:px-10 sm:py-12 md:px-12 md:pt-24 md:shadow-paper-edge lg:px-16">
-        <div className="w-full max-w-md">
-          {children}
-        </div>
+      <main className="relative flex flex-1 items-start justify-center bg-paper px-6 pt-6 pb-10 sm:items-center sm:px-10 sm:py-12 md:px-12 md:pt-16 md:shadow-paper-edge lg:px-16">
+        <div className="w-full max-w-md">{children}</div>
       </main>
     </div>
   );

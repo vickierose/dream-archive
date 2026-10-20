@@ -66,3 +66,29 @@ test("only supported locale identifiers are accepted", () => {
   assert.equal(isAppLocale("uk"), true);
   for (const locale of ["ua", "fr", "../../etc", "", undefined]) assert.equal(isAppLocale(locale), false);
 });
+
+test("signup enforces password strength and matching confirmation in both locales", () => {
+  for (const [locale, messages] of [["en", en], ["uk", uk]] as const) {
+    const t = createTranslator({ locale, messages, namespace: "Validation" });
+    const schema = createSignupSchema(t);
+    for (const [password, key] of [
+      ["Abc1234", "passwordLength"],
+      ["abcdefg1", "passwordUppercase"],
+      ["ABCDEFG1", "passwordLowercase"],
+      ["Abcdefgh", "passwordNumber"],
+    ] as const) {
+      const result = schema.safeParse({ email: "a@example.com", password, confirmPassword: password });
+      assert.equal(result.success, false);
+      if (!result.success) assert.equal(result.error.issues[0].message, messages.Validation[key]);
+    }
+    for (const password of ["Abcdefg1", "Пароль123"]) {
+      assert.equal(schema.safeParse({ email: "a@example.com", password, confirmPassword: password }).success, true);
+    }
+    for (const confirmPassword of [undefined, "", "Abcdefg2"]) {
+      const result = schema.safeParse({ email: "a@example.com", password: "Abcdefg1", confirmPassword });
+      assert.equal(result.success, false);
+      if (!result.success) assert.deepEqual(result.error.issues[0].path, ["confirmPassword"]);
+    }
+    assert.equal(createLoginSchema(t).safeParse({ email: "a@example.com", password: "old" }).success, true);
+  }
+});

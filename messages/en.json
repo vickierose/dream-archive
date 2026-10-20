@@ -102,6 +102,10 @@
     "enter": "Enter the archive"
   },
   "Auth": {
+    "confirmPassword": "Confirm password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "passwordRequirements": "Use at least 8 characters, including an uppercase letter, a lowercase letter, and a number.",
     "welcome": "Welcome back",
     "waiting": "Your dreams are waiting.",
     "newHere": "New to Dream Archive?",
@@ -216,6 +220,10 @@
     "addSymbol": "Could not add the symbol. Please try again."
   },
   "Validation": {
+    "passwordUppercase": "Include at least one uppercase letter.",
+    "passwordLowercase": "Include at least one lowercase letter.",
+    "passwordNumber": "Include at least one number.",
+    "passwordMismatch": "Passwords must match.",
     "email": "Enter a valid email address.",
     "password": "Enter your password.",
     "passwordLength": "Use at least 8 characters for your password.",

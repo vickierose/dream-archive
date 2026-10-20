@@ -35,7 +35,7 @@ export function SocialLogin() {
 
   return (
     <>
-      <div className="my-6 flex items-center gap-3 text-ink-muted">
+      <div className="my-5 flex items-center gap-3 text-ink-muted">
         <span className="h-px flex-1 bg-line" />
         <span className="font-base text-xs">{t("Auth.or")}</span>
         <span className="h-px flex-1 bg-line" />

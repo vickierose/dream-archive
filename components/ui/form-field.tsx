@@ -24,7 +24,7 @@ export function FormField({
     <div className={className}>
       <label
         htmlFor={id}
-        className={hideLabel ? "sr-only" : "mb-2 block field-label"}
+        className={hideLabel ? "sr-only" : "mb-1 block field-label"}
       >
         {label}
       </label>
