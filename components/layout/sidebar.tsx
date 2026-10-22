@@ -2,13 +2,10 @@
 
 import { useTranslations } from "next-intl";
 
-import { Feedback } from "@/components/ui/feedback";
-import { BookOpen, Compass, LogOut, MoonStar, Shapes } from "lucide-react";
+import { BookOpen, Compass, MoonStar, Shapes } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { authClient } from "@/lib/auth/client";
-import { LanguageSwitcher } from "@/components/layout/language-switcher";
+import { AccountControls } from "@/components/layout/account-controls";
 
 export function Sidebar() {
   const t = useTranslations();
@@ -19,25 +16,6 @@ export function Sidebar() {
   ];
 
   const pathname = usePathname();
-  const [signingOut, setSigningOut] = useState(false);
-  const [error, setError] = useState<string>();
-  async function handleLogout() {
-    setSigningOut(true);
-    setError(undefined);
-    try {
-      const result = await authClient.signOut();
-      if (result.error) {
-        setError(t("Navigation.logoutError"));
-        setSigningOut(false);
-        return;
-      }
-      window.location.replace("/login");
-    } catch {
-      setError(t("Navigation.logoutError"));
-      setSigningOut(false);
-    }
-  }
-
   const content = (
     <>
       <Link
@@ -70,20 +48,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto">
-        <LanguageSwitcher />
-        <button
-          className="control-interaction w-full flex items-center gap-3 rounded-control px-3 py-2.5 font-base text-sm text-ink-soft not-disabled:hover:bg-lavender-light not-disabled:hover:text-purple"
-          type="button"
-          disabled={signingOut}
-          aria-busy={signingOut}
-          onClick={handleLogout}
-        >
-          <LogOut aria-hidden="true" size={18} />
-          {signingOut ? t("Navigation.loggingOut") : t("Navigation.logout")}
-        </button>
-        {error && <Feedback className="px-3">{error}</Feedback>}
-      </div>
+      <AccountControls className="mt-auto" />
     </>
   );
 
