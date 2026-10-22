@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react";
 import type { Dream } from "@/types/dream";
 
 type DreamLinkProps = {
-  dream: Dream;
+  dream: Pick<Dream, "id" | "title" | "date">;
   sharedSymbols?: string[];
   thumbnailSrc?: string;
 };

@@ -244,7 +244,7 @@
     "reset": "Reset view",
     "legend": "Bigger circles appear in more dreams. Thicker lines mean more shared dreams: 1, 2–3, 4–7, or 8+.",
     "clearFocus": "Show all symbols",
-    "focusHint": "Click symbols to select them. Select two or more to find dreams containing all of them. Click empty canvas to clear the selection.",
+    "focusHint": "Click symbols to select them, and click again to deselect. Select two or more to find dreams containing all of them. Click empty canvas to clear the selection.",
     "matchingTitle": "Shared dreams",
     "matchingDescription": "Dreams containing every selected symbol.",
     "selectedSymbols": "Selected symbols",

@@ -59,7 +59,10 @@ export default function ConstellationCanvas({
   const [showText, setShowText] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const selection = useMemo(() => new Set(selectedIds), [selectedIds]);
-  const sharedDreams = useMemo(() => matchingDreams(dreams, selectedIds), [dreams, selectedIds]);
+  const sharedDreams = useMemo(
+    () => matchingDreams(dreams, selectedIds),
+    [dreams, selectedIds],
+  );
   const [dimOpacity, setDimOpacity] = useState(1);
   const opacity = useRef(1);
 
@@ -127,7 +130,10 @@ export default function ConstellationCanvas({
   useEffect(() => {
     const from = opacity.current;
     const target = selectedIds.length ? 0.12 : 1;
-    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 220;
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches
+      ? 0
+      : 220;
     let frame: number;
     let start: number | undefined;
     const animate = (time: number) => {
@@ -141,11 +147,19 @@ export default function ConstellationCanvas({
     return () => cancelAnimationFrame(frame);
   }, [selectedIds.length]);
 
-  const selectNode = useCallback((id: string) => {
-    interacted.current = true;
-    setSelectedIds((current) => current.includes(id) ? current : [...current, id]);
-    setHover(null);
-  }, []);
+  const selectNode = useCallback(
+    (id: string) => {
+      if (selection.size && !focused.nodes.has(id)) return;
+      interacted.current = true;
+      setSelectedIds((current) =>
+        current.includes(id)
+          ? current.filter((selected) => selected !== id)
+          : [...current, id],
+      );
+      setHover(null);
+    },
+    [selection, focused],
+  );
 
   const fit = useCallback(() => {
     const reduceMotion = window.matchMedia(
@@ -218,7 +232,11 @@ export default function ConstellationCanvas({
             <Plus size={16} aria-hidden="true" />
           </Button>
           {selectedIds.length > 0 && (
-            <Button variant="ghost" size="sm" onClick={() => setSelectedIds([])}>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedIds([])}
+            >
               {t("clearFocus")}
             </Button>
           )}
@@ -283,7 +301,15 @@ export default function ConstellationCanvas({
             onLinkHover={setHover}
             onNodeDrag={() => setHover(null)}
             onNodeClick={(node) => selectNode(node.id)}
-            onBackgroundClick={() => { setSelectedIds([]); setHover(null); }}
+            showPointerCursor={(object) =>
+              !!object &&
+              "emoji" in object &&
+              (!selection.size || focused.nodes.has((object as GraphNode).id))
+            }
+            onBackgroundClick={() => {
+              setSelectedIds([]);
+              setHover(null);
+            }}
             minZoom={0.05}
             maxZoom={8}
             warmupTicks={80}
@@ -316,41 +342,6 @@ export default function ConstellationCanvas({
         />
       )}
       <p className="mt-3 text-sm text-ink-soft">{t("legend")}</p>
-      <details
-        className="mt-4 text-sm text-ink-soft"
-        onToggle={(event) => setShowText(event.currentTarget.open)}
-      >
-        <summary className="control-interaction w-fit rounded-control">
-          {t("textView")}
-        </summary>
-        {showText && (
-          <>
-            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-              {data.nodes.map((node) => (
-                <li key={node.id}>
-                  <button
-                    type="button"
-                    aria-pressed={selection.has(node.id)}
-                    className="control-interaction rounded-control text-left"
-                    onClick={() => selectNode(node.id)}
-                  >
-                    {node.emoji} {node.name}:{" "}
-                    {common("count", { count: node.dreamCount })}
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-              {graphData.links.map((link) => (
-                <li key={link.id}>
-                  {link.sourceName} + {link.targetName}:{" "}
-                  {common("count", { count: link.dreamCount })}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </details>
     </section>
   );
 }
