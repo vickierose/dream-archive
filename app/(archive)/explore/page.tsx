@@ -13,7 +13,7 @@ export default async function ExplorePage() {
   return (
     <div className="mx-auto max-w-5xl">
       <PageHeader title={t("Navigation.explore")} description={t("Explore.description")} />
-      {data.nodes.length ? <SymbolConstellation data={data} /> : (
+      {data.nodes.length ? <SymbolConstellation data={data} dreams={dreams.map(({ id, title, date, symbols }) => ({ id, title, date, symbols }))} /> : (
         <EmptyState title={t("Explore.empty")} description={t("Explore.emptyDescription")} />
       )}
     </div>

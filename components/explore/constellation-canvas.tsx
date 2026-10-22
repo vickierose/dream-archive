@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
@@ -16,9 +15,13 @@ import ForceGraph2D, {
 import { useTranslations } from "next-intl";
 import { Maximize, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SelectedDreamsPanel } from "./selected-dreams-panel";
+import { ConstellationHelp } from "./constellation-help";
 import {
   connectionWidth,
   nodeRadius,
+  matchingDreams,
+  type ConstellationDream,
   type ConstellationData,
   type ConstellationNode,
 } from "@/lib/explore/constellation";
@@ -36,12 +39,13 @@ type GraphLink = LinkObject<ConstellationNode, Edge>;
 
 export default function ConstellationCanvas({
   data,
+  dreams,
 }: {
   data: ConstellationData;
+  dreams: ConstellationDream[];
 }) {
   const t = useTranslations("Explore");
   const common = useTranslations("Dreams");
-  const helpId = useId();
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(
     undefined,
@@ -50,20 +54,27 @@ export default function ConstellationCanvas({
   const interacted = useRef(false);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hover, setHover] = useState<GraphNode | GraphLink | null>(null);
+  const [tapped, setTapped] = useState<GraphNode | GraphLink | null>(null);
+  const touchInput = useRef(false);
+  const gesture = useRef({ x: 0, y: 0, moved: false });
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
-  const [showText, setShowText] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const selection = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const sharedDreams = useMemo(
+    () => matchingDreams(dreams, selectedIds),
+    [dreams, selectedIds],
+  );
   const [dimOpacity, setDimOpacity] = useState(1);
   const opacity = useRef(1);
 
   const focused = useMemo(() => {
     const nodes = new Set<string>();
     const links = new Set<string>();
-    if (selectedId) {
-      nodes.add(selectedId);
+    if (selection.size) {
+      for (const id of selection) nodes.add(id);
       // Read immutable endpoints: the graph engine replaces its own with objects.
       for (const link of data.links) {
-        if (link.source === selectedId || link.target === selectedId) {
+        if (selection.has(link.source) || selection.has(link.target)) {
           nodes.add(link.source);
           nodes.add(link.target);
           links.add(JSON.stringify([link.source, link.target]));
@@ -71,7 +82,7 @@ export default function ConstellationCanvas({
       }
     }
     return { nodes, links };
-  }, [data.links, selectedId]);
+  }, [data.links, selection]);
 
   // The engine mutates positions and link endpoints; keep the server data intact.
   const graphData = useMemo(() => {
@@ -119,8 +130,11 @@ export default function ConstellationCanvas({
 
   useEffect(() => {
     const from = opacity.current;
-    const target = selectedId ? 0.12 : 1;
-    const duration = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 220;
+    const target = selectedIds.length ? 0.12 : 1;
+    const duration = window.matchMedia("(prefers-reduced-motion: reduce)")
+      .matches
+      ? 0
+      : 220;
     let frame: number;
     let start: number | undefined;
     const animate = (time: number) => {
@@ -132,15 +146,24 @@ export default function ConstellationCanvas({
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [selectedId]);
+  }, [selectedIds.length]);
 
-  const selectNode = useCallback((id: string) => {
-    interacted.current = true;
-    setSelectedId((current) => current === id ? null : id);
-    setHover(null);
-  }, []);
+  const selectNode = useCallback(
+    (id: string) => {
+      if (selection.size && !focused.nodes.has(id)) return;
+      interacted.current = true;
+      setSelectedIds((current) =>
+        current.includes(id)
+          ? current.filter((selected) => selected !== id)
+          : [...current, id],
+      );
+      setHover(null);
+    },
+    [selection, focused],
+  );
 
   const fit = useCallback(() => {
+    setTapped(null);
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -158,8 +181,8 @@ export default function ConstellationCanvas({
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fillStyle = "#fcf8f2";
       ctx.fill();
-      ctx.strokeStyle = node.id === selectedId ? "#604b7a" : "#b9a6d0";
-      ctx.lineWidth = node.id === selectedId ? 2.5 : 1.5;
+      ctx.strokeStyle = selection.has(node.id) ? "#604b7a" : "#b9a6d0";
+      ctx.lineWidth = selection.has(node.id) ? 2.5 : 1.5;
       ctx.stroke();
       ctx.font = `${radius * 1.15}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
       ctx.textAlign = "center";
@@ -168,25 +191,22 @@ export default function ConstellationCanvas({
       ctx.fillText(node.emoji, x, y + radius * 0.04);
       ctx.restore();
     },
-    [selectedId, dimOpacity, focused],
+    [selection, dimOpacity, focused],
   );
 
   return (
     <section
       aria-label={t("chartLabel")}
-      aria-describedby={helpId}
       className="font-base"
     >
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <p id={helpId} className="max-w-xl text-sm text-ink-soft">
-          {t("instructions")} {t("focusHint")}
-        </p>
-        <div className="flex items-center gap-1">
+      <div className="mb-3 flex flex-wrap items-center justify-end gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-1">
           <Button
             variant="ghost"
             size="sm"
             aria-label={t("zoomOut")}
             onClick={() => {
+              setTapped(null);
               interacted.current = true;
               graph.current?.zoom(
                 Math.max(0.05, (graph.current?.zoom() ?? 1) / 1.4),
@@ -201,6 +221,7 @@ export default function ConstellationCanvas({
             size="sm"
             aria-label={t("zoomIn")}
             onClick={() => {
+              setTapped(null);
               interacted.current = true;
               graph.current?.zoom(
                 Math.min(8, (graph.current?.zoom() ?? 1) * 1.4),
@@ -210,134 +231,164 @@ export default function ConstellationCanvas({
           >
             <Plus size={16} aria-hidden="true" />
           </Button>
-          {selectedId && (
-            <Button variant="ghost" size="sm" onClick={() => setSelectedId(null)}>
+          {selectedIds.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => { setSelectedIds([]); setTapped(null); }}
+            >
               {t("clearFocus")}
             </Button>
           )}
-          <Button variant="secondary" size="sm" onClick={() => { setSelectedId(null); fit(); }}>
+          <Button variant="secondary" size="sm" onClick={fit}>
             <Maximize size={16} aria-hidden="true" />
             {t("reset")}
           </Button>
+          <ConstellationHelp />
         </div>
       </div>
       <div
-        ref={container}
-        className="relative h-[65svh] min-h-96 max-h-200 overflow-hidden rounded-panel border border-paper-lilac-border bg-paper-lilac"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, #d9cce1 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-        onPointerDown={() => {
-          interacted.current = true;
-        }}
-        onWheel={() => {
-          interacted.current = true;
-        }}
-        onPointerMove={(event) => {
-          const bounds = event.currentTarget.getBoundingClientRect();
-          setPointer({
-            x: event.clientX - bounds.left,
-            y: event.clientY - bounds.top,
-          });
-        }}
-        onPointerLeave={() => setHover(null)}
+        className={`grid min-w-0 md:transition-[grid-template-columns,column-gap] md:duration-300 md:ease-in-out motion-reduce:transition-none ${
+          selectedIds.length >= 2
+            ? "gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,0.65fr)]"
+            : "gap-0 md:grid-cols-[minmax(0,1fr)_minmax(0,0fr)]"
+        }`}
       >
-        {size.width > 0 && size.height > 0 && (
-          <ForceGraph2D<ConstellationNode, Edge>
-            ref={graph}
-            graphData={graphData}
-            width={size.width}
-            height={size.height}
-            backgroundColor="rgba(0,0,0,0)"
-            nodeVal={(node) => (nodeRadius(node.dreamCount) / 4) ** 2}
-            nodeCanvasObject={drawNode}
-            nodePointerAreaPaint={(node, color, ctx) => {
-              ctx.beginPath();
-              ctx.arc(
-                node.x ?? 0,
-                node.y ?? 0,
-                nodeRadius(node.dreamCount) + 2,
-                0,
-                Math.PI * 2,
-              );
-              ctx.fillStyle = color;
-              ctx.fill();
-            }}
-            nodeLabel={() => ""}
-            linkLabel={() => ""}
-            linkWidth={(link) => connectionWidth(link.dreamCount)}
-            linkColor={(link) =>
-              `rgba(161, 138, 185, ${focused.links.has(link.id) ? 1 : dimOpacity})`
+        <div
+          ref={container}
+          className="relative h-[65svh] min-h-96 max-h-200 min-w-0 overflow-hidden rounded-panel border border-paper-lilac-border bg-paper-lilac"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, #d9cce1 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+          onPointerDownCapture={(event) => {
+            interacted.current = true;
+            touchInput.current = event.pointerType !== "mouse";
+            gesture.current = { x: event.clientX, y: event.clientY, moved: !event.isPrimary };
+            if (touchInput.current) {
+              setHover(null);
+              if (!event.isPrimary) setTapped(null);
+            } else setTapped(null);
+          }}
+          onWheel={() => {
+            interacted.current = true;
+            setTapped(null);
+          }}
+          onPointerMove={(event) => {
+            if (event.pointerType !== "mouse") {
+              if (Math.hypot(event.clientX - gesture.current.x, event.clientY - gesture.current.y) > 8) {
+                gesture.current.moved = true;
+                setTapped(null);
+              }
+              return;
             }
-            linkHoverPrecision={8}
-            onNodeHover={setHover}
-            onLinkHover={setHover}
-            onNodeDrag={() => setHover(null)}
-            onNodeClick={(node) => selectNode(node.id)}
-            onBackgroundClick={() => setSelectedId(null)}
-            minZoom={0.05}
-            maxZoom={8}
-            warmupTicks={80}
-            cooldownTicks={120}
-            onEngineStop={() => {
-              if (!fitted.current && !interacted.current) fit();
-              fitted.current = true;
-            }}
+            const bounds = event.currentTarget.getBoundingClientRect();
+            setPointer({
+              x: event.clientX - bounds.left,
+              y: event.clientY - bounds.top,
+            });
+          }}
+          onPointerLeave={() => setHover(null)}
+          onPointerCancel={() => { gesture.current.moved = true; setTapped(null); }}
+        >
+          {size.width > 0 && size.height > 0 && (
+            <ForceGraph2D<ConstellationNode, Edge>
+              ref={graph}
+              graphData={graphData}
+              width={size.width}
+              height={size.height}
+              backgroundColor="rgba(0,0,0,0)"
+              nodeVal={(node) => (nodeRadius(node.dreamCount) / 4) ** 2}
+              nodeCanvasObject={drawNode}
+              nodePointerAreaPaint={(node, color, ctx) => {
+                ctx.beginPath();
+                ctx.arc(
+                  node.x ?? 0,
+                  node.y ?? 0,
+                  nodeRadius(node.dreamCount) + 2,
+                  0,
+                  Math.PI * 2,
+                );
+                ctx.fillStyle = color;
+                ctx.fill();
+              }}
+              nodeLabel={() => ""}
+              linkLabel={() => ""}
+              linkWidth={(link) => connectionWidth(link.dreamCount)}
+              linkColor={(link) =>
+                `rgba(161, 138, 185, ${focused.links.has(link.id) ? 1 : dimOpacity})`
+              }
+              linkHoverPrecision={8}
+              onNodeHover={(node) => { if (!touchInput.current) setHover(node); }}
+              onLinkHover={(link) => { if (!touchInput.current) setHover(link); }}
+              onNodeDrag={() => { gesture.current.moved = true; setHover(null); setTapped(null); }}
+              onZoom={() => { setHover(null); setTapped(null); }}
+              onNodeClick={(node) => {
+                if (touchInput.current && gesture.current.moved) return;
+                if (selection.size && !focused.nodes.has(node.id)) return;
+                selectNode(node.id);
+                if (touchInput.current) setTapped(node);
+              }}
+              onLinkClick={(link) => {
+                if (touchInput.current && !gesture.current.moved) setTapped(link);
+              }}
+              showPointerCursor={(object) =>
+                !!object &&
+                "emoji" in object &&
+                (!selection.size || focused.nodes.has((object as GraphNode).id))
+              }
+              onBackgroundClick={() => {
+                if (touchInput.current && gesture.current.moved) return;
+                setSelectedIds([]);
+                setHover(null);
+                setTapped(null);
+              }}
+              minZoom={0.05}
+              maxZoom={8}
+              warmupTicks={80}
+              cooldownTicks={120}
+              onEngineStop={() => {
+                if (!fitted.current && !interacted.current) fit();
+                fitted.current = true;
+              }}
+            />
+          )}
+          {hover && (
+            <div
+              role="tooltip"
+              className="pointer-events-none absolute z-10 max-w-[calc(100%-1.5rem)] rounded-control border border-paper-lilac-border bg-paper-light px-3 py-2 text-sm text-ink shadow-popover"
+              style={{
+                left: Math.max(12, Math.min(pointer.x + 14, size.width - 230)),
+                top: Math.max(12, Math.min(pointer.y + 16, size.height - 65)),
+              }}
+            >
+              {"emoji" in hover
+                ? `${hover.emoji} ${hover.name}: ${common("count", { count: hover.dreamCount })}`
+                : `${hover.sourceEmoji} + ${hover.targetEmoji}: ${common("count", { count: hover.dreamCount })}`}
+            </div>
+          )}
+          {tapped && (
+            <div role="status" className="pointer-events-none absolute inset-x-3 bottom-3 z-10 rounded-control border border-paper-lilac-border bg-paper-light px-4 py-3 text-sm text-ink shadow-popover">
+              {"emoji" in tapped
+                ? `${tapped.emoji} ${tapped.name}: ${common("count", { count: tapped.dreamCount })}`
+                : `${tapped.sourceEmoji} + ${tapped.targetEmoji}: ${common("count", { count: tapped.dreamCount })}`}
+            </div>
+          )}
+        </div>
+        <div
+          aria-hidden={selectedIds.length < 2}
+          inert={selectedIds.length < 2}
+          className={`min-w-0 overflow-hidden md:block md:transition-opacity md:duration-300 md:ease-in-out motion-reduce:transition-none ${
+            selectedIds.length >= 2 ? "opacity-100" : "hidden md:opacity-0"
+          }`}
+        >
+          <SelectedDreamsPanel
+            dreams={sharedDreams}
+            symbols={data.nodes.filter((node) => selection.has(node.id))}
           />
-        )}
-        {hover && (
-          <div
-            role="tooltip"
-            className="pointer-events-none absolute z-10 max-w-[calc(100%-1.5rem)] rounded-control border border-paper-lilac-border bg-paper-light px-3 py-2 text-sm text-ink shadow-popover"
-            style={{
-              left: Math.max(12, Math.min(pointer.x + 14, size.width - 230)),
-              top: Math.max(12, Math.min(pointer.y + 16, size.height - 65)),
-            }}
-          >
-            {"emoji" in hover
-              ? `${hover.emoji} ${hover.name}: ${common("count", { count: hover.dreamCount })}`
-              : `${hover.sourceEmoji} + ${hover.targetEmoji}: ${common("count", { count: hover.dreamCount })}`}
-          </div>
-        )}
+        </div>
       </div>
-      <p className="mt-3 text-sm text-ink-soft">{t("legend")}</p>
-      <details
-        className="mt-4 text-sm text-ink-soft"
-        onToggle={(event) => setShowText(event.currentTarget.open)}
-      >
-        <summary className="control-interaction w-fit rounded-control">
-          {t("textView")}
-        </summary>
-        {showText && (
-          <>
-            <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-              {data.nodes.map((node) => (
-                <li key={node.id}>
-                  <button
-                    type="button"
-                    aria-pressed={selectedId === node.id}
-                    className="control-interaction rounded-control text-left"
-                    onClick={() => selectNode(node.id)}
-                  >
-                    {node.emoji} {node.name}:{" "}
-                    {common("count", { count: node.dreamCount })}
-                  </button>
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-              {graphData.links.map((link) => (
-                <li key={link.id}>
-                  {link.sourceName} + {link.targetName}:{" "}
-                  {common("count", { count: link.dreamCount })}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </details>
     </section>
   );
 }
