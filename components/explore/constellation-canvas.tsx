@@ -55,8 +55,10 @@ export default function ConstellationCanvas({
   const interacted = useRef(false);
   const [size, setSize] = useState({ width: 0, height: 0 });
   const [hover, setHover] = useState<GraphNode | GraphLink | null>(null);
+  const [tapped, setTapped] = useState<GraphNode | GraphLink | null>(null);
+  const touchInput = useRef(false);
+  const gesture = useRef({ x: 0, y: 0, moved: false });
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
-  const [showText, setShowText] = useState(false);
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const selection = useMemo(() => new Set(selectedIds), [selectedIds]);
   const sharedDreams = useMemo(
@@ -162,6 +164,7 @@ export default function ConstellationCanvas({
   );
 
   const fit = useCallback(() => {
+    setTapped(null);
     const reduceMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -208,6 +211,7 @@ export default function ConstellationCanvas({
             size="sm"
             aria-label={t("zoomOut")}
             onClick={() => {
+              setTapped(null);
               interacted.current = true;
               graph.current?.zoom(
                 Math.max(0.05, (graph.current?.zoom() ?? 1) / 1.4),
@@ -222,6 +226,7 @@ export default function ConstellationCanvas({
             size="sm"
             aria-label={t("zoomIn")}
             onClick={() => {
+              setTapped(null);
               interacted.current = true;
               graph.current?.zoom(
                 Math.min(8, (graph.current?.zoom() ?? 1) * 1.4),
@@ -235,7 +240,7 @@ export default function ConstellationCanvas({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setSelectedIds([])}
+              onClick={() => { setSelectedIds([]); setTapped(null); }}
             >
               {t("clearFocus")}
             </Button>
@@ -261,13 +266,27 @@ export default function ConstellationCanvas({
               "radial-gradient(circle, #d9cce1 1px, transparent 1px)",
             backgroundSize: "28px 28px",
           }}
-          onPointerDown={() => {
+          onPointerDownCapture={(event) => {
             interacted.current = true;
+            touchInput.current = event.pointerType !== "mouse";
+            gesture.current = { x: event.clientX, y: event.clientY, moved: !event.isPrimary };
+            if (touchInput.current) {
+              setHover(null);
+              if (!event.isPrimary) setTapped(null);
+            } else setTapped(null);
           }}
           onWheel={() => {
             interacted.current = true;
+            setTapped(null);
           }}
           onPointerMove={(event) => {
+            if (event.pointerType !== "mouse") {
+              if (Math.hypot(event.clientX - gesture.current.x, event.clientY - gesture.current.y) > 8) {
+                gesture.current.moved = true;
+                setTapped(null);
+              }
+              return;
+            }
             const bounds = event.currentTarget.getBoundingClientRect();
             setPointer({
               x: event.clientX - bounds.left,
@@ -275,6 +294,7 @@ export default function ConstellationCanvas({
             });
           }}
           onPointerLeave={() => setHover(null)}
+          onPointerCancel={() => { gesture.current.moved = true; setTapped(null); }}
         >
           {size.width > 0 && size.height > 0 && (
             <ForceGraph2D<ConstellationNode, Edge>
@@ -304,18 +324,29 @@ export default function ConstellationCanvas({
                 `rgba(161, 138, 185, ${focused.links.has(link.id) ? 1 : dimOpacity})`
               }
               linkHoverPrecision={8}
-              onNodeHover={setHover}
-              onLinkHover={setHover}
-              onNodeDrag={() => setHover(null)}
-              onNodeClick={(node) => selectNode(node.id)}
+              onNodeHover={(node) => { if (!touchInput.current) setHover(node); }}
+              onLinkHover={(link) => { if (!touchInput.current) setHover(link); }}
+              onNodeDrag={() => { gesture.current.moved = true; setHover(null); setTapped(null); }}
+              onZoom={() => { setHover(null); setTapped(null); }}
+              onNodeClick={(node) => {
+                if (touchInput.current && gesture.current.moved) return;
+                if (selection.size && !focused.nodes.has(node.id)) return;
+                selectNode(node.id);
+                if (touchInput.current) setTapped(node);
+              }}
+              onLinkClick={(link) => {
+                if (touchInput.current && !gesture.current.moved) setTapped(link);
+              }}
               showPointerCursor={(object) =>
                 !!object &&
                 "emoji" in object &&
                 (!selection.size || focused.nodes.has((object as GraphNode).id))
               }
               onBackgroundClick={() => {
+                if (touchInput.current && gesture.current.moved) return;
                 setSelectedIds([]);
                 setHover(null);
+                setTapped(null);
               }}
               minZoom={0.05}
               maxZoom={8}
@@ -339,6 +370,13 @@ export default function ConstellationCanvas({
               {"emoji" in hover
                 ? `${hover.emoji} ${hover.name}: ${common("count", { count: hover.dreamCount })}`
                 : `${hover.sourceEmoji} + ${hover.targetEmoji}: ${common("count", { count: hover.dreamCount })}`}
+            </div>
+          )}
+          {tapped && (
+            <div role="status" className="pointer-events-none absolute inset-x-3 bottom-3 z-10 rounded-control border border-paper-lilac-border bg-paper-light px-4 py-3 text-sm text-ink shadow-popover">
+              {"emoji" in tapped
+                ? `${tapped.emoji} ${tapped.name}: ${common("count", { count: tapped.dreamCount })}`
+                : `${tapped.sourceEmoji} + ${tapped.targetEmoji}: ${common("count", { count: tapped.dreamCount })}`}
             </div>
           )}
         </div>
