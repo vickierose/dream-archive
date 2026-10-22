@@ -242,6 +242,7 @@
     "zoomIn": "Zoom in",
     "zoomOut": "Zoom out",
     "reset": "Reset view",
+    "help": "How to use the constellation",
     "legend": "Bigger circles appear in more dreams. Thicker lines mean more shared dreams: 1, 2–3, 4–7, or 8+.",
     "clearFocus": "Show all symbols",
     "focusHint": "Click symbols to select them, and click again to deselect. Select two or more to find dreams containing all of them. Click empty canvas to clear the selection.",

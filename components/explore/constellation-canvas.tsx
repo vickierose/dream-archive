@@ -3,7 +3,6 @@
 import {
   useCallback,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
@@ -17,6 +16,7 @@ import { useTranslations } from "next-intl";
 import { Maximize, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SelectedDreamsPanel } from "./selected-dreams-panel";
+import { ConstellationHelp } from "./constellation-help";
 import {
   connectionWidth,
   nodeRadius,
@@ -46,7 +46,6 @@ export default function ConstellationCanvas({
 }) {
   const t = useTranslations("Explore");
   const common = useTranslations("Dreams");
-  const helpId = useId();
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(
     undefined,
@@ -198,14 +197,10 @@ export default function ConstellationCanvas({
   return (
     <section
       aria-label={t("chartLabel")}
-      aria-describedby={helpId}
       className="font-base"
     >
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-        <p id={helpId} className="max-w-xl text-sm text-ink-soft">
-          {t("instructions")} {t("focusHint")}
-        </p>
-        <div className="flex items-center gap-1">
+      <div className="mb-3 flex flex-wrap items-center justify-end gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-1">
           <Button
             variant="ghost"
             size="sm"
@@ -249,6 +244,7 @@ export default function ConstellationCanvas({
             <Maximize size={16} aria-hidden="true" />
             {t("reset")}
           </Button>
+          <ConstellationHelp />
         </div>
       </div>
       <div
@@ -393,7 +389,6 @@ export default function ConstellationCanvas({
           />
         </div>
       </div>
-      <p className="mt-3 text-sm text-ink-soft">{t("legend")}</p>
     </section>
   );
 }
