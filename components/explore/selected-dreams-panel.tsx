@@ -20,34 +20,32 @@ export function SelectedDreamsPanel({
   const headingId = useId();
 
   return (
-    <section aria-labelledby={headingId} className="mt-4">
-      <Panel padding="none" className="mt-4 max-h-80 overflow-y-auto">
-        <div className="border-b border-line px-5 py-4">
-          <SectionHeading
-            id={headingId}
-            title={`${t("matchingTitle")} (${dreams.length})`}
-          />
-          <ul
-            className="mt-3 flex flex-wrap gap-2"
-            aria-label={t("selectedSymbols")}
-          >
-            {symbols.map((symbol) => (
-              <li key={symbol.id}>
-                <Chip>
-                  {symbol.emoji} {symbol.name}
-                </Chip>
-              </li>
-            ))}
-          </ul>
-        </div>
-        {dreams.length ? (
-          dreams.map((dream) => <DreamLink key={dream.id} dream={dream} />)
-        ) : (
-          <p className="p-6 text-sm leading-relaxed text-ink-soft">
-            {t("noMatchingDreams")}
-          </p>
-        )}
-      </Panel>
-    </section>
+    <Panel padding="none" aria-labelledby={headingId} className="min-w-0 max-h-80 overflow-y-auto md:h-[65svh] md:min-h-96 md:max-h-200">
+      <div className="border-b border-line px-5 py-4">
+        <SectionHeading
+          id={headingId}
+          title={`${t("matchingTitle")} (${dreams.length})`}
+        />
+        <ul
+          className="mt-3 flex flex-wrap gap-2"
+          aria-label={t("selectedSymbols")}
+        >
+          {symbols.map((symbol) => (
+            <li key={symbol.id}>
+              <Chip>
+                {symbol.emoji} {symbol.name}
+              </Chip>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {dreams.length ? (
+        dreams.map((dream) => <DreamLink key={dream.id} dream={dream} />)
+      ) : (
+        <p className="p-6 text-sm leading-relaxed text-ink-soft">
+          {t("noMatchingDreams")}
+        </p>
+      )}
+    </Panel>
   );
 }

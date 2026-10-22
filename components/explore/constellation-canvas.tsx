@@ -247,100 +247,114 @@ export default function ConstellationCanvas({
         </div>
       </div>
       <div
-        ref={container}
-        className="relative h-[65svh] min-h-96 max-h-200 overflow-hidden rounded-panel border border-paper-lilac-border bg-paper-lilac"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, #d9cce1 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-        onPointerDown={() => {
-          interacted.current = true;
-        }}
-        onWheel={() => {
-          interacted.current = true;
-        }}
-        onPointerMove={(event) => {
-          const bounds = event.currentTarget.getBoundingClientRect();
-          setPointer({
-            x: event.clientX - bounds.left,
-            y: event.clientY - bounds.top,
-          });
-        }}
-        onPointerLeave={() => setHover(null)}
+        className={`grid min-w-0 md:transition-[grid-template-columns,column-gap] md:duration-300 md:ease-in-out motion-reduce:transition-none ${
+          selectedIds.length >= 2
+            ? "gap-4 md:grid-cols-[minmax(0,1fr)_minmax(0,0.65fr)]"
+            : "gap-0 md:grid-cols-[minmax(0,1fr)_minmax(0,0fr)]"
+        }`}
       >
-        {size.width > 0 && size.height > 0 && (
-          <ForceGraph2D<ConstellationNode, Edge>
-            ref={graph}
-            graphData={graphData}
-            width={size.width}
-            height={size.height}
-            backgroundColor="rgba(0,0,0,0)"
-            nodeVal={(node) => (nodeRadius(node.dreamCount) / 4) ** 2}
-            nodeCanvasObject={drawNode}
-            nodePointerAreaPaint={(node, color, ctx) => {
-              ctx.beginPath();
-              ctx.arc(
-                node.x ?? 0,
-                node.y ?? 0,
-                nodeRadius(node.dreamCount) + 2,
-                0,
-                Math.PI * 2,
-              );
-              ctx.fillStyle = color;
-              ctx.fill();
-            }}
-            nodeLabel={() => ""}
-            linkLabel={() => ""}
-            linkWidth={(link) => connectionWidth(link.dreamCount)}
-            linkColor={(link) =>
-              `rgba(161, 138, 185, ${focused.links.has(link.id) ? 1 : dimOpacity})`
-            }
-            linkHoverPrecision={8}
-            onNodeHover={setHover}
-            onLinkHover={setHover}
-            onNodeDrag={() => setHover(null)}
-            onNodeClick={(node) => selectNode(node.id)}
-            showPointerCursor={(object) =>
-              !!object &&
-              "emoji" in object &&
-              (!selection.size || focused.nodes.has((object as GraphNode).id))
-            }
-            onBackgroundClick={() => {
-              setSelectedIds([]);
-              setHover(null);
-            }}
-            minZoom={0.05}
-            maxZoom={8}
-            warmupTicks={80}
-            cooldownTicks={120}
-            onEngineStop={() => {
-              if (!fitted.current && !interacted.current) fit();
-              fitted.current = true;
-            }}
+        <div
+          ref={container}
+          className="relative h-[65svh] min-h-96 max-h-200 min-w-0 overflow-hidden rounded-panel border border-paper-lilac-border bg-paper-lilac"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, #d9cce1 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+          onPointerDown={() => {
+            interacted.current = true;
+          }}
+          onWheel={() => {
+            interacted.current = true;
+          }}
+          onPointerMove={(event) => {
+            const bounds = event.currentTarget.getBoundingClientRect();
+            setPointer({
+              x: event.clientX - bounds.left,
+              y: event.clientY - bounds.top,
+            });
+          }}
+          onPointerLeave={() => setHover(null)}
+        >
+          {size.width > 0 && size.height > 0 && (
+            <ForceGraph2D<ConstellationNode, Edge>
+              ref={graph}
+              graphData={graphData}
+              width={size.width}
+              height={size.height}
+              backgroundColor="rgba(0,0,0,0)"
+              nodeVal={(node) => (nodeRadius(node.dreamCount) / 4) ** 2}
+              nodeCanvasObject={drawNode}
+              nodePointerAreaPaint={(node, color, ctx) => {
+                ctx.beginPath();
+                ctx.arc(
+                  node.x ?? 0,
+                  node.y ?? 0,
+                  nodeRadius(node.dreamCount) + 2,
+                  0,
+                  Math.PI * 2,
+                );
+                ctx.fillStyle = color;
+                ctx.fill();
+              }}
+              nodeLabel={() => ""}
+              linkLabel={() => ""}
+              linkWidth={(link) => connectionWidth(link.dreamCount)}
+              linkColor={(link) =>
+                `rgba(161, 138, 185, ${focused.links.has(link.id) ? 1 : dimOpacity})`
+              }
+              linkHoverPrecision={8}
+              onNodeHover={setHover}
+              onLinkHover={setHover}
+              onNodeDrag={() => setHover(null)}
+              onNodeClick={(node) => selectNode(node.id)}
+              showPointerCursor={(object) =>
+                !!object &&
+                "emoji" in object &&
+                (!selection.size || focused.nodes.has((object as GraphNode).id))
+              }
+              onBackgroundClick={() => {
+                setSelectedIds([]);
+                setHover(null);
+              }}
+              minZoom={0.05}
+              maxZoom={8}
+              warmupTicks={80}
+              cooldownTicks={120}
+              onEngineStop={() => {
+                if (!fitted.current && !interacted.current) fit();
+                fitted.current = true;
+              }}
+            />
+          )}
+          {hover && (
+            <div
+              role="tooltip"
+              className="pointer-events-none absolute z-10 max-w-[calc(100%-1.5rem)] rounded-control border border-paper-lilac-border bg-paper-light px-3 py-2 text-sm text-ink shadow-popover"
+              style={{
+                left: Math.max(12, Math.min(pointer.x + 14, size.width - 230)),
+                top: Math.max(12, Math.min(pointer.y + 16, size.height - 65)),
+              }}
+            >
+              {"emoji" in hover
+                ? `${hover.emoji} ${hover.name}: ${common("count", { count: hover.dreamCount })}`
+                : `${hover.sourceEmoji} + ${hover.targetEmoji}: ${common("count", { count: hover.dreamCount })}`}
+            </div>
+          )}
+        </div>
+        <div
+          aria-hidden={selectedIds.length < 2}
+          inert={selectedIds.length < 2}
+          className={`min-w-0 overflow-hidden md:block md:transition-opacity md:duration-300 md:ease-in-out motion-reduce:transition-none ${
+            selectedIds.length >= 2 ? "opacity-100" : "hidden md:opacity-0"
+          }`}
+        >
+          <SelectedDreamsPanel
+            dreams={sharedDreams}
+            symbols={data.nodes.filter((node) => selection.has(node.id))}
           />
-        )}
-        {hover && (
-          <div
-            role="tooltip"
-            className="pointer-events-none absolute z-10 max-w-[calc(100%-1.5rem)] rounded-control border border-paper-lilac-border bg-paper-light px-3 py-2 text-sm text-ink shadow-popover"
-            style={{
-              left: Math.max(12, Math.min(pointer.x + 14, size.width - 230)),
-              top: Math.max(12, Math.min(pointer.y + 16, size.height - 65)),
-            }}
-          >
-            {"emoji" in hover
-              ? `${hover.emoji} ${hover.name}: ${common("count", { count: hover.dreamCount })}`
-              : `${hover.sourceEmoji} + ${hover.targetEmoji}: ${common("count", { count: hover.dreamCount })}`}
-          </div>
-        )}
+        </div>
       </div>
-      {selectedIds.length >= 2 && (
-        <SelectedDreamsPanel
-          dreams={sharedDreams}
-          symbols={data.nodes.filter((node) => selection.has(node.id))}
-        />
-      )}
       <p className="mt-3 text-sm text-ink-soft">{t("legend")}</p>
     </section>
   );
