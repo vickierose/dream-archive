@@ -1,4 +1,16 @@
 {
+  "ArchiveList": {
+    "reset": "Reset",
+    "search": "Search",
+    "searchDreams": "Search dreams by name",
+    "searchSymbols": "Search symbols by name",
+    "noResults": "No matches found",
+    "noResultsDescription": "Try another search or adjust your filters.",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page}"
+  },
   "Metadata": {
     "home": {
       "title": "Dream Archive — Your private dream journal",
