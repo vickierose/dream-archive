@@ -62,7 +62,7 @@ export default function Home() {
             {t("Home.intro")}
           </p>
 
-          <Button href="/login" className="mt-8">
+          <Button href="/dreams" className="mt-8">
             {t("Home.enter")}
             <MoveRight aria-hidden="true" size={16} />
           </Button>

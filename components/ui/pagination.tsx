@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useArchiveNavigation } from "@/components/ui/archive-list-transition";
 import { useTranslations } from "next-intl";
 import { listHref, type ListSearchParams } from "@/lib/archive-list";
 
@@ -14,6 +17,7 @@ export function Pagination({
   pages: number;
 }) {
   const t = useTranslations("ArchiveList");
+  const navigate = useArchiveNavigation();
   if (pages <= 1) return null;
   const numbers = Array.from(new Set([1, page - 1, page, page + 1, pages]))
     .filter((value) => value >= 1 && value <= pages)
@@ -26,7 +30,10 @@ export function Pagination({
       className="mt-10 flex flex-wrap items-center justify-center gap-2"
     >
       {page > 1 && (
-        <Link className={classes} href={listHref(path, params, page - 1)}>
+        <Link className={classes} href={listHref(path, params, page - 1)} onNavigate={(event) => {
+          event.preventDefault();
+          navigate(listHref(path, params, page - 1));
+        }}>
           {t("previous")}
         </Link>
       )}
@@ -40,6 +47,10 @@ export function Pagination({
           <Link
             className={`${classes} ${number === page ? "bg-purple text-white hover:bg-purple-dark" : ""}`}
             href={listHref(path, params, number)}
+            onNavigate={(event) => {
+              event.preventDefault();
+              navigate(listHref(path, params, number));
+            }}
             aria-label={t("page", { page: number })}
             aria-current={number === page ? "page" : undefined}
           >
@@ -48,7 +59,10 @@ export function Pagination({
         </span>
       ))}
       {page < pages && (
-        <Link className={classes} href={listHref(path, params, page + 1)}>
+        <Link className={classes} href={listHref(path, params, page + 1)} onNavigate={(event) => {
+          event.preventDefault();
+          navigate(listHref(path, params, page + 1));
+        }}>
           {t("next")}
         </Link>
       )}

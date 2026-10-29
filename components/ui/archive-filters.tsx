@@ -2,7 +2,7 @@
 
 import Form from "next/form";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useArchiveNavigation } from "@/components/ui/archive-list-transition";
 import { useTranslations } from "next-intl";
 import { SearchField } from "@/components/ui/search-field";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ export function ArchiveFilters({
   availableSymbols?: Symbol[];
 }) {
   const t = useTranslations();
-  const router = useRouter();
+  const navigate = useArchiveNavigation();
   const [search, setSearch] = useState(query);
   const [selectedMoods, setSelectedMoods] = useState(moods);
   const [selectedSymbols, setSelectedSymbols] = useState(symbols);
@@ -34,11 +34,22 @@ export function ArchiveFilters({
     setSearch("");
     setSelectedMoods([]);
     setSelectedSymbols([]);
-    router.push(`${path}?page=1`, { scroll: false });
+    navigate(`${path}?page=1`);
   }
 
   return (
-    <Form action={path} className="mb-8 flex flex-wrap items-center gap-3">
+    <Form
+      action={path}
+      className="mb-8 flex flex-wrap items-center gap-3"
+      onSubmit={(event) => {
+        event.preventDefault();
+        const params = new URLSearchParams();
+        new FormData(event.currentTarget).forEach((value, name) => {
+          if (typeof value === "string") params.append(name, value);
+        });
+        navigate(`${path}?${params}`);
+      }}
+    >
       <input type="hidden" name="page" value="1" />
       <SearchField
         label={t(
