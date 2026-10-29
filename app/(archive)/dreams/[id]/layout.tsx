@@ -69,16 +69,21 @@ export default async function DreamLayout({
         />
 
         <article className="relative border border-paper-dark bg-paper p-6 shadow-paper sm:p-8">
-          <Chip className="w-fit absolute -top-2 left-6">{t(`Mood.${dream.mood}`)}</Chip>
+          <Chip className="w-fit absolute -top-2 left-6">
+            {t(`Mood.${dream.mood}`)}
+          </Chip>
           <span
             aria-hidden="true"
-            className="absolute -right-1 top-[-1.1rem] h-9 w-4 rounded-full border-2 border-line bg-transparent"
+            className="pointer-events-none absolute right-1 -top-2 h-9 w-4 bg-line [mask-image:url('/paperclip.svg')] [mask-repeat:no-repeat] [mask-size:100%_100%]"
           />
           <DreamPlot key={dream.id} plot={dream.plot} />
         </article>
 
         <section className="mt-8" aria-labelledby="symbols-heading">
-          <SectionHeading id="symbols-heading" title={t("Navigation.symbols")} />
+          <SectionHeading
+            id="symbols-heading"
+            title={t("Navigation.symbols")}
+          />
           <ul className="mt-4 flex flex-wrap gap-4">
             {dreamSymbols.map((symbol) => (
               <li className="w-16" key={symbol.id}>

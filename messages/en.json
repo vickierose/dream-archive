@@ -1,4 +1,16 @@
 {
+  "ArchiveList": {
+    "reset": "Reset",
+    "search": "Search",
+    "searchDreams": "Search dreams by name",
+    "searchSymbols": "Search symbols by name",
+    "noResults": "No matches found",
+    "noResultsDescription": "Try another search or adjust your filters.",
+    "pagination": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page {page}"
+  },
   "Metadata": {
     "home": {
       "title": "Dream Archive — Your private dream journal",
@@ -152,6 +164,9 @@
     "logoutError": "Could not log out. Please try again."
   },
   "Dreams": {
+    "copyPlot": "Copy dream plot",
+    "plotCopied": "Dream plot copied",
+    "copyPlotError": "Could not copy the dream plot. Please try again.",
     "showMore": "Show more",
     "showLess": "Show less",
     "title": "Your Dreams",

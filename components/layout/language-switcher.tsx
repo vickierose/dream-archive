@@ -18,7 +18,7 @@ const languages = [
   { locale: "uk", label: "UA" },
 ] as const;
 
-export function LanguageSwitcher({ className = "" }: { className?: string }) {
+export function LanguageSwitcher({ className = "", iconOnly = false }: { className?: string; iconOnly?: boolean }) {
   const locale = useLocale();
   const t = useTranslations();
   const [pending, startTransition] = useTransition();
@@ -37,7 +37,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
       return;
     }
     const bounds = trigger.getBoundingClientRect();
-    menu.style.width = `${bounds.width}px`;
+    menu.style.width = `${Math.max(bounds.width, 96)}px`;
     const gap = 6;
     const left = Math.max(
       8,
@@ -133,13 +133,14 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
           id={`${id}-trigger`}
           type="button"
           aria-label={t("Common.language")}
+          title={iconOnly ? t("Common.language") : undefined}
           aria-busy={pending}
           aria-haspopup="menu"
           aria-expanded={open}
           aria-controls={`${id}-menu`}
           popoverTarget={`${id}-menu`}
           disabled={pending}
-          className="control-interaction w-full flex items-center gap-3 rounded-control bg-transparent py-2.5 px-3 font-base text-sm text-inherit focus:not-focus-visible:outline-none"
+          className={`control-interaction flex items-center rounded-control bg-transparent font-base text-sm text-inherit focus:not-focus-visible:outline-none ${iconOnly ? "size-11 justify-center" : "w-full gap-3 py-2.5 px-3"}`}
           onClick={(event) => {
             const keyboard = event.detail === 0;
             requestAnimationFrame(() => {
@@ -160,7 +161,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
           }}
         >
           <Languages aria-hidden="true" size={18} />
-          {languages.find((language) => language.locale === locale)?.label}
+          {!iconOnly && languages.find((language) => language.locale === locale)?.label}
         </button>
       </div>
       <div
@@ -201,7 +202,7 @@ export function LanguageSwitcher({ className = "" }: { className?: string }) {
         ))}
       </div>
       {error && (
-        <p role="alert" className="text-xs text-danger">
+        <p role="alert" className={iconOnly ? "absolute right-0 top-full z-40 mt-2 w-64 rounded-control border border-line bg-paper-light p-3 text-xs text-danger shadow-paper-raised" : "text-xs text-danger"}>
           {t("Common.languageError")}
         </p>
       )}
