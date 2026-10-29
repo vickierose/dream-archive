@@ -27,7 +27,7 @@ export function ArchiveListTransition({ children }: { children: ReactNode }) {
           {children}
         </div>
         {isPending && (
-          <div className="absolute inset-0 z-30 flex items-start justify-center pt-16">
+          <div className="pointer-events-none fixed inset-0 z-30 md:left-56">
             <PageLoader />
           </div>
         )}

@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Feedback } from "@/components/ui/feedback";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { authClient } from "@/lib/auth/client";
@@ -25,7 +24,6 @@ type AuthFormProps = {
 export function AuthForm({ mode }: AuthFormProps) {
   const t = useTranslations();
   const validation = useTranslations("Validation");
-  const router = useRouter();
   const isSignup = mode === "signup";
   const [submitError, setSubmitError] = useState<string>();
   const [notice, setNotice] = useState<string>();
@@ -66,8 +64,9 @@ export function AuthForm({ mode }: AuthFormProps) {
         setNotice(isSignup ? t("Auth.created") : t("Auth.verify"));
         return;
       }
-      router.replace("/dreams");
-      router.refresh();
+      // Start a fresh server request after the session changes. The client
+      // router may still have a guest redirect cached for this protected route.
+      window.location.replace("/dreams");
     } catch {
       setSubmitError(t("Auth.serviceError"));
     }
