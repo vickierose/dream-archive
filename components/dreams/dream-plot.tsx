@@ -39,7 +39,7 @@ export function DreamPlot({ plot }: { plot: string }) {
         onClick={copyPlot}
         aria-label={t("copyPlot")}
         title={t(copyStatus === "copied" ? "plotCopied" : "copyPlot")}
-        className="control-interaction absolute right-4 top-2 inline-flex size-9 items-center justify-center rounded-full text-ink-muted hover:bg-lavender-light hover:text-purple focus-visible:outline-purple"
+        className="control-interaction absolute right-6 top-2 inline-flex size-9 items-center justify-center rounded-full text-ink-muted hover:bg-lavender-light hover:text-purple focus-visible:outline-purple"
       >
         {copyStatus === "copied" ? (
           <Check aria-hidden="true" size={16} />
