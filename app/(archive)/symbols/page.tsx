@@ -7,6 +7,7 @@ import { getArchive } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
 import { ArchiveFilters } from "@/components/ui/archive-filters";
 import { Pagination } from "@/components/ui/pagination";
+import { ArchiveListTransition } from "@/components/ui/archive-list-transition";
 import { listHref, matchesName, paginate, queryText, type ListSearchParams } from "@/lib/archive-list";
 
 export default async function SymbolsPage({ searchParams }: { searchParams: Promise<ListSearchParams> }) {
@@ -26,31 +27,33 @@ export default async function SymbolsPage({ searchParams }: { searchParams: Prom
         title={t("Navigation.symbols")}
         description={t("Symbols.description")}
       />
-      <ArchiveFilters key={JSON.stringify([query, page])} path="/symbols" query={query} />
+      <ArchiveListTransition>
+        <ArchiveFilters key={JSON.stringify([query, page])} path="/symbols" query={query} />
 
-      {availableSymbols.length === 0 ? (
-        <EmptyState
-          title={t("Symbols.empty")}
-          description={t("Symbols.emptyDescription")}
-        />
-      ) : filtered.length === 0 ? (
-        <EmptyState title={t("ArchiveList.noResults")} description={t("ArchiveList.noResultsDescription")} />
-      ) : (
-        <div className="grid grid-cols-[repeat(auto-fill,minmax(0,10rem))] gap-x-6 gap-y-8 justify-center sm:justify-start">
-          {items.map((symbol) => (
-            <SymbolCard
-              key={symbol.id}
-              symbol={symbol}
-              dreamCount={
-                archiveDreams.filter((dream) =>
-                  dream.symbols.includes(symbol.id),
-                ).length
-              }
-            />
-          ))}
-        </div>
-      )}
-      <Pagination path="/symbols" params={params} page={page} pages={pages} />
+        {availableSymbols.length === 0 ? (
+          <EmptyState
+            title={t("Symbols.empty")}
+            description={t("Symbols.emptyDescription")}
+          />
+        ) : filtered.length === 0 ? (
+          <EmptyState title={t("ArchiveList.noResults")} description={t("ArchiveList.noResultsDescription")} />
+        ) : (
+          <div className="grid grid-cols-[repeat(auto-fill,minmax(0,10rem))] gap-x-6 gap-y-8 justify-center sm:justify-start">
+            {items.map((symbol) => (
+              <SymbolCard
+                key={symbol.id}
+                symbol={symbol}
+                dreamCount={
+                  archiveDreams.filter((dream) =>
+                    dream.symbols.includes(symbol.id),
+                  ).length
+                }
+              />
+            ))}
+          </div>
+        )}
+        <Pagination path="/symbols" params={params} page={page} pages={pages} />
+      </ArchiveListTransition>
     </div>
   );
 }
