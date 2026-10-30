@@ -6,10 +6,19 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { connection } from "next/server";
 import { requireUser } from "@/lib/auth/session";
 import { AccountControls } from "@/components/layout/account-controls";
+import { PageLoader } from "@/components/ui/page-loader";
 
 export const metadata: Metadata = { robots: privateRobots };
 
-export default async function ArchiveLayout({
+export default function ArchiveLayout({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={<PageLoader fullScreen />}>
+      <AuthenticatedArchive>{children}</AuthenticatedArchive>
+    </Suspense>
+  );
+}
+
+async function AuthenticatedArchive({
   children,
 }: {
   children: ReactNode;

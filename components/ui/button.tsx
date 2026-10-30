@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import type { ComponentProps, MouseEventHandler, ReactNode } from "react";
 import Link from "next/link";
+import { Spinner } from "@/components/ui/spinner";
 
 type ButtonVariant = "primary" | "secondary" | "danger" | "ghost";
 type ButtonSize = "sm" | "md";
@@ -78,6 +79,7 @@ export function Button(props: ButtonProps) {
       disabled={disabled || loading}
       aria-busy={loading || buttonProps["aria-busy"]}
     >
+      {loading && <Spinner className="size-4" />}
       {loading ? loadingLabel : children}
     </button>
   );
