@@ -60,7 +60,7 @@ export default async function DreamLayout({
   return (
     <>
       <div className="mx-auto max-w-3xl">
-        <div className="mb-4">
+        <div className="mb-2 md:mt-4">
           <BackButton />
         </div>
         <PageHeader

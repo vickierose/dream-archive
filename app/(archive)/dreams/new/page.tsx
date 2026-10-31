@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 
-
 import { PageHeader } from "@/components/layout/page-header";
 import { Feedback } from "@/components/ui/feedback";
 import { useRef, useState } from "react";
@@ -38,7 +37,7 @@ export default function NewDreamPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <div className="mb-4">
+      <div className="mb-2 md:mt-4">
         <BackButton label={t("Dreams.back")} />
       </div>
       <PageHeader title={t("Dreams.record")} />

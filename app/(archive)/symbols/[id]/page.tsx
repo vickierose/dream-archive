@@ -23,7 +23,9 @@ export default async function SymbolPage({
     return (
       <EmptyState
         title={t("Symbols.notFound")}
-        action={<BackButton fallbackHref="/symbols" label={t("Symbols.back")} />}
+        action={
+          <BackButton fallbackHref="/symbols" label={t("Symbols.back")} />
+        }
       />
     );
   }
@@ -43,7 +45,7 @@ export default async function SymbolPage({
 
   return (
     <div className="relative mx-auto max-w-3xl pb-28">
-      <div className="mb-4">
+      <div className="mb-2 md:mt-4">
         <BackButton fallbackHref="/symbols" />
       </div>
       <PageHeader
@@ -86,7 +88,10 @@ export default async function SymbolPage({
       </section>
 
       <section className="mt-8" aria-labelledby="symbol-dreams-heading">
-        <SectionHeading id="symbol-dreams-heading" title={t("Navigation.dreams")} />
+        <SectionHeading
+          id="symbol-dreams-heading"
+          title={t("Navigation.dreams")}
+        />
         <Panel padding="none" className="mt-4">
           {dreams.length > 0 ? (
             dreams.map((dream) => (
