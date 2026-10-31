@@ -61,7 +61,7 @@ export function ArchiveFilters({
         onChange={(event) => setSearch(event.target.value)}
       />
       {availableSymbols && (
-        <>
+        <div className="grid w-full grid-cols-2 gap-3 sm:contents">
           <FilterDropdown
             label={t("Dreams.mood")}
             name="mood"
@@ -82,7 +82,7 @@ export function ArchiveFilters({
               label: `${symbol.emoji} ${symbol.name}`,
             }))}
           />
-        </>
+        </div>
       )}
       <Button type="submit" variant="secondary">
         {t("ArchiveList.search")}
@@ -122,7 +122,7 @@ function FilterDropdown({
   }, []);
 
   return (
-    <details ref={dropdownRef} className="relative w-40 sm:w-48">
+    <details ref={dropdownRef} className="relative min-w-0 sm:w-48">
       <summary className="control-interaction cursor-pointer rounded-control border border-line bg-paper-light px-4 py-3 text-sm text-ink focus-visible:outline-purple">
         {label}
         {selected.length > 0 ? ` (${selected.length})` : ""}

@@ -15,7 +15,7 @@ const defaultSizes: Record<HeadingLevel, HeadingSize> = {
 };
 
 const sizes: Record<HeadingSize, string> = {
-  page: "text-4xl leading-none sm:text-5xl",
+  page: "text-4xl leading-none",
   section: "text-3xl leading-tight",
   subsection: "text-2xl leading-tight",
 };
