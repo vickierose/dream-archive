@@ -38,7 +38,7 @@ export function AccountControls({
   const label = signingOut ? t("loggingOut") : t("logout");
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`absolute md:relative ${className}`}>
       <div className={compact ? "flex items-start gap-1" : "flex flex-col"}>
         <LanguageSwitcher iconOnly={compact} />
         <button

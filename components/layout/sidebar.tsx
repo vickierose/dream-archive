@@ -19,7 +19,7 @@ export function Sidebar() {
   const content = (
     <>
       <Link
-        className="focus-ring flex items-center gap-2 px-3 font-handwritten font-medium text-2xl text-ink"
+        className="focus-ring flex items-center gap-2 px-3 py-4 font-handwritten font-medium text-2xl text-ink"
         href="/dreams"
       >
         <MoonStar aria-hidden="true" className="text-purple" size={24} />

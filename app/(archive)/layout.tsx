@@ -18,11 +18,7 @@ export default function ArchiveLayout({ children }: { children: ReactNode }) {
   );
 }
 
-async function AuthenticatedArchive({
-  children,
-}: {
-  children: ReactNode;
-}) {
+async function AuthenticatedArchive({ children }: { children: ReactNode }) {
   await connection();
   await requireUser();
   return (
