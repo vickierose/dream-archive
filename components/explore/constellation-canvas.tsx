@@ -15,6 +15,7 @@ import ForceGraph2D, {
 import { useTranslations } from "next-intl";
 import { Maximize, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { SelectedDreamsPanel } from "./selected-dreams-panel";
 import { ConstellationHelp } from "./constellation-help";
 import {
@@ -47,6 +48,7 @@ export default function ConstellationCanvas({
 }) {
   const t = useTranslations("Explore");
   const common = useTranslations("Dreams");
+  const reducedMotion = useReducedMotion();
   const container = useRef<HTMLDivElement>(null);
   const graph = useRef<ForceGraphMethods<GraphNode, GraphLink> | undefined>(
     undefined,
@@ -124,10 +126,7 @@ export default function ConstellationCanvas({
   useEffect(() => {
     const from = opacity.current;
     const target = selectedIds.length ? 0.12 : 1;
-    const duration = window.matchMedia("(prefers-reduced-motion: reduce)")
-      .matches
-      ? 0
-      : 220;
+    const duration = reducedMotion ? 0 : 220;
     let frame: number;
     let start: number | undefined;
     const animate = (time: number) => {
@@ -139,7 +138,7 @@ export default function ConstellationCanvas({
     };
     frame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(frame);
-  }, [selectedIds.length]);
+  }, [selectedIds.length, reducedMotion]);
 
   const selectNode = useCallback(
     (id: string) => {
@@ -157,11 +156,8 @@ export default function ConstellationCanvas({
 
   const fit = useCallback(() => {
     setTapped(null);
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-    graph.current?.zoomToFit(reduceMotion ? 0 : 350, 55);
-  }, []);
+    graph.current?.zoomToFit(reducedMotion ? 0 : 350, 55);
+  }, [reducedMotion]);
 
   const drawNode = useCallback(
     (node: GraphNode, ctx: CanvasRenderingContext2D) => {
@@ -203,7 +199,7 @@ export default function ConstellationCanvas({
               interacted.current = true;
               graph.current?.zoom(
                 Math.max(0.05, (graph.current?.zoom() ?? 1) / 1.4),
-                200,
+                reducedMotion ? 0 : 200,
               );
             }}
           >
@@ -218,7 +214,7 @@ export default function ConstellationCanvas({
               interacted.current = true;
               graph.current?.zoom(
                 Math.min(8, (graph.current?.zoom() ?? 1) * 1.4),
-                200,
+                reducedMotion ? 0 : 200,
               );
             }}
           >
