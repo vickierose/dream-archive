@@ -16,6 +16,7 @@ import { FormError } from "@/components/ui/form-error";
 import { TextField } from "@/components/ui/text-field";
 import { createDreamSchema, type DreamFormValues } from "@/lib/validation/dream";
 import type { Symbol } from "@/types/symbol";
+import { MAX_DREAM_TITLE_LENGTH } from "@/lib/validation/dream-limits";
 type DreamFormProps = {
   initialSymbols: Symbol[] | null;
   defaultValues?: Partial<DreamFormValues>;
@@ -84,6 +85,8 @@ export function DreamForm({
         label={t("Dreams.fieldTitle")}
         placeholder={t("Dreams.titlePlaceholder")}
         type="text"
+        maxLength={MAX_DREAM_TITLE_LENGTH}
+        hint={validation("titleMax")}
         error={errors.title?.message}
       />
       <TextField

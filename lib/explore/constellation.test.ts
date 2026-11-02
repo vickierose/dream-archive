@@ -65,3 +65,14 @@ test("visual scales grow with counts and stay bounded", () => {
   assert.ok(nodeRadius(4) > nodeRadius(1));
   assert.equal(nodeRadius(10000), 34);
 });
+
+test("ten selected symbols produce 45 pairs and legacy selections are not truncated", () => {
+  const collection = Array.from({ length: 11 }, (_, i) => ({ id: String(i), name: `Symbol ${i}`, emoji: "*" }));
+  const ids = collection.map((symbol) => symbol.id);
+  const limited = buildConstellation([{ symbols: ids.slice(0, 10) }], collection);
+  assert.equal(limited.nodes.length, 10);
+  assert.equal(limited.links.length, 45);
+  const legacy = buildConstellation([{ symbols: ids }], collection);
+  assert.equal(legacy.nodes.length, 11);
+  assert.equal(legacy.links.length, 55);
+});

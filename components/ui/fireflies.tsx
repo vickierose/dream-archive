@@ -3,7 +3,8 @@
 import type { ISourceOptions } from "@tsparticles/engine";
 import Particles, { ParticlesProvider } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
-import { useId, useSyncExternalStore } from "react";
+import { useId, useMemo, useSyncExternalStore } from "react";
+import { useReducedMotion } from "@/lib/use-reduced-motion";
 
 const smallScreenQuery = "(width < 48rem)";
 
@@ -66,18 +67,34 @@ const smallScreenOptions: ISourceOptions = {
 
 export default function Fireflies() {
   const id = useId();
+  const reducedMotion = useReducedMotion();
   const smallScreen = useSyncExternalStore(
     subscribeToScreenSize,
     isSmallScreen,
     getServerSnapshot,
   );
+  const particleOptions = useMemo<ISourceOptions>(() => {
+    const base = smallScreen ? smallScreenOptions : options;
+    if (!reducedMotion) return base;
+    return {
+      ...base,
+      interactivity: {
+        ...options.interactivity,
+        events: { onHover: { enable: false } },
+      },
+      particles: {
+        ...base.particles,
+        move: { ...options.particles.move, enable: false },
+      },
+    };
+  }, [smallScreen, reducedMotion]);
 
   return (
     <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
       <ParticlesProvider init={loadSlim}>
         <Particles
           id={`fireflies-${id}`}
-          options={smallScreen ? smallScreenOptions : options}
+          options={particleOptions}
           className="absolute inset-0 drop-shadow-[0_0_5px_#f7eda8]"
         />
       </ParticlesProvider>

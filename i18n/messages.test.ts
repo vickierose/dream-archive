@@ -6,7 +6,7 @@ import uk from "@/messages/uk.json";
 import { isAppLocale } from "./config";
 import { formatDreamDate } from "@/lib/date";
 import { createLoginSchema, createSignupSchema } from "@/lib/validation/auth";
-import { createDreamSchema } from "@/lib/validation/dream";
+import { createDreamSchema, dreamSchema } from "@/lib/validation/dream";
 
 function flatten(value: Record<string, unknown>, prefix = ""): Record<string, string> {
   return Object.fromEntries(Object.entries(value).flatMap(([key, message]) => {
@@ -65,6 +65,37 @@ test("only supported locale identifiers are accepted", () => {
   assert.equal(isAppLocale("en"), true);
   assert.equal(isAppLocale("uk"), true);
   for (const locale of ["ua", "fr", "../../etc", "", undefined]) assert.equal(isAppLocale(locale), false);
+});
+
+test("dream limits are enforced with localized errors while long plots remain valid", () => {
+  const values = {
+    title: "A".repeat(40), date: "2026-10-11", plot: "Long dream. ".repeat(100_000).trim(),
+    mood: "Peaceful", symbols: Array.from({ length: 10 }, (_, i) => `symbol-${i}`),
+  };
+  // This is the schema used by the Server Actions, including for direct calls.
+  assert.equal(dreamSchema.safeParse(values).success, true);
+  assert.equal(dreamSchema.safeParse({ ...values, title: "A".repeat(41) }).success, false);
+  assert.equal(dreamSchema.safeParse({ ...values, symbols: [...values.symbols, "extra"] }).success, false);
+  for (const [locale, messages] of [["en", en], ["uk", uk]] as const) {
+    const t = createTranslator({ locale, messages, namespace: "Validation" });
+    const schema = createDreamSchema(t);
+    const parsed = schema.parse({ ...values, title: `  ${values.title}  ` });
+    assert.equal(parsed.title, values.title);
+    assert.equal(parsed.plot, values.plot);
+    assert.equal(schema.safeParse({ ...values, symbols: [] }).success, true);
+    for (const [input, field, message] of [
+      [{ ...values, title: "A".repeat(41) }, "title", messages.Validation.titleMax],
+      [{ ...values, symbols: [...values.symbols, "extra"] }, "symbols", messages.Validation.symbolsMax],
+    ] as const) {
+      const invalid = schema.safeParse(input);
+      assert.equal(invalid.success, false);
+      if (!invalid.success) {
+        assert.deepEqual(invalid.error.issues[0].path, [field]);
+        assert.equal(invalid.error.issues[0].message, message);
+      }
+    }
+    assert.equal(schema.safeParse({ ...values, plot: "   " }).success, false);
+  }
 });
 
 test("signup enforces password strength and matching confirmation in both locales", () => {

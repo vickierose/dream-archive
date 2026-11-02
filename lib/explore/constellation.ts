@@ -2,11 +2,19 @@ import type { Dream } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
 
 export type ConstellationNode = Symbol & { dreamCount: number };
-export type ConstellationDream = Pick<Dream, "id" | "title" | "date" | "symbols">;
+export type ConstellationDream = Pick<
+  Dream,
+  "id" | "title" | "date" | "symbols"
+>;
 
-export function matchingDreams(dreams: ConstellationDream[], selectedIds: readonly string[]) {
+export function matchingDreams(
+  dreams: ConstellationDream[],
+  selectedIds: readonly string[],
+) {
   if (selectedIds.length < 2) return [];
-  return dreams.filter((dream) => selectedIds.every((id) => dream.symbols.includes(id)));
+  return dreams.filter((dream) =>
+    selectedIds.every((id) => dream.symbols.includes(id)),
+  );
 }
 export type ConstellationLink = {
   source: string;
@@ -18,7 +26,10 @@ export type ConstellationData = {
   links: ConstellationLink[];
 };
 
-export function constellationFocus(data: ConstellationData, selectedIds: readonly string[]) {
+export function constellationFocus(
+  data: ConstellationData,
+  selectedIds: readonly string[],
+) {
   const selected = new Set(selectedIds);
   const nodes = new Set(selected);
   const links = new Set<string>();
@@ -39,7 +50,11 @@ export function constellationFocus(data: ConstellationData, selectedIds: readonl
     if (connections.size === selected.size) nodes.add(id);
   }
   for (const { source, target } of data.links) {
-    if (nodes.has(source) && nodes.has(target) && (selected.has(source) || selected.has(target))) {
+    if (
+      nodes.has(source) &&
+      nodes.has(target) &&
+      (selected.has(source) || selected.has(target))
+    ) {
       links.add(JSON.stringify([source, target]));
     }
   }
@@ -55,7 +70,9 @@ export function buildConstellation(
   const pairs = new Map<string, ConstellationLink>();
 
   for (const dream of dreams) {
-    const ids = [...new Set(dream.symbols)].filter((id) => known.has(id)).sort();
+    const ids = [...new Set(dream.symbols)]
+      .filter((id) => known.has(id))
+      .sort();
     for (const id of ids) counts.set(id, (counts.get(id) ?? 0) + 1);
     for (let i = 0; i < ids.length; i++) {
       for (let j = i + 1; j < ids.length; j++) {

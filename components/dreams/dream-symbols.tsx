@@ -14,6 +14,7 @@ import { TextField } from "@/components/ui/text-field";
 import { SelectableButton } from "@/components/ui/selectable-button";
 import { createSymbol, getSymbols } from "@/lib/actions/symbol";
 import type { Symbol } from "@/types/symbol";
+import { MAX_DREAM_SYMBOLS } from "@/lib/validation/dream-limits";
 
 const EmojiPicker = dynamic(() => import("@/components/ui/emoji-picker"), {
   ssr: false,
@@ -47,8 +48,11 @@ export function DreamSymbols({
   const t = useTranslations();
   const [symbols, setSymbols] = useState(initialSymbols);
   const [open, setOpen] = useState(false);
+  const limitReached = value.length >= MAX_DREAM_SYMBOLS;
+  const limitHintId = useId();
 
   function select(symbol: Symbol) {
+    if (!value.includes(symbol.id) && limitReached) return;
     setSymbols((items) =>
       items?.some((item) => item.id === symbol.id) ? items : [...(items ?? []), symbol],
     );
@@ -83,17 +87,22 @@ export function DreamSymbols({
           type="button"
           onBlur={onBlur}
           onClick={() => setOpen(true)}
+          disabled={limitReached}
+          aria-describedby={limitHintId}
           className="control-interaction inline-flex items-center gap-2 rounded-full border border-dashed border-lavender bg-paper-light px-4 py-3 font-base text-sm font-semibold text-ink-soft not-disabled:hover:border-lavender-dark not-disabled:hover:text-purple"
         >
           <Plus aria-hidden="true" size={16} /> {t("Symbols.add")}
         </button>
       </div>
+      <p id={limitHintId} role="status" className="mt-2 text-xs text-ink-muted">
+        {t("Validation.symbolsMax")}
+      </p>
       {symbols === null && (
         <Feedback className="mt-2">
           {t("Symbols.loadError")}
         </Feedback>
       )}
-      {open &&
+      {open && !limitReached &&
         createPortal(
           <SymbolPopup
             symbols={symbols}
