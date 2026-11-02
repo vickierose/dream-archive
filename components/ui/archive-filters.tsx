@@ -1,14 +1,14 @@
 "use client";
 
 import Form from "next/form";
-import { ChevronDown } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useArchiveNavigation } from "@/components/ui/archive-list-transition";
 import { useTranslations } from "next-intl";
 import { SearchField } from "@/components/ui/search-field";
 import { Button } from "@/components/ui/button";
 import { Mood } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
+import { FilterDropdown } from "./filter-dropdown";
 
 export function ArchiveFilters({
   path,
@@ -28,8 +28,14 @@ export function ArchiveFilters({
   const [search, setSearch] = useState(query);
   const [selectedMoods, setSelectedMoods] = useState(moods);
   const [selectedSymbols, setSelectedSymbols] = useState(symbols);
-  const hasFilters = Boolean(search || selectedMoods.length || selectedSymbols.length
-    || query || moods.length || symbols.length);
+  const hasFilters = Boolean(
+    search ||
+    selectedMoods.length ||
+    selectedSymbols.length ||
+    query ||
+    moods.length ||
+    symbols.length,
+  );
 
   function resetFilters() {
     setSearch("");
@@ -76,6 +82,8 @@ export function ArchiveFilters({
           <FilterDropdown
             label={t("Navigation.symbols")}
             name="symbol"
+            searchLabel={t("ArchiveList.searchSymbols")}
+            emptyLabel={t("Symbols.noResults")}
             selected={selectedSymbols}
             onChange={setSelectedSymbols}
             options={availableSymbols.map((symbol) => ({
@@ -88,70 +96,14 @@ export function ArchiveFilters({
       <Button type="submit" variant="secondary">
         {t("ArchiveList.search")}
       </Button>
-      <Button type="button" variant="ghost" disabled={!hasFilters} onClick={resetFilters}>
+      <Button
+        type="button"
+        variant="ghost"
+        disabled={!hasFilters}
+        onClick={resetFilters}
+      >
         {t("ArchiveList.reset")}
       </Button>
     </Form>
-  );
-}
-
-function FilterDropdown({
-  label,
-  name,
-  selected,
-  onChange,
-  options,
-}: {
-  label: string;
-  name: string;
-  selected: string[];
-  onChange: (selected: string[]) => void;
-  options: { value: string; label: string }[];
-}) {
-  const dropdownRef = useRef<HTMLDetailsElement>(null);
-
-  useEffect(() => {
-    function closeOnOutsideClick(event: PointerEvent) {
-      const dropdown = dropdownRef.current;
-      if (dropdown?.open && event.target instanceof Node && !dropdown.contains(event.target)) {
-        dropdown.open = false;
-      }
-    }
-
-    document.addEventListener("pointerdown", closeOnOutsideClick);
-    return () => document.removeEventListener("pointerdown", closeOnOutsideClick);
-  }, []);
-
-  return (
-    <details ref={dropdownRef} className="relative min-w-0 sm:w-48">
-      <summary className="control-interaction flex cursor-pointer list-none items-center justify-between gap-2 rounded-control border border-line bg-paper-light px-4 py-3 text-sm text-ink focus-visible:outline-purple [&::-webkit-details-marker]:hidden">
-        <span>
-          {label}
-          {selected.length > 0 ? ` (${selected.length})` : ""}
-        </span>
-        <ChevronDown aria-hidden="true" size={16} className="shrink-0" />
-      </summary>
-      <fieldset className={`absolute top-full ${name === "symbol" ? "right-0" : "left-0"} z-20 mt-2 max-h-64 w-72 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-control border border-line bg-paper-light p-3 shadow-paper-raised`}>
-        <legend className="sr-only">{label}</legend>
-        {options.map((option) => (
-          <label
-            key={option.value}
-            className="flex cursor-pointer items-center gap-3 rounded-control px-2 py-2 text-sm text-ink hover:bg-lavender-light"
-          >
-            <input
-              type="checkbox"
-              name={name}
-              value={option.value}
-              checked={selected.includes(option.value)}
-              onChange={(event) => onChange(event.target.checked
-                ? [...selected, option.value]
-                : selected.filter(value => value !== option.value))}
-              className="size-4 accent-purple"
-            />
-            {option.label}
-          </label>
-        ))}
-      </fieldset>
-    </details>
   );
 }
