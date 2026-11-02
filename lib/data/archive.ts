@@ -22,3 +22,14 @@ export const getDream = cache(async (id: string) => {
 export const getSymbol = cache(async (id: string) => {
   return (await getUserArchiveRepository()).getSymbol(id);
 });
+
+export const getFormSymbols = cache(async () => {
+  // Keep authentication failures and redirects outside the recoverable DB read.
+  const archive = await getUserArchiveRepository();
+  try {
+    return await archive.getSymbols();
+  } catch {
+    // The form stays usable; opening the symbol popup retries this failed read.
+    return null;
+  }
+});

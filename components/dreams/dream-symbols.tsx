@@ -30,6 +30,7 @@ function LoadingEmojis() {
 }
 
 type DreamSymbolsProps = {
+  initialSymbols: Symbol[] | null;
   value: string[];
   onChange: (value: string[]) => void;
   onBlur: () => void;
@@ -37,33 +38,19 @@ type DreamSymbolsProps = {
 };
 
 export function DreamSymbols({
+  initialSymbols,
   value,
   onChange,
   onBlur,
   buttonRef,
 }: DreamSymbolsProps) {
   const t = useTranslations();
-  const [symbols, setSymbols] = useState<Symbol[]>([]);
+  const [symbols, setSymbols] = useState(initialSymbols);
   const [open, setOpen] = useState(false);
-  const [loadError, setLoadError] = useState(false);
-
-  useEffect(() => {
-    let active = true;
-    getSymbols()
-      .then((items) => {
-        if (active) setSymbols(items);
-      })
-      .catch(() => {
-        if (active) setLoadError(true);
-      });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   function select(symbol: Symbol) {
     setSymbols((items) =>
-      items.some((item) => item.id === symbol.id) ? items : [...items, symbol],
+      items?.some((item) => item.id === symbol.id) ? items : [...(items ?? []), symbol],
     );
     if (!value.includes(symbol.id)) onChange([...value, symbol.id]);
     onBlur();
@@ -74,7 +61,7 @@ export function DreamSymbols({
     <>
       <div className="mt-2 flex flex-wrap gap-3">
         {value.map((id) => {
-          const symbol = symbols.find((item) => item.id === id);
+          const symbol = symbols?.find((item) => item.id === id);
           return (
             <SelectableButton
               key={id}
@@ -101,7 +88,7 @@ export function DreamSymbols({
           <Plus aria-hidden="true" size={16} /> {t("Symbols.add")}
         </button>
       </div>
-      {loadError && (
+      {symbols === null && (
         <Feedback className="mt-2">
           {t("Symbols.loadError")}
         </Feedback>
@@ -109,13 +96,11 @@ export function DreamSymbols({
       {open &&
         createPortal(
           <SymbolPopup
+            symbols={symbols}
             selectedIds={value}
             onSelect={select}
             onClose={() => setOpen(false)}
-            onLoad={(items) => {
-              setSymbols(items);
-              setLoadError(false);
-            }}
+            onLoad={setSymbols}
           />,
           document.body,
         )}
@@ -293,11 +278,13 @@ function SymbolSelect({
 }
 
 function SymbolPopup({
+  symbols,
   selectedIds,
   onSelect,
   onClose,
   onLoad,
 }: {
+  symbols: Symbol[] | null;
   selectedIds: string[];
   onSelect: (symbol: Symbol) => void;
   onClose: () => void;
@@ -307,44 +294,46 @@ function SymbolPopup({
   const id = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const busyRef = useRef(false);
-  const onLoadRef = useRef(onLoad);
-  const [symbols, setSymbols] = useState<Symbol[]>([]);
 
   const [selectedId, setSelectedId] = useState("");
   const [name, setName] = useState("");
   const [emoji, setEmoji] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(symbols === null);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string>();
 
   useEffect(() => {
     const dialog = dialogRef.current!;
     dialog.showModal();
+    return () => dialog.close();
+  }, []);
+
+  useEffect(() => {
+    // A successful server read (including an empty collection) needs no request.
+    if (symbols !== null) return;
     let active = true;
     getSymbols()
       .then((items) => {
         if (!active) return;
-        setSymbols(items);
-        onLoadRef.current(items);
+        setLoading(false);
+        onLoad(items);
       })
       .catch(() => {
-        if (active)
+        if (active) {
           setError(t("Symbols.retryError"));
-      })
-      .finally(() => {
-        if (active) setLoading(false);
+          setLoading(false);
+        }
       });
     return () => {
       active = false;
-      dialog.close();
     };
-  }, [t]);
+  }, [symbols, onLoad, t]);
 
   async function add() {
-    if (busyRef.current) return;
+    if (busyRef.current || symbols === null) return;
     setError(undefined);
-    const selected = symbols.find((symbol) => symbol.id === selectedId);
+    const selected = symbols?.find((symbol) => symbol.id === selectedId);
     if (selected) {
       onSelect(selected);
       return;
@@ -387,14 +376,14 @@ function SymbolPopup({
           void add();
         }}
       >
-        <fieldset disabled={saving || loading}>
+        <fieldset disabled={saving || loading || symbols === null}>
           <legend className="field-label">{t("Symbols.chooseExisting")}</legend>
           <SymbolSelect
             id={id}
-            symbols={symbols}
+            symbols={symbols ?? []}
             selectedIds={selectedIds}
             value={selectedId}
-            disabled={saving || loading}
+            disabled={saving || loading || symbols === null}
             loading={loading}
             onChange={(value) => {
               setSelectedId(value);
@@ -403,7 +392,7 @@ function SymbolPopup({
           />
         </fieldset>
         <fieldset
-          disabled={!!selectedId || saving}
+          disabled={!!selectedId || saving || symbols === null}
           className="border-t border-line pt-6 disabled:opacity-50"
         >
           <legend className="field-label">{t("Symbols.createNew")}</legend>
@@ -468,7 +457,7 @@ function SymbolPopup({
           </Button>
           <Button
             type="submit"
-            disabled={!selectedId && (!name.trim() || !emoji)}
+            disabled={symbols === null || (!selectedId && (!name.trim() || !emoji))}
             loading={saving}
             loadingLabel={t("Common.adding")}
           >

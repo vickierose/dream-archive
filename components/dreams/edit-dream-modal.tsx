@@ -10,8 +10,9 @@ import { DreamForm } from "@/components/dreams/dream-form";
 import { updateDream } from "@/lib/actions/dream";
 import type { DreamFormValues } from "@/lib/validation/dream";
 import type { Dream } from "@/types/dream";
+import type { Symbol } from "@/types/symbol";
 
-export function EditDreamModal({ dream }: { dream: Dream }) {
+export function EditDreamModal({ dream, initialSymbols }: { dream: Dream; initialSymbols: Symbol[] | null }) {
   const t = useTranslations();
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -70,6 +71,7 @@ export function EditDreamModal({ dream }: { dream: Dream }) {
     >
       {error && <Feedback>{error}</Feedback>}
       <DreamForm
+        initialSymbols={initialSymbols}
         defaultValues={dream}
         onSubmit={save}
         onCancel={dismiss}
