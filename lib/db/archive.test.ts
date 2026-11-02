@@ -207,6 +207,15 @@ test("targeted archive reads preserve filters, pages, relations, and ownership",
       assert.deepEqual(await alice.getSymbolDreams(personalSymbols[3].id), []);
     });
 
+    await t.test("malformed detail IDs return no record without issuing SQL", async () => {
+      statements.length = 0;
+      for (const id of ["", "invalid", "' OR true --", "00000000-0000-4000-8000-not-a-uuid"]) {
+        assert.equal(await alice.getDream(id), undefined);
+        assert.equal(await alice.getSymbol(id), undefined);
+      }
+      assert.deepEqual(statements, []);
+    });
+
     await t.test("empty accounts have zero counts and a single empty page", async () => {
       const empty = createArchiveRepository(db, randomUUID());
       const expected = { items: [], total: 0, filteredTotal: 0, page: 1, pages: 1 };

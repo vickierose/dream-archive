@@ -1,9 +1,13 @@
 import "server-only";
 
 import { cache } from "react";
+import { notFound } from "next/navigation";
+import { z } from "zod";
 import { requireUser } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { createArchiveRepository } from "@/lib/db/archive";
+
+const recordId = z.uuid();
 
 export async function getUserArchiveRepository() {
   const user = await requireUser();
@@ -16,11 +20,17 @@ export const getExploreArchive = cache(async () => {
 });
 
 export const getDream = cache(async (id: string) => {
-  return (await getUserArchiveRepository()).getDream(id);
+  if (!recordId.safeParse(id).success) notFound();
+  const dream = await (await getUserArchiveRepository()).getDream(id);
+  if (!dream) notFound();
+  return dream;
 });
 
 export const getSymbol = cache(async (id: string) => {
-  return (await getUserArchiveRepository()).getSymbol(id);
+  if (!recordId.safeParse(id).success) notFound();
+  const symbol = await (await getUserArchiveRepository()).getSymbol(id);
+  if (!symbol) notFound();
+  return symbol;
 });
 
 export const getFormSymbols = cache(async () => {

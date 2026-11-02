@@ -12,7 +12,6 @@ import { DreamLink } from "@/components/dreams/dream-link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getDream, getUserArchiveRepository } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
-import { EmptyState } from "@/components/ui/empty-state";
 import Link from "next/link";
 
 export default async function DreamLayout({
@@ -23,15 +22,6 @@ export default async function DreamLayout({
   const locale = await getLocale();
   const { id } = await params;
   const dream = await getDream(id);
-
-  if (!dream) {
-    return (
-      <EmptyState
-        title={t("Dreams.notFound")}
-        action={<BackButton label={t("Dreams.back")} />}
-      />
-    );
-  }
 
   const archive = await getUserArchiveRepository();
   const [dreamSymbols, relatedDreams] = await Promise.all([

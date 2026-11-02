@@ -10,5 +10,5 @@ export async function generateMetadata({ params }: PageProps<"/dreams/[id]">) {
     getPageMetadata("dream"),
     getDream(id),
   ]);
-  return { ...metadata, title: dream?.title ?? metadata.title };
+  return { ...metadata, title: dream.title };
 }

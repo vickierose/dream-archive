@@ -71,6 +71,12 @@ export default function ConstellationCanvas({
   // Use immutable endpoints rather than the engine's mutated link objects.
   const focused = useMemo(() => constellationFocus(data, selectedIds), [data, selectedIds]);
 
+  const isActive = useCallback((item: GraphNode | GraphLink) =>
+    !selection.size || ("emoji" in item
+      ? focused.nodes.has(item.id)
+      : focused.links.has(item.id)),
+  [selection, focused]);
+
   // The engine mutates positions and link endpoints; keep the server data intact.
   const graphData = useMemo(() => {
     const symbols = new Map(data.nodes.map((node) => [node.id, node]));
@@ -307,8 +313,12 @@ export default function ConstellationCanvas({
                 `rgba(161, 138, 185, ${focused.links.has(link.id) ? 1 : dimOpacity})`
               }
               linkHoverPrecision={8}
-              onNodeHover={(node) => { if (!touchInput.current) setHover(node); }}
-              onLinkHover={(link) => { if (!touchInput.current) setHover(link); }}
+              onNodeHover={(node) => {
+                if (!touchInput.current) setHover(node && isActive(node) ? node : null);
+              }}
+              onLinkHover={(link) => {
+                if (!touchInput.current) setHover(link && isActive(link) ? link : null);
+              }}
               onNodeDrag={() => { gesture.current.moved = true; setHover(null); setTapped(null); }}
               onZoom={() => { setHover(null); setTapped(null); }}
               onNodeClick={(node) => {
@@ -341,7 +351,7 @@ export default function ConstellationCanvas({
               }}
             />
           )}
-          {hover && (
+          {hover && isActive(hover) && (
             <div
               role="tooltip"
               className="pointer-events-none absolute z-10 max-w-[calc(100%-1.5rem)] rounded-control border border-paper-lilac-border bg-paper-light px-3 py-2 text-sm text-ink shadow-popover"

@@ -8,7 +8,6 @@ import { DreamLink } from "@/components/dreams/dream-link";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { getSymbol, getUserArchiveRepository } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
-import { EmptyState } from "@/components/ui/empty-state";
 
 export default async function SymbolPage({
   params,
@@ -16,17 +15,6 @@ export default async function SymbolPage({
   const t = await getTranslations();
   const { id } = await params;
   const symbol = await getSymbol(id);
-
-  if (!symbol) {
-    return (
-      <EmptyState
-        title={t("Symbols.notFound")}
-        action={
-          <BackButton fallbackHref="/symbols" label={t("Symbols.back")} />
-        }
-      />
-    );
-  }
 
   const archive = await getUserArchiveRepository();
   const [dreams, frequentSymbols] = await Promise.all([
@@ -110,5 +98,5 @@ export async function generateMetadata({ params }: PageProps<"/symbols/[id]">) {
     getPageMetadata("symbol"),
     getSymbol(id),
   ]);
-  return { ...metadata, title: symbol?.name ?? metadata.title };
+  return { ...metadata, title: symbol.name };
 }
