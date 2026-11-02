@@ -18,6 +18,34 @@ export type ConstellationData = {
   links: ConstellationLink[];
 };
 
+export function constellationFocus(data: ConstellationData, selectedIds: readonly string[]) {
+  const selected = new Set(selectedIds);
+  const nodes = new Set(selected);
+  const links = new Set<string>();
+  if (!selected.size) return { nodes, links };
+
+  const neighbors = new Map<string, Set<string>>();
+  for (const { source, target } of data.links) {
+    if (selected.has(source)) {
+      if (!neighbors.has(target)) neighbors.set(target, new Set());
+      neighbors.get(target)!.add(source);
+    }
+    if (selected.has(target)) {
+      if (!neighbors.has(source)) neighbors.set(source, new Set());
+      neighbors.get(source)!.add(target);
+    }
+  }
+  for (const [id, connections] of neighbors) {
+    if (connections.size === selected.size) nodes.add(id);
+  }
+  for (const { source, target } of data.links) {
+    if (nodes.has(source) && nodes.has(target) && (selected.has(source) || selected.has(target))) {
+      links.add(JSON.stringify([source, target]));
+    }
+  }
+  return { nodes, links };
+}
+
 export function buildConstellation(
   dreams: Pick<Dream, "symbols">[],
   symbols: Symbol[],

@@ -1,6 +1,23 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { buildConstellation, connectionWidth, nodeRadius, matchingDreams } from "./constellation";
+import { buildConstellation, connectionWidth, nodeRadius, matchingDreams, constellationFocus } from "./constellation";
+
+test("focus keeps only common neighbors and their links to selected symbols", () => {
+  const pairs = [["a", "b"], ["a", "c"], ["b", "c"], ["a", "d"], ["b", "e"], ["a", "f"], ["b", "f"], ["c", "f"]];
+  const data = buildConstellation(
+    pairs.map((symbols) => ({ symbols })),
+    ["a", "b", "c", "d", "e", "f"].map((id) => ({ id, name: id, emoji: "*" })),
+  );
+  const pair = constellationFocus(data, ["a", "b"]);
+  assert.deepEqual([...pair.nodes].sort(), ["a", "b", "c", "f"]);
+  assert.deepEqual([...pair.links].map((key) => JSON.parse(key)), [
+    ["a", "b"], ["a", "c"], ["b", "c"], ["a", "f"], ["b", "f"],
+  ]);
+  assert.deepEqual([...constellationFocus(data, ["a", "b", "c"]).nodes].sort(), ["a", "b", "c", "f"]);
+  assert.ok(constellationFocus(data, ["a"]).nodes.has("d"));
+  assert.deepEqual([...constellationFocus(data, ["d", "e"]).nodes].sort(), ["d", "e"]);
+  assert.equal(constellationFocus(data, []).nodes.size, 0);
+});
 
 test("shared dreams must contain every selected symbol, including three or more", () => {
   const dreams = [

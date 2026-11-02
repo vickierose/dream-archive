@@ -21,6 +21,7 @@ import {
   connectionWidth,
   nodeRadius,
   matchingDreams,
+  constellationFocus,
   type ConstellationDream,
   type ConstellationData,
   type ConstellationNode,
@@ -67,22 +68,8 @@ export default function ConstellationCanvas({
   const [dimOpacity, setDimOpacity] = useState(1);
   const opacity = useRef(1);
 
-  const focused = useMemo(() => {
-    const nodes = new Set<string>();
-    const links = new Set<string>();
-    if (selection.size) {
-      for (const id of selection) nodes.add(id);
-      // Read immutable endpoints: the graph engine replaces its own with objects.
-      for (const link of data.links) {
-        if (selection.has(link.source) || selection.has(link.target)) {
-          nodes.add(link.source);
-          nodes.add(link.target);
-          links.add(JSON.stringify([link.source, link.target]));
-        }
-      }
-    }
-    return { nodes, links };
-  }, [data.links, selection]);
+  // Use immutable endpoints rather than the engine's mutated link objects.
+  const focused = useMemo(() => constellationFocus(data, selectedIds), [data, selectedIds]);
 
   // The engine mutates positions and link endpoints; keep the server data intact.
   const graphData = useMemo(() => {

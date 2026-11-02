@@ -17,7 +17,7 @@ export function matchesName(name: string, query: string) {
 export function filterDreams(dreams: Dream[], query: string, moods: string[], symbols: string[]) {
   return dreams.filter(dream => matchesName(dream.title, query)
     && (moods.length === 0 || moods.includes(dream.mood))
-    && symbols.every(symbol => dream.symbols.includes(symbol)));
+    && (symbols.length === 0 || symbols.some(symbol => dream.symbols.includes(symbol))));
 }
 
 export function paginate<T>(items: T[], value: ListSearchParams["page"], pageSize: number) {
