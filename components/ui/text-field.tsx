@@ -10,11 +10,13 @@ type TextFieldProps = SharedProps &
     | (Omit<ComponentProps<"input">, keyof SharedProps | "children"> & {
         as?: "input";
         leadingIcon?: ReactNode;
+        leadingAction?: ReactNode;
         trailingAction?: ReactNode;
       })
     | (Omit<ComponentProps<"textarea">, keyof SharedProps | "children"> & {
         as: "textarea";
         leadingIcon?: never;
+        leadingAction?: never;
         trailingAction?: never;
       })
   );
@@ -30,6 +32,7 @@ export function TextField({
   hideLabel,
   wrapperClassName,
   leadingIcon,
+  leadingAction,
   trailingAction,
   className = "",
   "aria-describedby": describedBy,
@@ -67,10 +70,11 @@ export function TextField({
             {leadingIcon}
           </span>
         )}
+        {leadingAction}
         <Control
           {...inputProps}
           {...accessibilityProps}
-          className={`${controlClasses} ${leadingIcon ? "pl-10" : "pl-4"} ${trailingAction ? "pr-12" : "pr-4"} ${className}`}
+          className={`${controlClasses} ${leadingIcon || leadingAction ? "pl-10" : "pl-4"} ${trailingAction ? "pr-12" : "pr-4"} ${className}`}
         />
         {trailingAction}
       </div>

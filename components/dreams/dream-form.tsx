@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useRef, useState, useSyncExternalStore } from "react";
 
 import { FormActions } from "@/components/ui/form-actions";
 import { localToday } from "@/lib/date";
@@ -20,6 +21,11 @@ type DreamFormProps = {
   onCancel?: () => void;
   submitLabel?: string;
 };
+
+const subscribeToPickerSupport = () => () => {};
+const supportsDatePicker = () =>
+  typeof HTMLInputElement.prototype.showPicker === "function";
+const serverPickerSupport = () => false;
 
 export function DreamForm({
   defaultValues,
@@ -46,6 +52,27 @@ export function DreamForm({
   });
   const { field: moodField } = useController({ name: "mood", control });
   const { field: symbolsField } = useController({ name: "symbols", control });
+  const dateInput = useRef<HTMLInputElement | null>(null);
+  const pickerSupported = useSyncExternalStore(
+    subscribeToPickerSupport,
+    supportsDatePicker,
+    serverPickerSupport,
+  );
+  const [pickerBlocked, setPickerBlocked] = useState(false);
+  const datePickerReady = pickerSupported && !pickerBlocked;
+  const dateField = register("date");
+
+  function openDatePicker() {
+    const input = dateInput.current;
+    if (!input || typeof input.showPicker !== "function") return;
+    try {
+      input.showPicker();
+      setPickerBlocked(false);
+    } catch {
+      // Keep the native indicator available if this browser blocks showPicker.
+      setPickerBlocked(true);
+    }
+  }
   return (
     <form className="space-y-6" noValidate onSubmit={handleSubmit(onSubmit)}>
       <TextField
@@ -57,11 +84,30 @@ export function DreamForm({
         error={errors.title?.message}
       />
       <TextField
-        {...register("date")}
+        {...dateField}
+        ref={(input) => {
+          dateField.ref(input);
+          dateInput.current = input;
+        }}
         id="date"
         label={t("Dreams.date")}
         type="date"
-        leadingIcon={<CalendarDays size={17} />}
+        onClick={openDatePicker}
+        className={datePickerReady ? "[&::-webkit-calendar-picker-indicator]:hidden" : ""}
+        leadingAction={
+          <button
+            type="button"
+            aria-label={t("Dreams.date")}
+            aria-controls="date"
+            className="control-interaction absolute left-1 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-control text-lavender-dark"
+            onClick={() => {
+              dateInput.current?.focus();
+              openDatePicker();
+            }}
+          >
+            <CalendarDays aria-hidden="true" size={17} />
+          </button>
+        }
         error={errors.date?.message}
       />
       <TextField
