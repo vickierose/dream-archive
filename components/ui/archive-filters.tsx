@@ -68,7 +68,7 @@ export function ArchiveFilters({
         onChange={(event) => setSearch(event.target.value)}
       />
       {availableSymbols && (
-        <div className="grid w-full grid-cols-2 gap-3 sm:contents">
+        <div className="grid w-full grid-cols-2 gap-3 md:contents">
           <FilterDropdown
             label={t("Dreams.mood")}
             name="mood"

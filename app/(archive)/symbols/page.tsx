@@ -8,11 +8,7 @@ import { PageHeader } from "@/components/layout/page-header";
 import { ArchiveFilters } from "@/components/ui/archive-filters";
 import { Pagination } from "@/components/ui/pagination";
 import { ArchiveListTransition } from "@/components/ui/archive-list-transition";
-import {
-  listHref,
-  queryText,
-  type ListSearchParams,
-} from "@/lib/archive-list";
+import { listHref, queryText, type ListSearchParams } from "@/lib/archive-list";
 
 export default async function SymbolsPage({
   searchParams,
@@ -23,12 +19,13 @@ export default async function SymbolsPage({
   const params = await searchParams;
   const query = queryText(params);
   const archive = await getUserArchiveRepository();
-  const { items, total, filteredTotal, page, pages } = await archive.getSymbolPage({ query, page: params.page });
+  const { items, total, filteredTotal, page, pages } =
+    await archive.getSymbolPage({ query, page: params.page });
   if (params.page !== undefined && params.page !== String(page)) {
     redirect(listHref("/symbols", params, page));
   }
   return (
-    <div className="mx-auto max-w-5xl">
+    <div>
       <PageHeader
         title={t("Navigation.symbols")}
         description={t("Symbols.description")}
@@ -51,7 +48,7 @@ export default async function SymbolsPage({
             description={t("ArchiveList.noResultsDescription")}
           />
         ) : (
-          <div className="grid grid-cols-[repeat(2,minmax(0,10rem))] gap-x-6 gap-y-8 justify-center sm:grid-cols-[repeat(auto-fill,minmax(0,10rem))] sm:justify-start">
+          <div className="grid grid-cols-[repeat(2,minmax(0,10rem))] gap-x-6 gap-y-8 justify-center sm:grid-cols-[repeat(auto-fill,minmax(0,10rem))] sm:justify-evenly">
             {items.map((symbol) => (
               <SymbolCard
                 key={symbol.id}
