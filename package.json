@@ -11,7 +11,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:check": "tsx scripts/check-db.ts",
     "test:db": "tsx --test lib/db/schema.test.ts lib/db/archive.test.ts",
-    "test:i18n": "tsx --test i18n/messages.test.ts"
+    "test:i18n": "tsx --test i18n/messages.test.ts",
+    "test:ui": "tsx --test components/ui/error-recovery.test.tsx"
   },
   "dependencies": {
     "@emoji-mart/data": "^1.2.1",

@@ -47,7 +47,7 @@ export function FilterDropdown({
   return (
     <details
       ref={dropdownRef}
-      className="relative min-w-0 sm:w-48"
+      className="relative min-w-0 md:w-48"
       onToggle={(event) => {
         if (!event.currentTarget.open) setOptionSearch("");
       }}

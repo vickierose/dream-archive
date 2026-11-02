@@ -7,6 +7,14 @@ import { getUserArchiveRepository } from "@/lib/data/archive";
 import { translateArchiveError } from "@/i18n/archive-error";
 import { dreamSchema, type DreamFormValues } from "@/lib/validation/dream";
 
+function revalidateDreamViews() {
+  revalidatePath("/dreams");
+  revalidatePath("/dreams/[id]", "layout");
+  revalidatePath("/symbols");
+  revalidatePath("/symbols/[id]", "page");
+  revalidatePath("/explore");
+}
+
 export async function createDream(values: DreamFormValues) {
   const t = await getTranslations();
   const archive = await getUserArchiveRepository();
@@ -14,7 +22,7 @@ export async function createDream(values: DreamFormValues) {
   if (!parsed.success) return { error: t("Errors.dreamFields") };
   try {
     const id = await archive.saveDream(parsed.data);
-    revalidatePath("/", "layout");
+    revalidateDreamViews();
     return { id };
   } catch (error) {
     return { error: await translateArchiveError(error, "saveDream") };
@@ -30,7 +38,7 @@ export async function updateDream(id: string, values: DreamFormValues) {
   if (!parsed.success) return { error: t("Errors.dreamFields") };
   try {
     await archive.saveDream(parsed.data, id);
-    revalidatePath("/", "layout");
+    revalidateDreamViews();
     return { success: true };
   } catch (error) {
     return { error: await translateArchiveError(error, "saveDream") };
@@ -41,7 +49,7 @@ export async function deleteDream(id: string) {
   const archive = await getUserArchiveRepository();
   try {
     await archive.deleteDream(id);
-    revalidatePath("/", "layout");
+    revalidateDreamViews();
     return { success: true };
   } catch (error) {
     return { error: await translateArchiveError(error, "deleteDream") };

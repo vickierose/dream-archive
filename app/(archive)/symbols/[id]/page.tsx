@@ -6,40 +6,20 @@ import { BackButton } from "@/components/ui/back-button";
 import { Chip } from "@/components/ui/chip";
 import { DreamLink } from "@/components/dreams/dream-link";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { getArchive } from "@/lib/data/archive";
+import { getSymbol, getUserArchiveRepository } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
-import { EmptyState } from "@/components/ui/empty-state";
 
 export default async function SymbolPage({
   params,
 }: PageProps<"/symbols/[id]">) {
   const t = await getTranslations();
   const { id } = await params;
-  const { dreams: archiveDreams, symbols: availableSymbols } =
-    await getArchive();
-  const symbol = availableSymbols.find((symbol) => symbol.id === id);
+  const symbol = await getSymbol(id);
 
-  if (!symbol) {
-    return (
-      <EmptyState
-        title={t("Symbols.notFound")}
-        action={
-          <BackButton fallbackHref="/symbols" label={t("Symbols.back")} />
-        }
-      />
-    );
-  }
-
-  const dreams = archiveDreams.filter((dream) => dream.symbols.includes(id));
-  const frequentSymbols = availableSymbols
-    .filter((otherSymbol) => otherSymbol.id !== id)
-    .map((otherSymbol) => ({
-      ...otherSymbol,
-      count: dreams.filter((dream) => dream.symbols.includes(otherSymbol.id))
-        .length,
-    }))
-    .filter(({ count }) => count > 0)
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  const archive = await getUserArchiveRepository();
+  const [dreams, frequentSymbols] = await Promise.all([
+    archive.getSymbolDreams(id), archive.getFrequentSymbols(id),
+  ]);
   const symbolLinkClasses =
     "focus-ring inline-flex rounded-full transition-opacity duration-200 hover:opacity-75 motion-reduce:transition-none";
 
@@ -114,10 +94,9 @@ export default async function SymbolPage({
 
 export async function generateMetadata({ params }: PageProps<"/symbols/[id]">) {
   const { id } = await params;
-  const [metadata, archive] = await Promise.all([
+  const [metadata, symbol] = await Promise.all([
     getPageMetadata("symbol"),
-    getArchive(),
+    getSymbol(id),
   ]);
-  const symbol = archive.symbols.find((symbol) => symbol.id === id);
-  return { ...metadata, title: symbol?.name ?? metadata.title };
+  return { ...metadata, title: symbol.name };
 }

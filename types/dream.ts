@@ -15,3 +15,5 @@ export interface Dream {
   mood: Mood;
   symbols: string[];
 }
+
+export type DreamSummary = Omit<Dream, "plot">;

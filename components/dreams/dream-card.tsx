@@ -4,11 +4,11 @@ import { CalendarDays } from "lucide-react";
 import { TapedCard } from "@/components/ui/taped-card";
 import { Chip } from "@/components/ui/chip";
 import { Heading } from "@/components/ui/heading";
-import type { Dream } from "@/types/dream";
+import type { DreamSummary } from "@/types/dream";
 import type { Symbol } from "@/types/symbol";
 
 type DreamCardProps = {
-  dream: Dream;
+  dream: DreamSummary;
   availableSymbols: Symbol[];
 };
 

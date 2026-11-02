@@ -15,7 +15,9 @@ import { Mood } from "@/types/dream";
 import { FormError } from "@/components/ui/form-error";
 import { TextField } from "@/components/ui/text-field";
 import { createDreamSchema, type DreamFormValues } from "@/lib/validation/dream";
+import type { Symbol } from "@/types/symbol";
 type DreamFormProps = {
+  initialSymbols: Symbol[] | null;
   defaultValues?: Partial<DreamFormValues>;
   onSubmit: (values: DreamFormValues) => void | Promise<void>;
   onCancel?: () => void;
@@ -28,6 +30,7 @@ const supportsDatePicker = () =>
 const serverPickerSupport = () => false;
 
 export function DreamForm({
+  initialSymbols,
   defaultValues,
   onSubmit,
   onCancel,
@@ -151,6 +154,7 @@ export function DreamForm({
       >
         <legend className="field-label">{t("Navigation.symbols")}</legend>
         <DreamSymbols
+          initialSymbols={initialSymbols}
           value={symbolsField.value}
           onChange={symbolsField.onChange}
           onBlur={symbolsField.onBlur}

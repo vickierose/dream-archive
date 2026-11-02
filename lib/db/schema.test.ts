@@ -23,12 +23,15 @@ test("database ownership and integrity constraints", async (t) => {
     );
     const db = drizzle(database);
     await migrate(db, { migrationsFolder: "./drizzle" });
+    const historyQuery = "SELECT * FROM drizzle.__drizzle_migrations ORDER BY id";
+    const initialHistory = (await database.query(historyQuery)).rows;
+    assert.ok(initialHistory.length > 0, "Migration history must not be empty");
     // Re-running must use migration history rather than recreate existing tables.
     await migrate(db, { migrationsFolder: "./drizzle" });
-    assert.equal(
-      (await database.query("SELECT * FROM drizzle.__drizzle_migrations")).rows
-        .length,
-      1,
+    assert.deepEqual(
+      (await database.query(historyQuery)).rows,
+      initialHistory,
+      "Re-running migrations must leave migration history unchanged",
     );
 
     const alice = randomUUID();

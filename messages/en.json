@@ -1,4 +1,12 @@
 {
+  "RouteError": {
+    "title": "Something went wrong",
+    "description": "We couldn't load this page. Please try again, or return to the home page.",
+    "retry": "Try again",
+    "retrying": "Trying again...",
+    "home": "Go to home page",
+    "language": "Language"
+  },
   "ArchiveList": {
     "reset": "Reset",
     "search": "Search",
