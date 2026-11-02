@@ -1,6 +1,7 @@
 "use client";
 
 import Form from "next/form";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useArchiveNavigation } from "@/components/ui/archive-list-transition";
 import { useTranslations } from "next-intl";
@@ -123,9 +124,12 @@ function FilterDropdown({
 
   return (
     <details ref={dropdownRef} className="relative min-w-0 sm:w-48">
-      <summary className="control-interaction cursor-pointer rounded-control border border-line bg-paper-light px-4 py-3 text-sm text-ink focus-visible:outline-purple">
-        {label}
-        {selected.length > 0 ? ` (${selected.length})` : ""}
+      <summary className="control-interaction flex cursor-pointer list-none items-center justify-between gap-2 rounded-control border border-line bg-paper-light px-4 py-3 text-sm text-ink focus-visible:outline-purple [&::-webkit-details-marker]:hidden">
+        <span>
+          {label}
+          {selected.length > 0 ? ` (${selected.length})` : ""}
+        </span>
+        <ChevronDown aria-hidden="true" size={16} className="shrink-0" />
       </summary>
       <fieldset className={`absolute top-full ${name === "symbol" ? "right-0" : "left-0"} z-20 mt-2 max-h-64 w-72 max-w-[calc(100vw-2rem)] overflow-y-auto rounded-control border border-line bg-paper-light p-3 shadow-paper-raised`}>
         <legend className="sr-only">{label}</legend>
