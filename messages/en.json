@@ -251,6 +251,8 @@
     "password": "Enter your password.",
     "passwordLength": "Use at least 8 characters for your password.",
     "title": "Give your dream a title.",
+    "titleMax": "Use 40 characters or fewer for the title.",
+    "symbolsMax": "Choose up to 10 symbols per dream.",
     "date": "Choose a valid date.",
     "plot": "Describe your dream.",
     "mood": "Choose a mood for your dream."
