@@ -29,8 +29,13 @@ const tapeColors = ["bg-tape-gold", "bg-tape", "bg-tape-rose"] as const;
 const tapePositions = ["left-[26%]", "left-1/2", "left-[74%]"] as const;
 const tapeRotations = ["-rotate-3", "rotate-3"] as const;
 
-function pickRandom<T>(options: readonly T[]): T {
-  return options[Math.floor(Math.random() * options.length)];
+function pickDecoration<T>(options: readonly T[], key: string): T {
+  // A stable hash keeps the handmade variety consistent across renders.
+  let hash = 2166136261;
+  for (let index = 0; index < key.length; index++) {
+    hash = Math.imul(hash ^ key.charCodeAt(index), 16777619);
+  }
+  return options[(hash >>> 0) % options.length];
 }
 
 export function TapedCard({
@@ -40,10 +45,10 @@ export function TapedCard({
   className = "",
   size = "normal",
 }: TapedCardProps) {
-  const cardPalette = pickRandom(cardPalettes);
-  const tapeColor = pickRandom(tapeColors);
-  const tapePosition = pickRandom(tapePositions);
-  const tapeRotation = pickRandom(tapeRotations);
+  const cardPalette = pickDecoration(cardPalettes, `${href}:paper`);
+  const tapeColor = pickDecoration(tapeColors, `${href}:tape-color`);
+  const tapePosition = pickDecoration(tapePositions, `${href}:tape-position`);
+  const tapeRotation = pickDecoration(tapeRotations, `${href}:tape-rotation`);
 
   return (
     <Link
