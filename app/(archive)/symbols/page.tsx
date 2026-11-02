@@ -3,15 +3,13 @@ import { getTranslations } from "next-intl/server";
 import { redirect } from "next/navigation";
 import { SymbolCard } from "@/components/symbols/symbol-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { getArchive } from "@/lib/data/archive";
+import { getUserArchiveRepository } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
 import { ArchiveFilters } from "@/components/ui/archive-filters";
 import { Pagination } from "@/components/ui/pagination";
 import { ArchiveListTransition } from "@/components/ui/archive-list-transition";
 import {
   listHref,
-  matchesName,
-  paginate,
   queryText,
   type ListSearchParams,
 } from "@/lib/archive-list";
@@ -22,14 +20,10 @@ export default async function SymbolsPage({
   searchParams: Promise<ListSearchParams>;
 }) {
   const t = await getTranslations();
-  const { dreams: archiveDreams, symbols: availableSymbols } =
-    await getArchive();
   const params = await searchParams;
   const query = queryText(params);
-  const filtered = availableSymbols.filter((symbol) =>
-    matchesName(symbol.name, query),
-  );
-  const { items, page, pages } = paginate(filtered, params.page, 40);
+  const archive = await getUserArchiveRepository();
+  const { items, total, filteredTotal, page, pages } = await archive.getSymbolPage({ query, page: params.page });
   if (params.page !== undefined && params.page !== String(page)) {
     redirect(listHref("/symbols", params, page));
   }
@@ -46,12 +40,12 @@ export default async function SymbolsPage({
           query={query}
         />
 
-        {availableSymbols.length === 0 ? (
+        {total === 0 ? (
           <EmptyState
             title={t("Symbols.empty")}
             description={t("Symbols.emptyDescription")}
           />
-        ) : filtered.length === 0 ? (
+        ) : filteredTotal === 0 ? (
           <EmptyState
             title={t("ArchiveList.noResults")}
             description={t("ArchiveList.noResultsDescription")}
@@ -62,11 +56,7 @@ export default async function SymbolsPage({
               <SymbolCard
                 key={symbol.id}
                 symbol={symbol}
-                dreamCount={
-                  archiveDreams.filter((dream) =>
-                    dream.symbols.includes(symbol.id),
-                  ).length
-                }
+                dreamCount={symbol.dreamCount}
               />
             ))}
           </div>

@@ -4,7 +4,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { getArchive } from "@/lib/data/archive";
+import { getUserArchiveRepository } from "@/lib/data/archive";
 import { DreamCard } from "@/components/dreams/dream-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/layout/page-header";
@@ -12,9 +12,7 @@ import { ArchiveFilters } from "@/components/ui/archive-filters";
 import { Pagination } from "@/components/ui/pagination";
 import { ArchiveListTransition } from "@/components/ui/archive-list-transition";
 import {
-  filterDreams,
   listHref,
-  paginate,
   queryText,
   queryValues,
   type ListSearchParams,
@@ -26,14 +24,15 @@ export default async function DreamsPage({
   searchParams: Promise<ListSearchParams>;
 }) {
   const t = await getTranslations();
-  const { dreams: archiveDreams, symbols: availableSymbols } =
-    await getArchive();
   const params = await searchParams;
   const query = queryText(params);
   const moods = queryValues(params.mood);
   const symbols = queryValues(params.symbol);
-  const filtered = filterDreams(archiveDreams, query, moods, symbols);
-  const { items, page, pages } = paginate(filtered, params.page, 20);
+  const archive = await getUserArchiveRepository();
+  const [{ items, total, filteredTotal, page, pages }, availableSymbols] = await Promise.all([
+    archive.getDreamPage({ query, moods, symbols, page: params.page }),
+    archive.getSymbols(),
+  ]);
   if (params.page !== undefined && params.page !== String(page)) {
     redirect(listHref("/dreams", params, page));
   }
@@ -42,7 +41,7 @@ export default async function DreamsPage({
       <PageHeader
         title={t("Dreams.title")}
         description={t("Dreams.summary", {
-          dreams: archiveDreams.length,
+          dreams: total,
           symbols: availableSymbols.length,
         })}
         action={
@@ -70,12 +69,12 @@ export default async function DreamsPage({
         >
           <Plus aria-hidden="true" size={28} strokeWidth={1.75} />
         </Link>
-        {archiveDreams.length === 0 ? (
+        {total === 0 ? (
           <EmptyState
             title={t("Dreams.empty")}
             description={t("Dreams.emptyDescription")}
           />
-        ) : filtered.length === 0 ? (
+        ) : filteredTotal === 0 ? (
           <EmptyState
             title={t("ArchiveList.noResults")}
             description={t("ArchiveList.noResultsDescription")}

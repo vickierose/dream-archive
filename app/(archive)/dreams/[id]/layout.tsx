@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
 import { DreamLink } from "@/components/dreams/dream-link";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { getArchive } from "@/lib/data/archive";
+import { getDream, getUserArchiveRepository } from "@/lib/data/archive";
 import { PageHeader } from "@/components/layout/page-header";
 import { EmptyState } from "@/components/ui/empty-state";
 import Link from "next/link";
@@ -22,9 +22,7 @@ export default async function DreamLayout({
   const t = await getTranslations();
   const locale = await getLocale();
   const { id } = await params;
-  const { dreams: archiveDreams, symbols: availableSymbols } =
-    await getArchive();
-  const dream = archiveDreams.find((entry) => entry.id === id);
+  const dream = await getDream(id);
 
   if (!dream) {
     return (
@@ -35,27 +33,20 @@ export default async function DreamLayout({
     );
   }
 
-  const dreamSymbols = dream.symbols.flatMap((symbolId) => {
-    const symbol = availableSymbols.find(({ id }) => id === symbolId);
-
-    return symbol ? [symbol] : [];
-  });
-  const connectedDreams = archiveDreams
-    .filter(
-      (otherDream) =>
-        otherDream.id !== dream.id &&
-        otherDream.symbols.some((symbolId) => dream.symbols.includes(symbolId)),
-    )
-    .map((otherDream) => ({
-      dream: otherDream,
-      sharedSymbols: otherDream.symbols
-        .filter((symbolId) => dream.symbols.includes(symbolId))
-        .flatMap((symbolId) => {
-          const symbol = availableSymbols.find(({ id }) => id === symbolId);
-
-          return symbol ? [symbol.name] : [];
-        }),
-    }));
+  const archive = await getUserArchiveRepository();
+  const [dreamSymbols, relatedDreams] = await Promise.all([
+    archive.getDreamSymbols(id), archive.getRelatedDreams(id),
+  ]);
+  const symbolNames = new Map(dreamSymbols.map((symbol) => [symbol.id, symbol.name]));
+  const connectedDreams = relatedDreams.map((otherDream) => ({
+    dream: otherDream,
+    sharedSymbols: otherDream.symbols
+      .filter((symbolId) => dream.symbols.includes(symbolId))
+      .flatMap((symbolId) => {
+        const name = symbolNames.get(symbolId);
+        return name ? [name] : [];
+      }),
+  }));
 
   return (
     <>

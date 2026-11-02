@@ -11,12 +11,14 @@ export async function getUserArchiveRepository() {
 }
 
 // React cache deduplicates reads within a render, not across users or requests.
-export const getArchive = cache(async () => {
-  const archive = await getUserArchiveRepository();
-  return archive.getArchive();
+export const getExploreArchive = cache(async () => {
+  return (await getUserArchiveRepository()).getExploreArchive();
 });
 
-export async function getDream(id: string) {
-  const archive = await getArchive();
-  return archive.dreams.find((dream) => dream.id === id);
-}
+export const getDream = cache(async (id: string) => {
+  return (await getUserArchiveRepository()).getDream(id);
+});
+
+export const getSymbol = cache(async (id: string) => {
+  return (await getUserArchiveRepository()).getSymbol(id);
+});
