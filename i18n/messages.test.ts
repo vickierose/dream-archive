@@ -23,7 +23,7 @@ test("both catalogs have the same keys and every message formats", () => {
     const t = createTranslator({ locale, messages, onError: (error) => { throw error; } });
     for (const key of Object.keys(flatten(messages))) {
       assert.ok(t(key as Parameters<typeof t>[0], {
-        count: 2, dreams: 5, symbols: 21, title: "Test", names: "Test", name: "Test",
+        count: 2, dreams: 5, symbols: 21, page: 2, title: "Test", names: "Test", name: "Test",
       }));
     }
   }
