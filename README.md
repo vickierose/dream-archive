@@ -51,7 +51,7 @@ translation catalogs. Child page titles use `Page | App name`; the homepage has
 its own full title. The existing `night-view.png` illustration supplies the
 homepage Open Graph and Twitter preview image.
 
-Only the public homepage is included in `/sitemap.xml`. Account and archive
+The public homepage and `/privacy` page are included in `/sitemap.xml`. Account and archive
 layouts emit `noindex, nofollow, noarchive`. Detail page titles use the dream title
 or symbol name from the authenticated user's archive; descriptions stay generic.
 Missing entries fall back to the localized generic title. `/robots.txt` blocks API crawling and links
@@ -60,6 +60,18 @@ crawlers can read their `noindex` tags; authentication still protects the archiv
 
 Language is cookie-based, so both languages share the same canonical URL. There
 are no language-specific URLs to advertise via `hreflang` yet.
+
+## Privacy and contact
+
+`/privacy` is public and available in English and Ukrainian. It explains the
+personal project, stored data, account access, service providers, cookies, and
+manual export/deletion requests. Links are available on the homepage, signup
+page, and desktop/mobile account controls.
+
+The contact link currently points to the creator's LinkedIn profile. Replace
+the link in `app/privacy/page.tsx` and update `Privacy.contactLabel` in both
+translation catalogs when switching to a dedicated email. Keep the page copy
+aligned with any changes to hosting, analytics, or data handling.
 
 ## Learn More
 

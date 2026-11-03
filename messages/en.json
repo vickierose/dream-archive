@@ -1,4 +1,25 @@
 {
+  "Privacy": {
+    "title": "Privacy & contact",
+    "intro": "A few things to know before you leave your dreams here.",
+    "home": "Back to home",
+    "archive": "Open the archive",
+    "projectTitle": "A personal project",
+    "projectBody": "Dream Archive is a personal, experimental project: a place to record dreams and explore recurring symbols. It may change as I keep learning and building. Keep your own copy of anything you would not want to lose.",
+    "dataTitle": "What is stored",
+    "dataBody": "Your account includes your email address, a profile name, and sign-in information managed by Neon Auth. Your journal stores the dream titles, stories, dates, moods, symbols, and connections you choose to save. This information is used to sign you in and provide your archive.",
+    "accessTitle": "Who can access it",
+    "accessBody": "Your journal is available only to your signed-in account through the app; other users cannot browse it. It is not end-to-end encrypted: the project maintainer and service providers may access stored data when operating or supporting the service.",
+    "providersTitle": "Services behind the app",
+    "providersBody": "Neon provides account authentication and PostgreSQL database storage. If you choose Google sign-in, Google also handles that sign-in. The hosting and authentication services may process technical information, such as IP addresses and request logs, to operate and protect the service.",
+    "cookiesTitle": "Cookies",
+    "cookiesBody": "The app uses cookies to keep you signed in and remember your language. The language preference lasts up to one year. The app does not add advertising trackers or analytics scripts.",
+    "choicesTitle": "Your journal, your choices",
+    "choicesBody": "You can edit or delete individual dreams in the app. For a copy of your data or deletion of your account and journal, contact me. These requests are handled manually, and I may ask you to verify that the account is yours. Please do not send passwords or dream content with your request.",
+    "contactTitle": "Get in touch",
+    "contactBody": "Questions, feedback, a bug, or a data request? You can reach me here:",
+    "contactLabel": "Find me on LinkedIn"
+  },
   "RouteError": {
     "title": "Something went wrong",
     "description": "We couldn't load this page. Please try again, or return to the home page.",
@@ -20,6 +41,10 @@
     "page": "Page {page}"
   },
   "Metadata": {
+    "privacy": {
+      "title": "Privacy & contact",
+      "description": "How Dream Archive stores your information, who can access it, and how to get in touch about your data."
+    },
     "home": {
       "title": "Dream Archive — Your private dream journal",
       "description": "Record your dreams, collect recurring symbols, and discover connections in your own private dream journal."
