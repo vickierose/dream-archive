@@ -94,10 +94,11 @@ warnings. The project passes TypeScript, lint, and production build checks with
 the installed lockfile. Some transitive tooling also asks for a newer Node version
 than the local Node 22.7.0; use a maintained Node release for deployment.
 
-After installing database tooling, npm reported 15 advisories (7 moderate, 7 high,
-1 critical). The previously identified Next.js 16.3.5 advisory remains unresolved.
-Dependency security updates are separate from this schema change. Review and patch
-before public deployment; do not run a forced audit fix that downgrades Next.js tooling.
+On November 3, 2026, `npm audit --omit=dev` reported zero known vulnerabilities
+in production dependencies. This result excludes development dependencies and
+reflects the advisory database at the time of the check. Rerun the audit before
+deployment and after dependency changes; review fixes rather than applying
+`npm audit fix --force` blindly.
 
 ## References
 
