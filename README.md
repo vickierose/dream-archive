@@ -48,8 +48,9 @@ empty sitemap rather than advertising localhost. Invalid URLs fail explicitly.
 
 Titles and descriptions for every page live in the `Metadata` namespace in both
 translation catalogs. Child page titles use `Page | App name`; the homepage has
-its own full title. The existing `night-view.png` illustration supplies the
-homepage Open Graph and Twitter preview image.
+its own full title. `app/opengraph-image.png` supplies the social preview image
+through Next.js file-based metadata, with alt text in `app/opengraph-image.alt.txt`.
+The homepage Twitter card uses the same image via Next.js's Open Graph fallback.
 
 The public homepage and `/privacy` page are included in `/sitemap.xml`. Account and archive
 layouts emit `noindex, nofollow, noarchive`. Detail page titles use the dream title

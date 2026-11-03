@@ -17,9 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
   ]);
   const siteUrl = getSiteUrl();
   const { title, description } = page;
-  const images = siteUrl
-    ? [{ url: new URL("/night-view.png", siteUrl).href, alt: t("appName") }]
-    : undefined;
 
   return {
     title: { absolute: title },
@@ -31,13 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       locale: locale === "uk" ? "uk_UA" : "en_US",
-      ...(siteUrl && { url: siteUrl.href, images }),
+      ...(siteUrl && { url: siteUrl.href }),
     },
     twitter: {
-      card: images ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description,
-      ...(images && { images }),
     },
   };
 }
