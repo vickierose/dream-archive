@@ -1,4 +1,5 @@
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getPageMetadata, getSiteUrl } from "@/lib/metadata";
@@ -16,9 +17,6 @@ export async function generateMetadata(): Promise<Metadata> {
   ]);
   const siteUrl = getSiteUrl();
   const { title, description } = page;
-  const images = siteUrl
-    ? [{ url: new URL("/night-view.png", siteUrl).href, alt: t("appName") }]
-    : undefined;
 
   return {
     title: { absolute: title },
@@ -30,13 +28,12 @@ export async function generateMetadata(): Promise<Metadata> {
       title,
       description,
       locale: locale === "uk" ? "uk_UA" : "en_US",
-      ...(siteUrl && { url: siteUrl.href, images }),
+      ...(siteUrl && { url: siteUrl.href }),
     },
     twitter: {
-      card: images ? "summary_large_image" : "summary",
+      card: "summary_large_image",
       title,
       description,
-      ...(images && { images }),
     },
   };
 }
@@ -52,10 +49,8 @@ export default function Home() {
         <Illustration sizes="(min-width: 48rem) 66.67vw, 100vw" />
       </section>
 
-      <section
-        className="relative flex flex-1 flex-col justify-center bg-paper px-6 py-8 sm:px-10 md:px-8 md:pb-12 md:pt-24 md:shadow-paper-edge lg:px-12 xl:px-16"
-      >
-        <div className="mx-auto w-full max-w-md">
+      <section className="relative grid flex-1 grid-rows-[1fr_auto] bg-paper px-6 py-8 sm:px-10 md:px-8 md:pb-12 md:pt-24 md:shadow-paper-edge lg:px-12 xl:px-16">
+        <div className="mx-auto w-full max-w-md self-center">
           <Heading as="h1">{t("Common.appName")}</Heading>
 
           <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-soft">
@@ -67,6 +62,11 @@ export default function Home() {
             <MoveRight aria-hidden="true" size={16} />
           </Button>
         </div>
+        <footer className="mt-6 text-center text-sm">
+          <Link href="/privacy" className="text-link">
+            {t("Privacy.title")}
+          </Link>
+        </footer>
       </section>
     </main>
   );

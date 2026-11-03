@@ -26,6 +26,12 @@ export default async function SignupPage() {
           {t("Auth.login")}
         </Link>
       </p>
+
+      <p className="mt-5 text-center text-sm">
+        <Link className="text-link" href="/privacy">
+          {t("Privacy.title")}
+        </Link>
+      </p>
     </div>
   );
 }

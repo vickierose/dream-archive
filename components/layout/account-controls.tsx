@@ -1,6 +1,7 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { LanguageSwitcher } from "@/components/layout/language-switcher";
@@ -15,6 +16,7 @@ export function AccountControls({
   className?: string;
 }) {
   const t = useTranslations("Navigation");
+  const privacy = useTranslations("Privacy");
   const [signingOut, setSigningOut] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -43,6 +45,15 @@ export function AccountControls({
         className={compact ? "flex items-start gap-1 mt-1" : "flex flex-col"}
       >
         <LanguageSwitcher iconOnly={compact} />
+        <Link
+          href="/privacy"
+          aria-label={privacy("title")}
+          title={compact ? privacy("title") : undefined}
+          className={`control-interaction flex items-center rounded-control text-sm text-ink-soft hover:bg-lavender-light hover:text-purple ${compact ? "size-11 justify-center" : "w-full gap-3 px-3 py-2.5"}`}
+        >
+          <Shield aria-hidden="true" size={18} />
+          {!compact && privacy("title")}
+        </Link>
         <button
           className={`control-interaction flex items-center rounded-control font-base text-sm text-ink-soft not-disabled:hover:bg-lavender-light not-disabled:hover:text-purple ${compact ? "size-11 justify-center" : "w-full gap-3 px-3 py-2.5"}`}
           type="button"

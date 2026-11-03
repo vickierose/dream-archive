@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 
 export type MetadataPage =
   | "home"
+  | "privacy"
   | "login"
   | "signup"
   | "forgotPassword"
