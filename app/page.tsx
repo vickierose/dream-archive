@@ -42,7 +42,7 @@ export default function Home() {
   const t = useTranslations();
   return (
     <main className="relative flex min-h-svh flex-col bg-paper md:grid md:grid-cols-3">
-      <div className="absolute right-4 top-5 z-10 md:right-8 md:top-6">
+      <div className="absolute right-4 top-4.5 z-10 md:right-8 md:top-6">
         <LanguageSwitcher className="max-md:bg-night/40 max-md:text-white max-md:hover:bg-night/60" />
       </div>
       <section className="relative h-[clamp(10rem,32svh,20rem)] shrink-0 md:col-span-2 md:h-auto md:min-h-svh">

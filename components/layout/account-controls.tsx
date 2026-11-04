@@ -40,7 +40,7 @@ export function AccountControls({
   const label = signingOut ? t("loggingOut") : t("logout");
 
   return (
-    <div className={`absolute md:relative ${className}`}>
+    <div className={`absolute top-2 md:relative ${className}`}>
       <div
         className={compact ? "flex items-start gap-1 mt-1" : "flex flex-col"}
       >

@@ -13,7 +13,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
   const t = useTranslations();
   return (
     <div className="relative flex min-h-svh flex-col bg-paper md:grid md:grid-cols-2">
-      <div className="absolute right-4 top-5 z-10 md:right-8 md:top-6">
+      <div className="absolute right-4 top-4 z-10 md:right-8 md:top-6">
         <LanguageSwitcher />
       </div>
       <header className="pl-6 pr-28 py-5 pb-1 sm:pl-10 sm:py-6 md:hidden">
