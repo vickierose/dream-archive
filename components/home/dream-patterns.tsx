@@ -10,10 +10,19 @@ export function DreamPatterns() {
       className="rounded-[2.5rem] bg-linear-to-br from-lavender-light via-paper-lilac to-lavender-light"
     >
       <div className="mx-auto grid max-w-7xl items-center gap-6 px-5 py-9 sm:px-8 md:grid-cols-[1.25fr_1fr] lg:gap-16 lg:px-12 lg:py-12">
-        <div
-          aria-hidden="true"
-          className="aspect-video rounded-2xl border border-line bg-paper-light/55 max-md:row-start-2"
-        />
+        <video
+          aria-labelledby="dream-patterns-title"
+          className="h-auto w-full rounded-2xl border border-line bg-night max-md:row-start-2"
+          width={1142}
+          height={602}
+          autoPlay
+          loop
+          controls
+          playsInline
+          preload="metadata"
+        >
+          <source src="/explore_video.mp4" type="video/mp4" />
+        </video>
         <div>
           <div className="flex items-center gap-3">
             <Heading
