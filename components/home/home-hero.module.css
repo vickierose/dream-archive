@@ -1,20 +1,3 @@
 .illustration {
-  /* Overlapping fades give the lower edge two different curves. */
-  mask-image:
-    radial-gradient(ellipse 85% 28% at 25% 115%, transparent 55%, black 100%),
-    radial-gradient(ellipse 72% 24% at 90% 112%, transparent 50%, black 100%),
-    linear-gradient(black 83%, transparent);
-  mask-composite: intersect;
-}
-
-@media (min-width: 48rem) {
-  .illustration {
-    /* Broad fades soften the edge while the radial layers vary its contour. */
-    mask-image:
-      radial-gradient(ellipse 34% 43% at 108% 24%, rgb(0 0 0 / 45%), black),
-      radial-gradient(ellipse 31% 40% at 109% 78%, rgb(0 0 0 / 58%), black),
-      radial-gradient(ellipse 89% 32% at 70% 115%, rgb(0 0 0 / 60%), black),
-      linear-gradient(to right, black 72%, rgb(0 0 0 / 80%) 83%, transparent),
-      linear-gradient(black 76%, rgb(0 0 0 / 82%) 86%, transparent);
-  }
+  mask: url("./hero-wave.svg") center / 100% 100% no-repeat;
 }
