@@ -144,7 +144,34 @@
   },
   "Home": {
     "intro": "A private place for the things your sleeping mind invents.",
-    "enter": "Enter the archive"
+    "enter": "Enter archive",
+    "goToArchive": "Go to archive",
+    "navigation": "Main navigation",
+    "features": "Features",
+    "description": "Write down your dreams, collect recurring symbols, and discover the connections between them.",
+    "seeHowItWorks": "See how it works",
+    "howItWorks": "How it works",
+    "steps": {
+      "record": {
+        "title": "Capture your dreams",
+        "description": "Write down what you remember after waking up.",
+        "imageAlt": "An example dream entry about a beach and a spacecraft."
+      },
+      "symbols": {
+        "title": "Collect your symbols",
+        "description": "Tag the images and themes that keep coming back.",
+        "imageAlt": "Example symbol tags for alien, rain, hug, and ocean."
+      },
+      "connections": {
+        "title": "Explore connections",
+        "description": "See how your symbols intertwine across different dreams.",
+        "imageAlt": "A network linking an alien symbol to symbols from other dreams."
+      }
+    },
+    "patternsTitle": "Find patterns in your dreams",
+    "patternsDescription": "Some symbols keep finding their way back. Explore how they connect and uncover recurring themes in your dreams.",
+    "privacyTitle": "Your dreams are yours.",
+    "privacyDescription": "Your journal is private. Other users can’t see your entries."
   },
   "Auth": {
     "confirmPassword": "Confirm password",
